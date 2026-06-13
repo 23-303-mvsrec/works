@@ -1,0 +1,370 @@
+﻿[
+    {
+        "phoneNumber":  "7995010510",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  "51 - Kuntloor"
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  "52 - Pedda Amberpet"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "K.RAMAKRISHNA GOUD",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9989994708",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  null,
+                              "wardName":  null
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  null,
+                              "wardName":  null
+                          }
+                      ],
+        "role":  "GM",
+        "name":  "M.MAHENDER",
+        "designation":  "General Manager (GM)"
+    },
+    {
+        "phoneNumber":  "9989999753",
+        "locations":  [
+                          {
+                              "division":  null,
+                              "corp":  "Corporate",
+                              "zoneName":  null,
+                              "circleName":  null,
+                              "wardName":  null
+                          }
+                      ],
+        "role":  "DOP",
+        "name":  "Vasa SatyaNarayana",
+        "designation":  "Director of Project (DOP)"
+    },
+    {
+        "phoneNumber":  "9989999546",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "13 - LB Nagar",
+                              "wardName":  "37 - Lingojiguda"
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "13 - LB Nagar",
+                              "wardName":  "38 - Champapet"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "N.PAVITA LAKSHMI",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9154866585",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  "42 - BN Reddy Nagar"
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  "43 - Vanasthalipuram"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "C.BANU PRAKASH REDDY",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9154866671",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "13 - LB Nagar",
+                              "wardName":  "39 - Kharmanghat"
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "13 - LB Nagar",
+                              "wardName":  "41 - Hastinapuram"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "P.BHAVYA",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9989989507",
+        "locations":  [
+                          {
+                              "division":  null,
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  null,
+                              "wardName":  null
+                          }
+                      ],
+        "role":  "CGM",
+        "name":  "P.NAGENDRA KUMAR",
+        "designation":  "Chief General Manager (CGM)"
+    },
+    {
+        "phoneNumber":  "7331185790",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  null
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  "29 - Nagole"
+                          }
+                      ],
+        "role":  "DGM",
+        "name":  "T.N SAINATH GOUD",
+        "designation":  "Deputy General Manager (DGM)"
+    },
+    {
+        "phoneNumber":  "9154866620",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  "46 - GSI"
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  "47 - Lecturers Colony"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "BANDLA SANDEEP",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9154297397",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "34 - Doctors Colony"
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "35 - RK Puram"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "G.RAJITHA",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "7331185782",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  null
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "36 - NTR Nagar"
+                          }
+                      ],
+        "role":  "DGM",
+        "name":  "D.CHANDRU NAIK",
+        "designation":  "Deputy General Manager (DGM)"
+    },
+    {
+        "phoneNumber":  "7995010496",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "11 â€“ Nagole",
+                              "wardName":  "45 - Mansoorabad"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "B.LENIN",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9989996103",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "13 - LB Nagar",
+                              "wardName":  null
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "13 - LB Nagar",
+                              "wardName":  "40 - Bairamalguda"
+                          }
+                      ],
+        "role":  "DGM",
+        "name":  "SRINU RAVULA",
+        "designation":  "Deputy General Manager (DGM)"
+    },
+    {
+        "phoneNumber":  "9154866643",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  "44 - Chintalkunta"
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  "48 - High Court Colony"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "BOMMIDI PRIYANKA",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9154866717",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  "49 - Sahebnagar"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "SANGOJU SIRIVENNELA",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9989994369",
+        "locations":  [
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  null
+                          },
+                          {
+                              "division":  "6",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "14 - Hayathnagar",
+                              "wardName":  "50 - Hayathnagar"
+                          }
+                      ],
+        "role":  "DGM",
+        "name":  "K.NAGAR RAJU",
+        "designation":  "Deputy General Manager (DGM)"
+    },
+    {
+        "phoneNumber":  "9154866634",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "32 - Gaddiannaram"
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "33 - Saroornagar"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "KATKURI MAMATHA",
+        "designation":  "Manager (AE)"
+    },
+    {
+        "phoneNumber":  "9154866700",
+        "locations":  [
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "30 - Kothapet"
+                          },
+                          {
+                              "division":  "5",
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
+                              "circleName":  "12 - Saroornagar",
+                              "wardName":  "31 - Chaitanyapuri"
+                          }
+                      ],
+        "role":  "MANAGER",
+        "name":  "SURA SRAVANTHI REDDY",
+        "designation":  "Manager (AE)"
+    }
+]

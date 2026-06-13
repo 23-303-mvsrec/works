@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hmwssbLoginApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HMWSSB – Officer Portal Login</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #7a7a38;
+      --primary-light: #9a9a58;
+      --primary-dark: #5a5a22;
+      --accent: #d4c97a;
+      --bg-gradient: linear-gradient(135deg, #f0f0e8 0%, #e8e8d8 50%, #d8d8c8 100%);
+      --card-bg: rgba(245, 245, 232, 0.95);
+      --card-border: #c8c87a;
+      --text-main: #222;
+      --text-muted: #555;
+      --error-bg: #fff5f5;
+      --error-text: #b33;
+      --error-border: #e08080;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Decorative water bubbles background */
+    body::before, body::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(122, 122, 56, 0.12) 0%, rgba(90, 122, 58, 0.04) 100%);
+      z-index: -1;
+      animation: floatBubble 10s infinite ease-in-out;
+    }
+
+    body::before {
+      width: 300px;
+      height: 300px;
+      top: -50px;
+      left: -50px;
+    }
+
+    body::after {
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: -5s;
+    }
+
+    @keyframes floatBubble {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 15px 35px rgba(122, 122, 56, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(122, 122, 56, 0.15), 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Logo/Header Section */
+    .brand-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      border-radius: 50%;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 16px rgba(122, 122, 56, 0.2);
+    }
+
+    .brand-logo svg {
+      width: 32px;
+      height: 32px;
+      fill: #fff;
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-control {
+      width: 100%;
+      height: 44px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(122, 122, 56, 0.25);
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-light);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(122, 122, 56, 0.15);
+    }
+
+    /* Error alert */
+    .alert {
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: var(--error-text);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Button */
+    .btn-login {
+      width: 100%;
+      height: 46px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(122, 122, 56, 0.25);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(122, 122, 56, 0.35);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(122, 122, 56, 0.25);
+    }
+
+    .btn-login[disabled] {
+      background: #a0aec0;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 30px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+
+<body ng-controller="LoginCtrl">
+
+  <div class="login-container">
+    <!-- Brand Header -->
+    <div class="brand-header">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12,2A10,10,0,0,0,2,12a10,10,0,0,0,10,10,10,10,0,0,0,10-10A10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20ZM11,7h2v6H11Zm0,8h2v2H11Z"/>
+        </svg>
+      </div>
+      <h1 class="brand-title">HMWSSB Portal</h1>
+      <p class="brand-subtitle">Works Measurement &amp; Estimation System</p>
+    </div>
+
+    <!-- Error Alert Box -->
+    <div class="alert" id="login_error_alert" ng-if="errorMessage">
+      <span>⚠</span> {{errorMessage}}
+    </div>
+
+    <!-- Login Form -->
+    <form ng-submit="executeLogin()" novalidate>
+      <div class="form-group">
+        <label for="phone_number_input">Officer Phone Number</label>
+        <div class="input-wrapper">
+          <input type="text" id="phone_number_input" class="form-control" ng-model="credentials.phoneNumber" 
+                 placeholder="e.g. 9876543210" required autocomplete="username" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password_input">Secret Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password_input" class="form-control" ng-model="credentials.password" 
+                 placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+      </div>
+
+      <button type="submit" id="login_submit_btn" class="btn-login" ng-disabled="submitting">
+        <span class="spinner" ng-if="submitting"></span>
+        <span ng-if="submitting">Authenticating...</span>
+        <span ng-if="!submitting">Login to Account</span>
+      </button>
+    </form>
+
+    <div class="footer-note">
+      Government of Telangana<br/>
+      Hyderabad Metropolitan Water Supply and Sewerage Board
+    </div>
+  </div>
+
+  <script>
+    angular.module('hmwssbLoginApp', [])
+      .controller('LoginCtrl', ['$scope', '$http', '$timeout',
+        function ($scope, $http, $timeout) {
+          
+          var API_BASE = 'http://localhost:8080/api';
+
+          // Clear any old session details
+          localStorage.removeItem('hmwssb_logged_in_user');
+
+          $scope.credentials = {
+            phoneNumber: '',
+            password: ''
+          };
+          $scope.errorMessage = null;
+          $scope.submitting = false;
+
+          $scope.executeLogin = function () {
+            if (!$scope.credentials.phoneNumber || !$scope.credentials.phoneNumber.trim()) {
+              $scope.errorMessage = 'Please input your phone number.';
+              return;
+            }
+            if (!$scope.credentials.password || !$scope.credentials.password.trim()) {
+              $scope.errorMessage = 'Please input your password.';
+              return;
+            }
+
+            $scope.errorMessage = null;
+            $scope.submitting = true;
+
+            $http.post(API_BASE + '/users/login', {
+              phoneNumber: $scope.credentials.phoneNumber,
+              password: $scope.credentials.password
+            }).then(function (response) {
+              $scope.submitting = false;
+              // Store logged in user profile and locations list
+              localStorage.setItem('hmwssb_logged_in_user', JSON.stringify(response.data));
+              // Redirect to main measurement sheet
+              window.location.href = 'index.html';
+            }, function (error) {
+              $scope.submitting = false;
+              if (error.status === 401 || error.status === 400 || error.status === 404) {
+                $scope.errorMessage = error.data || 'Invalid phone number or password. Please try again.';
+              } else {
+                $scope.errorMessage = 'Could not reach HMWSSB backend server. Please make sure the Spring Boot service is running.';
+              }
+            });
+          };
+
+        }
+      ]);
+  </script>
+</body>
+
+</html>

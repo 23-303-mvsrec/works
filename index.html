@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hmwssbApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HMWSSB – Measurement Sheet</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  <script src="hierarchy.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      background: #f0f0e8;
+      color: #222;
+      padding: 20px;
+    }
+
+    .sheet-wrapper {
+      background: #f5f5e8;
+      border: 1px solid #c8c87a;
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    /* ── Hierarchy Row ── */
+    .hierarchy-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .hierarchy-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    .hierarchy-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hierarchy-field label {
+      font-weight: 600;
+      color: #b33;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .hierarchy-field label::before {
+      content: '* ';
+    }
+
+    .hierarchy-field select {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 5px 10px;
+      font-size: 13px;
+      background: #fff;
+      outline: none;
+      height: 28px;
+      transition: border-color 0.15s;
+    }
+
+    .hierarchy-field select:focus {
+      border-color: #7fa8d4;
+    }
+
+    .hierarchy-field select:disabled {
+      background: #e2e8f0;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    /* ── Name of Work ── */
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+
+    .name-row label {
+      font-weight: 600;
+      color: #b33;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .name-row label::before {
+      content: '* ';
+    }
+
+    .name-row input {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 5px 10px;
+      font-size: 13px;
+      outline: none;
+      background: #fff;
+    }
+
+    .name-row input:focus {
+      border-color: #7fa8d4;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 960px;
+    }
+
+    thead th {
+      background: #a0c4de;
+      color: #1a3550;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 7px 5px;
+      text-align: center;
+      border: 1px solid #7fa8c0;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 5px 4px;
+      border: 1px solid #c8daea;
+      text-align: center;
+      background: #e8f4fb;
+      vertical-align: middle;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #daeef8;
+    }
+
+    /* ── Inputs inside table ── */
+    td input[type="number"],
+    td input[type="text"] {
+      width: 100%;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      padding: 4px 5px;
+      font-size: 12px;
+      text-align: center;
+      background: #fff;
+      outline: none;
+    }
+
+    td input[type="text"].desc-input {
+      text-align: left;
+    }
+
+    td input:focus {
+      border-color: #5a9fd4;
+    }
+
+    td input[readonly] {
+      background: #e2e8f0;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    td select {
+      width: 100%;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      padding: 4px;
+      font-size: 12px;
+      background: #fff;
+      outline: none;
+    }
+
+    .nums-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .nums-cell input {
+      width: 38px !important;
+    }
+
+    .nums-cell span {
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* ── Autocomplete dropdown (Global Grid) ── */
+    .desc-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .global-suggestions {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border: 1px solid #a4c2e6;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.05);
+      z-index: 9999;
+      display: none;
+      padding: 6px;
+      overflow: hidden;
+      transition: opacity 0.15s ease;
+    }
+
+    .suggestions-table-wrap {
+      max-height: 260px;
+      overflow-y: auto;
+      border-radius: 4px;
+      border: 1px solid #e1e9f0;
+    }
+
+    /* Style the scrollbar */
+    .suggestions-table-wrap::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .suggestions-table-wrap::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    .suggestions-table-wrap::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    .suggestions-table-wrap::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .suggestions-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+      color: #334155;
+      min-width: 0 !important;
+    }
+
+    .suggestions-table th {
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .suggestions-table td {
+      padding: 8px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.4;
+    }
+
+    .suggestions-table tr {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .suggestions-table tr:hover {
+      background: #f0f7ff;
+    }
+
+    .suggestions-table tr.active {
+      background: #dbeafe;
+      outline: 1px solid #93c5fd;
+    }
+
+    .suggestions-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .search-loading {
+      padding: 12px;
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .no-results {
+      padding: 12px;
+      font-size: 12px;
+      color: #ef4444;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Spinner Animation */
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #cbd5e1;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Buttons ── */
+    .btn-add {
+      background: #3a7d3a;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 3px;
+    }
+
+    .btn-add:hover {
+      background: #2e632e;
+    }
+
+    .btn-cancel {
+      background: #c0392b;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-cancel:hover {
+      background: #a93226;
+    }
+
+    .btn-save {
+      background: #2980b9;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.15s;
+    }
+
+    .btn-save:hover {
+      background: #1f618d;
+    }
+
+    .btn-save[disabled] {
+      background: #bdc3c7;
+      cursor: not-allowed;
+    }
+
+    .btn-new {
+      background: #7f8c8d;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.15s;
+    }
+
+    .btn-new:hover {
+      background: #6c7a7d;
+    }
+
+    /* ── Row total bar ── */
+    .row-total-bar td {
+      background: #5a7a3a !important;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 6px 10px;
+      text-align: right;
+      border: 1px solid #4a6830;
+    }
+
+    /* ── Totals section ── */
+    .totals-section {
+      margin-top: 14px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .totals-header {
+      background: #7a7a38;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 7px 14px;
+    }
+
+    .totals-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 12px 14px;
+      align-items: center;
+    }
+
+    .total-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .total-field label {
+      font-size: 13px;
+      color: #555;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .total-field input {
+      width: 150px;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      padding: 5px 8px;
+      font-size: 13px;
+      text-align: right;
+      background: #fff;
+      outline: none;
+    }
+
+    .total-field input[readonly] {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .total-field select {
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      padding: 5px 8px;
+      font-size: 13px;
+      background: #fff;
+      outline: none;
+      width: 90px;
+    }
+
+    /* ── Error / status banner ── */
+    .api-error {
+      background: #fde8e8;
+      border: 1px solid #e08080;
+      color: #b33;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* ── Column widths ── */
+    .col-sno {
+      width: 4%;
+    }
+
+    .col-ismat {
+      width: 8%;
+    }
+
+    .col-desc {
+      width: 20%;
+    }
+
+    .col-nums {
+      width: 9%;
+    }
+
+    .col-len {
+      width: 6%;
+    }
+
+    .col-bre {
+      width: 6%;
+    }
+
+    .col-dep {
+      width: 5%;
+    }
+
+    .col-qty {
+      width: 7%;
+    }
+
+    .col-rate {
+      width: 7%;
+    }
+
+    .col-unit {
+      width: 6%;
+    }
+
+    .col-amt {
+      width: 7%;
+    }
+
+    .col-act {
+      width: 8%;
+    }
+  </style>
+</head>
+
+<body ng-controller="MeasurementCtrl" ng-click="closeAllSuggestions()">
+
+  <div class="sheet-wrapper">
+
+    <!-- User Profile Header Bar -->
+    <div class="user-header-bar" style="display: flex; justify-content: space-between; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 10px 14px; margin-bottom: 14px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px; color: #1e5c99;">👤</span>
+        <div>
+          <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">{{currentUser.name}}</div>
+          <div style="font-size: 11px; color: #7f8c8d; font-weight: 500;">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
+        </div>
+      </div>
+      
+      <!-- Multi-location selection if user has multiple locations -->
+      <div ng-if="currentUser.locations.length > 1" style="display: flex; align-items: center; gap: 8px;">
+        <label style="font-weight: 600; color: #b33; font-size: 12px;">Active Location:</label>
+        <select ng-model="selectedActiveLocationIndex" ng-change="selectActiveLocation(selectedActiveLocationIndex)" 
+                style="border: 1px solid #ccc; border-radius: 3px; padding: 3px 6px; font-size: 11px; height: 26px; outline: none; background: #fff; width: 350px;">
+          <option ng-repeat="loc in currentUser.locations" ng-value="$index">
+            {{loc.corp}} &bull; {{loc.zoneName}} &bull; Div-{{loc.division}} &bull; {{loc.circleName}} &bull; {{loc.wardName}}
+          </option>
+        </select>
+      </div>
+      
+      <button ng-click="logout()" style="background: #c0392b; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
+        Logout
+      </button>
+    </div>
+
+    <!-- Workflow Progress Visual Panel -->
+    <div class="workflow-tracker" style="background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; overflow-x: auto;">
+      <div style="font-weight: 700; color: #7a7a38; font-size: 11px; text-transform: uppercase; margin-right: 15px; white-space: nowrap;">Workflow Status:</div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: space-around; min-width: 650px;">
+        
+        <!-- Step 1: Draft -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('DRAFT')">1</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('DRAFT')">Draft (AE)</span>
+        </div>
+        <span style="color: #cbd5e1; font-weight: 700;">➔</span>
+
+        <!-- Step 2: DGM -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_DGM')">2</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_DGM')">DGM Scrutiny</span>
+        </div>
+        <span style="color: #cbd5e1; font-weight: 700;">➔</span>
+
+        <!-- Step 3: GM -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_GM')">3</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_GM')">GM Recommend</span>
+        </div>
+        <span style="color: #cbd5e1; font-weight: 700;">➔</span>
+
+        <!-- Step 4: CGM -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_CGM')">4</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_CGM')">CGM Review</span>
+        </div>
+        <span style="color: #cbd5e1; font-weight: 700;">➔</span>
+
+        <!-- Step 5: DOP -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_DOP')">5</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_DOP')">DOP Sanction</span>
+        </div>
+        <span style="color: #cbd5e1; font-weight: 700;">➔</span>
+
+        <!-- Step 6: Approved -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('APPROVED')">✔</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('APPROVED')">Approved</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- API error banner -->
+    <div class="api-error" ng-if="apiError">
+      ⚠ {{apiError}}
+    </div>
+
+    <!-- Name of Work -->
+    <div class="name-row">
+      <label>Name Of Work</label>
+      <input type="text" ng-model="nameOfWork" placeholder="Name Of Work" ng-disabled="!isEditable()" />
+    </div>
+
+    <!-- Ward Hierarchy Selection -->
+    <div class="hierarchy-row">
+      <div class="hierarchy-field">
+        <label>CORP</label>
+        <select ng-model="selectedCorp" ng-change="onCorpChange()" ng-options="c for c in corps" ng-disabled="!isEditable()">
+          <option value="">-- Select CORP --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>Zone Name</label>
+        <select ng-model="selectedZone" ng-change="onZoneChange()" ng-options="z for z in zones" ng-disabled="!selectedCorp || !isEditable()">
+          <option value="">-- Select Zone --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>DIVISION</label>
+        <select ng-model="selectedDivision" ng-change="onDivisionChange()" ng-options="d for d in divisions" ng-disabled="!selectedZone || !isEditable()">
+          <option value="">-- Select Division --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>Circle No. &amp; Name</label>
+        <select ng-model="selectedCircle" ng-change="onCircleChange()" ng-options="cir for cir in circles" ng-disabled="!selectedDivision || !isEditable()">
+          <option value="">-- Select Circle --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>Ward No. &amp; Name</label>
+        <select ng-model="selectedWard" ng-options="w for w in wards" ng-disabled="!selectedCircle || !isEditable()">
+          <option value="">-- Select Ward --</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Measurement Table -->
+    <div class="table-wrap">
+      <table>
+        <colgroup>
+          <col class="col-sno">
+          <col class="col-ismat">
+          <col class="col-desc">
+          <col class="col-nums">
+          <col class="col-len">
+          <col class="col-bre">
+          <col class="col-dep">
+          <col class="col-qty">
+          <col class="col-rate">
+          <col class="col-unit">
+          <col class="col-amt">
+          <col class="col-act">
+        </colgroup>
+
+        <thead>
+          <tr>
+            <th>S.No.</th>
+            <th>Is Material</th>
+            <th>Description</th>
+            <th>Numbers</th>
+            <th>Length</th>
+            <th>Breadth</th>
+            <th>Depth</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Unit</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr ng-repeat="row in rows">
+            <td>{{$index + 1}}</td>
+
+            <td>
+              <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
+                <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer; font-weight: 500;">
+                  <input type="radio" name="isMaterial_{{$index}}" ng-model="row.isMaterial" value="Yes" ng-disabled="!isEditable()" /> Yes
+                </label>
+                <label style="display: inline-flex; align-items: center; gap: 3px; cursor: pointer; font-weight: 500;">
+                  <input type="radio" name="isMaterial_{{$index}}" ng-model="row.isMaterial" value="No" ng-disabled="!isEditable()" /> No
+                </label>
+              </div>
+            </td>
+
+            <!-- Description with autocomplete -->
+            <td ng-click="$event.stopPropagation()">
+              <div class="desc-wrapper">
+                <input class="desc-input" type="text" ng-model="row.description"
+                  ng-keydown="onDescriptionKeydown($event, row)" ng-keyup="onDescriptionKeyup($event, row)"
+                  ng-focus="onDescriptionFocus($event, row)" placeholder="Type to search..." autocomplete="off" ng-disabled="!isEditable()" />
+              </div>
+            </td>
+
+            <td>
+              <input type="number" ng-model="row.num" ng-change="computeRow(row)" min="1" ng-disabled="!isEditable()" />
+            </td>
+
+            <td>
+              <input type="number" ng-model="row.length" ng-change="computeRow(row)" min="0" step="0.01" ng-disabled="!isEditable()" />
+            </td>
+            <td>
+              <input type="number" ng-model="row.breadth" ng-change="computeRow(row)" min="0" step="0.01" ng-disabled="!isEditable()" />
+            </td>
+            <td>
+              <input type="number" ng-model="row.depth" ng-change="computeRow(row)" min="0" step="0.01" ng-disabled="!isEditable()" />
+            </td>
+
+            <td>
+              <input type="number" ng-model="row.quantity" readonly />
+            </td>
+
+            <td>
+              <input type="number" ng-model="row.rate" readonly />
+            </td>
+
+            <td>
+              <input type="text" ng-model="row.unit" readonly />
+            </td>
+
+            <td>{{row.amount | number:2}}</td>
+
+            <td style="white-space: nowrap;">
+              <button class="btn-add" ng-click="addRow()" ng-if="isEditable()">Add</button>
+              <button class="btn-cancel" ng-click="removeRow($index)" ng-if="isEditable() && rows.length > 1">Cancel</button>
+              <span ng-if="!isEditable()" style="color: #7f8c8d; font-style: italic;">Read-Only</span>
+            </td>
+          </tr>
+
+          <!-- Row total bar -->
+          <tr class="row-total-bar">
+            <td colspan="11">Total &nbsp;&nbsp; {{rowTotal() | number:2}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals Section -->
+    <div class="totals-section">
+      <div class="totals-header">Totals</div>
+      <div class="totals-body">
+
+        <div class="total-field">
+          <label>Total Amount</label>
+          <input type="text" readonly ng-value="rowTotal().toFixed(2)" />
+        </div>
+
+        <div class="total-field">
+          <label>GST</label>
+          <select ng-model="gstPercent" ng-change="computeTotals()" ng-disabled="!isEditable()">
+            <option value="0">0%</option>
+            <option value="5">5%</option>
+            <option value="18">18%</option>
+          </select>
+          <input type="text" readonly ng-value="gstAmount().toFixed(2)" />
+        </div>
+
+        <div class="total-field">
+          <label>Grand Total</label>
+          <input type="text" readonly ng-value="grandTotal().toFixed(2)" />
+        </div>
+
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+          <button class="btn-save" ng-click="saveEstimate()" ng-disabled="savingEstimate">
+            <span ng-if="savingEstimate">Processing...</span>
+            <span ng-if="!savingEstimate && isEditable()">Generate Estimate</span>
+            <span ng-if="!savingEstimate && !isEditable()">View Abstract</span>
+          </button>
+          <button class="btn-new" ng-click="resetForm()" ng-if="currentUser.role === 'MANAGER'">
+            New Estimate
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Saved Estimates Section -->
+    <div class="totals-section" style="margin-top: 20px;">
+      <div class="totals-header"
+        style="background: #2c3e50; display: flex; justify-content: space-between; align-items: center;">
+        <span>Saved Estimates (Abstracts)</span>
+        <button ng-click="loadSavedEstimates()"
+          style="background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
+          🔄 Refresh List
+        </button>
+      </div>
+      <div style="padding: 12px; background: #fffde7; max-height: 250px; overflow-y: auto;">
+        <table style="width: 100%; border-collapse: collapse; min-width: 100%;">
+          <thead>
+            <tr>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 10%; padding: 6px 4px; text-align: center;">
+                ID</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 35%; padding: 6px 4px; text-align: left;">
+                Name Of Work</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 15%; padding: 6px 4px; text-align: right;">
+                Grand Total (₹)</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 15%; padding: 6px 4px; text-align: center;">
+                Status</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 15%; padding: 6px 4px; text-align: center;">
+                Saved Date</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 10%; padding: 6px 4px; text-align: center;">
+                Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="est in savedEstimates">
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center;">{{est.id}}
+              </td>
+              <td
+                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: left; font-weight: 500; color: #2c3e50;">
+                {{est.nameOfWork || 'Unnamed Work'}}</td>
+              <td
+                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: right; font-weight: 600; color: #27ae60;">
+                {{est.grandTotal | number:2}}</td>
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center;">
+                <span ng-style="getStatusBadgeStyle(est.status)" style="padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block;">
+                  {{getStatusLabel(est.status)}}
+                </span>
+              </td>
+              <td
+                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center; color: #7f8c8d;">
+                {{formatDate(est.createdAt)}}</td>
+              <td
+                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center; white-space: nowrap;">
+                <button ng-click="loadEstimate(est.id)"
+                  style="background: #2980b9; color: white; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer; margin-right: 4px;">Load</button>
+                <button ng-click="deleteEstimate(est.id)" ng-if="currentUser.role === 'MANAGER' && (!est.status || est.status === 'DRAFT')"
+                  style="background: #c0392b; color: white; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
+              </td>
+            </tr>
+            <tr ng-if="savedEstimates.length === 0">
+              <td colspan="6"
+                style="border: 1px solid #bdc3c7; background: #fff; padding: 12px; text-align: center; color: #7f8c8d; font-style: italic;">
+                No saved estimates found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    angular.module('hmwssbApp', [])
+      .controller('MeasurementCtrl', ['$scope', '$http', '$timeout',
+        function ($scope, $http, $timeout) {
+
+          /* ── Authentication Session Check ── */
+          var loggedInUserStr = localStorage.getItem('hmwssb_logged_in_user');
+          if (!loggedInUserStr) {
+            window.location.href = 'login.html';
+            return;
+          }
+          $scope.currentUser = JSON.parse(loggedInUserStr);
+          $scope.selectedActiveLocationIndex = 0;
+          $scope.currentEstimateStatus = 'DRAFT';
+
+          // Officers' names & designations loaded from the database
+          $scope.currentPreparedByName = null;
+          $scope.currentPreparedByDesignation = null;
+          $scope.currentVerifiedByName = null;
+          $scope.currentVerifiedByDesignation = null;
+          $scope.currentRecommendedByName = null;
+          $scope.currentRecommendedByDesignation = null;
+          $scope.currentForwardedByName = null;
+          $scope.currentForwardedByDesignation = null;
+          $scope.currentSanctionedByName = null;
+          $scope.currentSanctionedByDesignation = null;
+
+          $scope.isEditable = function () {
+            var status = $scope.currentEstimateStatus || 'DRAFT';
+            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            if (status === 'DRAFT' && role === 'MANAGER') return true;
+            if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
+            if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
+            if (status === 'SUBMITTED_TO_CGM' && role === 'CGM') return true;
+            return false;
+          };
+
+          $scope.getStepStyle = function(stepStatus) {
+            var activeStatus = $scope.currentEstimateStatus || 'DRAFT';
+            if (activeStatus === stepStatus) {
+              return { background: '#7a7a38', color: '#fff', border: '1px solid #7a7a38' };
+            }
+            var order = ['DRAFT', 'SUBMITTED_TO_DGM', 'SUBMITTED_TO_GM', 'SUBMITTED_TO_CGM', 'SUBMITTED_TO_DOP', 'APPROVED'];
+            if (order.indexOf(activeStatus) > order.indexOf(stepStatus)) {
+              return { background: '#27ae60', color: '#fff', border: '1px solid #27ae60' };
+            }
+            return { background: '#e2e8f0', color: '#64748b', border: '1px solid #cbd5e1' };
+          };
+
+          $scope.getStepTextStyle = function(stepStatus) {
+            var activeStatus = $scope.currentEstimateStatus || 'DRAFT';
+            if (activeStatus === stepStatus) {
+              return { color: '#7a7a38' };
+            }
+            var order = ['DRAFT', 'SUBMITTED_TO_DGM', 'SUBMITTED_TO_GM', 'SUBMITTED_TO_CGM', 'SUBMITTED_TO_DOP', 'APPROVED'];
+            if (order.indexOf(activeStatus) > order.indexOf(stepStatus)) {
+              return { color: '#27ae60' };
+            }
+            return { color: '#64748b' };
+          };
+
+          $scope.getStatusLabel = function (status) {
+            if (!status) return 'DRAFT';
+            switch (status) {
+              case 'DRAFT': return 'Draft';
+              case 'SUBMITTED_TO_DGM': return 'Pending DGM';
+              case 'SUBMITTED_TO_GM': return 'Pending GM';
+              case 'SUBMITTED_TO_CGM': return 'Pending CGM';
+              case 'SUBMITTED_TO_DOP': return 'Pending DOP';
+              case 'APPROVED': return 'Approved';
+              default: return status;
+            }
+          };
+
+          $scope.getStatusBadgeStyle = function (status) {
+            if (!status) status = 'DRAFT';
+            switch (status) {
+              case 'DRAFT':
+                return { background: '#dbeafe', color: '#1e40af' };
+              case 'APPROVED':
+                return { background: '#dcfce7', color: '#166534' };
+              default:
+                return { background: '#fef3c7', color: '#92400e' };
+            }
+          };
+
+          $scope.logout = function () {
+            localStorage.removeItem('hmwssb_logged_in_user');
+            window.location.href = 'login.html';
+          };
+
+          $scope.selectActiveLocation = function (index) {
+            if (!$scope.currentUser.locations || !$scope.currentUser.locations[index]) return;
+            var loc = $scope.currentUser.locations[index];
+            populateHierarchy(loc.corp, loc.zoneName, loc.division, loc.circleName, loc.wardName);
+          };
+
+          /* ── Config ── */
+          var API_BASE = 'http://localhost:8080/api';  // Change to your server URL
+          var SEARCH_DEBOUNCE_MS = 300;
+          var MIN_SEARCH_LENGTH = 1;
+
+          /* ── State ── */
+          $scope.nameOfWork = '';
+          $scope.gstPercent = '0';
+          $scope.apiError = null;
+          var searchTimers = {};
+
+          /* ── Ward Hierarchy Cascading Logic ── */
+          $scope.hierarchyData = WARD_HIERARCHY;
+          $scope.corps = Object.keys($scope.hierarchyData);
+          $scope.zones = [];
+          $scope.divisions = [];
+          $scope.circles = [];
+          $scope.wards = [];
+
+          $scope.selectedCorp = '';
+          $scope.selectedZone = '';
+          $scope.selectedDivision = '';
+          $scope.selectedCircle = '';
+          $scope.selectedWard = '';
+
+          $scope.onCorpChange = function () {
+            $scope.selectedZone = '';
+            $scope.selectedDivision = '';
+            $scope.selectedCircle = '';
+            $scope.selectedWard = '';
+            $scope.zones = [];
+            $scope.divisions = [];
+            $scope.circles = [];
+            $scope.wards = [];
+            
+            if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
+              $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
+            }
+          };
+
+          $scope.onZoneChange = function () {
+            $scope.selectedDivision = '';
+            $scope.selectedCircle = '';
+            $scope.selectedWard = '';
+            $scope.divisions = [];
+            $scope.circles = [];
+            $scope.wards = [];
+
+            if ($scope.selectedCorp && $scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
+              $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
+            }
+          };
+
+          $scope.onDivisionChange = function () {
+            $scope.selectedCircle = '';
+            $scope.selectedWard = '';
+            $scope.circles = [];
+            $scope.wards = [];
+
+            if ($scope.selectedCorp && $scope.selectedZone && $scope.selectedDivision && 
+                $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
+              $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
+            }
+          };
+
+          $scope.onCircleChange = function () {
+            $scope.selectedWard = '';
+            $scope.wards = [];
+
+            if ($scope.selectedCorp && $scope.selectedZone && $scope.selectedDivision && $scope.selectedCircle &&
+                $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
+              $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
+            }
+          };
+
+          function populateHierarchy(corp, zone, div, circle, ward) {
+            $scope.selectedCorp = corp || '';
+            if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
+              $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
+              $scope.selectedZone = zone || '';
+              
+              if ($scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
+                $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
+                $scope.selectedDivision = div || '';
+                
+                if ($scope.selectedDivision && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
+                  $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
+                  $scope.selectedCircle = circle || '';
+                  
+                  if ($scope.selectedCircle && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
+                    $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
+                    $scope.selectedWard = ward || '';
+                  }
+                }
+              }
+            } else {
+              $scope.selectedZone = '';
+              $scope.selectedDivision = '';
+              $scope.selectedCircle = '';
+              $scope.selectedWard = '';
+              $scope.zones = [];
+              $scope.divisions = [];
+              $scope.circles = [];
+              $scope.wards = [];
+            }
+          }
+
+          /* ── Initial row ── */
+          function newRow() {
+            return {
+              isMaterial: 'Yes',
+              description: '',
+              num: 1,
+              length: null, breadth: null, depth: null,
+              quantity: 1,
+              rate: 0,
+              unit: '',
+              amount: 0,
+              suggestions: [],
+              showSuggestions: false,
+              searching: false,
+              itemId: null
+            };
+          }
+          $scope.rows = [newRow()];
+
+          /* ── Autocomplete ── */
+          $scope.activeRow = null;
+          $scope.dropdownStyle = {};
+
+          function scrollActiveSuggestionIntoView() {
+            $timeout(function () {
+              var activeRowElem = document.querySelector('.suggestions-table tr.active');
+              if (activeRowElem) {
+                activeRowElem.scrollIntoView({ block: 'nearest' });
+              }
+            }, 10);
+          }
+
+          $scope.positionDropdown = function (target) {
+            if (!target) return;
+            var rect = target.getBoundingClientRect();
+            var top = rect.bottom + window.scrollY;
+            var left = rect.left + window.scrollX;
+
+            $scope.dropdownStyle = {
+              top: (top + 4) + 'px',
+              left: left + 'px',
+              width: '700px',
+              display: 'block'
+            };
+          };
+
+          $scope.onDescriptionFocus = function ($event, row) {
+            $scope.activeRow = row;
+            if (row.description && row.description.length >= MIN_SEARCH_LENGTH) {
+              if (row.suggestions && row.suggestions.length > 0) {
+                row.showSuggestions = true;
+                $scope.positionDropdown($event.target);
+              } else {
+                $scope.onDescriptionKeyup($event, row);
+              }
+            }
+          };
+
+          $scope.onDescriptionKeydown = function ($event, row) {
+            var suggestions = row.suggestions || [];
+
+            // Down Arrow (40)
+            if ($event.keyCode === 40) {
+              $event.preventDefault();
+              if (suggestions.length > 0) {
+                if (row.selectedIndex === undefined || row.selectedIndex === null) {
+                  row.selectedIndex = 0;
+                } else {
+                  row.selectedIndex = (row.selectedIndex + 1) % suggestions.length;
+                }
+                scrollActiveSuggestionIntoView();
+              }
+              return;
+            }
+
+            // Up Arrow (38)
+            if ($event.keyCode === 38) {
+              $event.preventDefault();
+              if (suggestions.length > 0) {
+                if (row.selectedIndex === undefined || row.selectedIndex === null) {
+                  row.selectedIndex = suggestions.length - 1;
+                } else {
+                  row.selectedIndex = (row.selectedIndex - 1 + suggestions.length) % suggestions.length;
+                }
+                scrollActiveSuggestionIntoView();
+              }
+              return;
+            }
+
+            // Enter (13)
+            if ($event.keyCode === 13) {
+              $event.preventDefault();
+              if (row.showSuggestions && suggestions.length > 0 && row.selectedIndex >= 0 && row.selectedIndex < suggestions.length) {
+                $scope.selectItem(row, suggestions[row.selectedIndex]);
+              }
+              return;
+            }
+
+            // Escape (27)
+            if ($event.keyCode === 27) {
+              $event.preventDefault();
+              row.showSuggestions = false;
+              $scope.activeRow = null;
+              return;
+            }
+          };
+
+          $scope.onDescriptionKeyup = function ($event, row) {
+            // Skip navigation keys (handled on keydown)
+            if ([38, 40, 13, 27].indexOf($event.keyCode) !== -1) {
+              return;
+            }
+
+            var query = row.description;
+            if (!query || query.length < MIN_SEARCH_LENGTH) {
+              row.suggestions = [];
+              row.showSuggestions = false;
+              if ($scope.activeRow === row) {
+                $scope.activeRow = null;
+              }
+              return;
+            }
+
+            $scope.activeRow = row;
+            $scope.positionDropdown($event.target);
+
+            var key = row.$$hashKey;
+            if (searchTimers[key]) { $timeout.cancel(searchTimers[key]); }
+
+            searchTimers[key] = $timeout(function () {
+              row.searching = true;
+              row.showSuggestions = true;
+
+              $http.get(API_BASE + '/items/search', {
+                params: { q: query }
+              }).then(function (response) {
+                row.suggestions = response.data;
+                row.searching = false;
+                row.showSuggestions = row.suggestions.length > 0;
+                row.selectedIndex = 0; // Highlight first suggestion by default
+                $scope.apiError = null;
+
+                // Recalculate dropdown position in case target moved
+                $timeout(function () {
+                  $scope.positionDropdown($event.target);
+                }, 50);
+              }, function (error) {
+                row.searching = false;
+                row.suggestions = [];
+                row.showSuggestions = false;
+                $scope.apiError = 'Could not reach server at ' + API_BASE +
+                  '. Is the Spring Boot app running?';
+              });
+            }, SEARCH_DEBOUNCE_MS);
+          };
+
+          $scope.selectItem = function (row, item) {
+            row.description = item.itemDescription;
+            row.rate = item.rate || 0;
+            row.unit = item.unit || '';
+            row.itemId = item.slno;
+            row.suggestions = [];
+            row.showSuggestions = false;
+            row.selectedIndex = 0;
+            if ($scope.activeRow === row) {
+              $scope.activeRow = null;
+            }
+            computeAmount(row);
+          };
+
+          $scope.closeAllSuggestions = function () {
+            $scope.rows.forEach(function (r) {
+              r.showSuggestions = false;
+            });
+            $scope.activeRow = null;
+          };
+
+          /* ── Calculations ── */
+          function computeAmount(row) {
+            row.amount = (row.quantity || 0) * (row.rate || 0);
+          }
+
+          $scope.computeRow = function (row) {
+            var l = (row.length !== null && row.length !== undefined && row.length !== '') ? row.length : null;
+            var b = (row.breadth !== null && row.breadth !== undefined && row.breadth !== '') ? row.breadth : null;
+            var d = (row.depth !== null && row.depth !== undefined && row.depth !== '') ? row.depth : null;
+            var num = row.num || 1;
+
+            if (l === null && b === null && d === null) {
+              row.quantity = num;
+            } else {
+              var valL = (l !== null) ? l : 1;
+              var valB = (b !== null) ? b : 1;
+              var valD = (d !== null) ? d : 1;
+              row.quantity = num * valL * valB * valD;
+            }
+            computeAmount(row);
+          };
+
+          $scope.computeAmount = function (row) { computeAmount(row); };
+
+          $scope.rowTotal = function () {
+            return $scope.rows.reduce(function (s, r) {
+              return s + (r.amount || 0);
+            }, 0);
+          };
+
+          $scope.gstAmount = function () {
+            return $scope.rowTotal() * (parseFloat($scope.gstPercent) || 0) / 100;
+          };
+
+          $scope.grandTotal = function () {
+            return $scope.rowTotal() + $scope.gstAmount();
+          };
+
+          $scope.computeTotals = function () { /* triggered on GST change */ };
+
+          /* ── Row management ── */
+          $scope.addRow = function () { $scope.rows.push(newRow()); };
+
+          $scope.removeRow = function (index) {
+            if ($scope.rows.length > 1) { $scope.rows.splice(index, 1); }
+          };
+
+          /* ── Estimate Persistence ── */
+          $scope.savedEstimates = [];
+          $scope.savingEstimate = false;
+          $scope.currentEstimateId = null;
+
+          // Format Date
+          $scope.formatDate = function (dateStr) {
+            if (!dateStr) return '';
+            var d = new Date(dateStr);
+            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          };
+
+          // Load List
+          $scope.loadSavedEstimates = function () {
+            $http.get(API_BASE + '/estimates', {
+              params: { officerPhone: $scope.currentUser.phoneNumber }
+            }).then(function (response) {
+              $scope.savedEstimates = response.data;
+            }, function (err) {
+              $scope.apiError = 'Could not load saved estimates list.';
+            });
+          };
+
+          // Save Current Estimate
+          $scope.saveEstimate = function () {
+            if (!$scope.nameOfWork || $scope.nameOfWork.trim() === '') {
+              alert('Please enter a Name of Work before saving.');
+              return;
+            }
+
+            // Calculate material cost and civil work cost
+            var costOfMaterial = 0;
+            var costOfCivilWork = 0;
+
+            var itemsMapped = $scope.rows.map(function (row, idx) {
+              var amt = row.amount || 0;
+              var isMat = row.isMaterial;
+              var isMaterialSelected = false;
+              if (isMat !== undefined && isMat !== null) {
+                var s = String(isMat).trim().toLowerCase();
+                if (s === 'yes' || s === 'true' || s === '1' || s === 'y') {
+                  isMaterialSelected = true;
+                }
+              }
+
+              if (isMaterialSelected) {
+                costOfMaterial += amt;
+              } else {
+                costOfCivilWork += amt;
+              }
+
+              return {
+                sno: idx + 1,
+                isMaterial: row.isMaterial,
+                description: row.description,
+                num: row.num || 1,
+                length: (row.length !== null && row.length !== undefined && row.length !== '') ? row.length : null,
+                breadth: (row.breadth !== null && row.breadth !== undefined && row.breadth !== '') ? row.breadth : null,
+                depth: (row.depth !== null && row.depth !== undefined && row.depth !== '') ? row.depth : null,
+                quantity: row.quantity || 0,
+                rate: row.rate || 0,
+                unit: row.unit || '',
+                amount: row.amount || 0
+              };
+            });
+
+            var estimateData = {
+              id: $scope.currentEstimateId,
+              status: $scope.currentEstimateStatus || 'DRAFT',
+              nameOfWork: $scope.nameOfWork,
+              gstPercent: parseFloat($scope.gstPercent) || 0,
+              costOfMaterial: costOfMaterial,
+              costOfCivilWork: costOfCivilWork,
+              items: itemsMapped,
+              corp: $scope.selectedCorp,
+              zoneName: $scope.selectedZone,
+              division: $scope.selectedDivision,
+              circleName: $scope.selectedCircle,
+              wardName: $scope.selectedWard,
+              officerPhone: $scope.currentUser.phoneNumber,
+              preparedByName: $scope.currentPreparedByName,
+              preparedByDesignation: $scope.currentPreparedByDesignation,
+              verifiedByName: $scope.currentVerifiedByName,
+              verifiedByDesignation: $scope.currentVerifiedByDesignation,
+              recommendedByName: $scope.currentRecommendedByName,
+              recommendedByDesignation: $scope.currentRecommendedByDesignation,
+              forwardedByName: $scope.currentForwardedByName,
+              forwardedByDesignation: $scope.currentForwardedByDesignation,
+              sanctionedByName: $scope.currentSanctionedByName,
+              sanctionedByDesignation: $scope.currentSanctionedByDesignation
+            };
+
+            // Save to localStorage
+            localStorage.setItem('current_estimate_data', JSON.stringify(estimateData));
+
+            // Redirect to abstract page
+            window.location.href = 'abstract.html';
+          };
+
+          // Load single estimate
+          $scope.loadEstimate = function (id) {
+            $scope.apiError = null;
+            $http.get(API_BASE + '/estimates/' + id)
+              .then(function (response) {
+                var est = response.data;
+                $scope.currentEstimateId = est.id;
+                $scope.currentEstimateStatus = est.status || 'DRAFT';
+                $scope.currentPreparedByName = est.preparedByName;
+                $scope.currentPreparedByDesignation = est.preparedByDesignation;
+                $scope.currentVerifiedByName = est.verifiedByName;
+                $scope.currentVerifiedByDesignation = est.verifiedByDesignation;
+                $scope.currentRecommendedByName = est.recommendedByName;
+                $scope.currentRecommendedByDesignation = est.recommendedByDesignation;
+                $scope.currentForwardedByName = est.forwardedByName;
+                $scope.currentForwardedByDesignation = est.forwardedByDesignation;
+                $scope.currentSanctionedByName = est.sanctionedByName;
+                $scope.currentSanctionedByDesignation = est.sanctionedByDesignation;
+
+                $scope.nameOfWork = est.nameOfWork;
+                $scope.gstPercent = String(est.gstPercent);
+                populateHierarchy(est.corp, est.zoneName, est.division, est.circleName, est.wardName);
+
+                // Map items to row models
+                $scope.rows = est.items.map(function (item) {
+                  return {
+                    isMaterial: item.isMaterial || 'Yes',
+                    description: item.description || '',
+                    num: item.num || 1,
+                    length: item.length || 0,
+                    breadth: item.breadth || 0,
+                    depth: item.depth || 0,
+                    quantity: item.quantity || 0,
+                    rate: item.rate || 0,
+                    unit: item.unit || '',
+                    amount: item.amount || 0,
+                    suggestions: [],
+                    showSuggestions: false,
+                    searching: false,
+                    itemId: item.id
+                  };
+                });
+
+                if ($scope.rows.length === 0) {
+                  $scope.rows = [newRow()];
+                }
+              }, function (err) {
+                $scope.apiError = 'Could not load the requested estimate.';
+              });
+          };
+
+          // Delete Estimate
+          $scope.deleteEstimate = function (id) {
+            if (!confirm('Are you sure you want to delete estimate #' + id + '?')) {
+              return;
+            }
+            $scope.apiError = null;
+            $http.delete(API_BASE + '/estimates/' + id)
+              .then(function () {
+                if ($scope.currentEstimateId === id) {
+                  $scope.resetForm();
+                }
+                $scope.loadSavedEstimates();
+              }, function (err) {
+                $scope.apiError = 'Could not delete the estimate.';
+              });
+          };
+
+          // Reset Form
+          $scope.resetForm = function () {
+            $scope.currentEstimateId = null;
+            $scope.currentEstimateStatus = 'DRAFT';
+            $scope.currentPreparedByName = null;
+            $scope.currentPreparedByDesignation = null;
+            $scope.currentVerifiedByName = null;
+            $scope.currentVerifiedByDesignation = null;
+            $scope.currentRecommendedByName = null;
+            $scope.currentRecommendedByDesignation = null;
+            $scope.currentForwardedByName = null;
+            $scope.currentForwardedByDesignation = null;
+            $scope.currentSanctionedByName = null;
+            $scope.currentSanctionedByDesignation = null;
+
+            $scope.nameOfWork = '';
+            $scope.gstPercent = '0';
+            $scope.rows = [newRow()];
+            populateHierarchy('', '', '', '', '');
+            localStorage.removeItem('current_estimate_data');
+          };
+
+          // Initialize list on load
+          $scope.loadSavedEstimates();
+
+          // Check if there is data in localStorage to restore state
+          var savedState = localStorage.getItem('current_estimate_data');
+          if (savedState) {
+            try {
+              var est = JSON.parse(savedState);
+              $scope.currentEstimateId = est.id;
+              $scope.currentEstimateStatus = est.status || 'DRAFT';
+              $scope.currentPreparedByName = est.preparedByName;
+              $scope.currentPreparedByDesignation = est.preparedByDesignation;
+              $scope.currentVerifiedByName = est.verifiedByName;
+              $scope.currentVerifiedByDesignation = est.verifiedByDesignation;
+              $scope.currentRecommendedByName = est.recommendedByName;
+              $scope.currentRecommendedByDesignation = est.recommendedByDesignation;
+              $scope.currentForwardedByName = est.forwardedByName;
+              $scope.currentForwardedByDesignation = est.forwardedByDesignation;
+              $scope.currentSanctionedByName = est.sanctionedByName;
+              $scope.currentSanctionedByDesignation = est.sanctionedByDesignation;
+
+              $scope.nameOfWork = est.nameOfWork;
+              $scope.gstPercent = String(est.gstPercent);
+              populateHierarchy(est.corp, est.zoneName, est.division, est.circleName, est.wardName);
+
+              // set matching active location index if found in list
+              if ($scope.currentUser.locations && $scope.currentUser.locations.length > 0) {
+                for (var i = 0; i < $scope.currentUser.locations.length; i++) {
+                  var loc = $scope.currentUser.locations[i];
+                  if (loc.corp === est.corp && loc.zoneName === est.zoneName && 
+                      loc.division === est.division && loc.circleName === est.circleName && 
+                      loc.wardName === est.wardName) {
+                    $scope.selectedActiveLocationIndex = i;
+                    break;
+                  }
+                }
+              }
+
+              if (est.items && est.items.length > 0) {
+                $scope.rows = est.items.map(function (item) {
+                  return {
+                    isMaterial: item.isMaterial || 'Yes',
+                    description: item.description || '',
+                    num: item.num || 1,
+                    length: item.length || 0,
+                    breadth: item.breadth || 0,
+                    depth: item.depth || 0,
+                    quantity: item.quantity || 0,
+                    rate: item.rate || 0,
+                    unit: item.unit || '',
+                    amount: item.amount || 0,
+                    suggestions: [],
+                    showSuggestions: false,
+                    searching: false,
+                    itemId: item.id
+                  };
+                });
+              }
+            } catch (e) {
+              console.error('Error parsing saved state', e);
+            }
+          } else {
+            // Auto fill first assigned location
+            if ($scope.currentUser.locations && $scope.currentUser.locations.length > 0) {
+              $scope.selectActiveLocation(0);
+            }
+          }
+
+          // Re-anchor floating dropdown on page scroll or resize
+          var windowEl = angular.element(window);
+          var repositionHandler = function () {
+            if ($scope.activeRow && $scope.activeRow.showSuggestions) {
+              var focusedInput = document.querySelector('.desc-input:focus');
+              if (focusedInput) {
+                $scope.$apply(function () {
+                  $scope.positionDropdown(focusedInput);
+                });
+              }
+            }
+          };
+          windowEl.on('scroll resize', repositionHandler);
+
+          $scope.$on('$destroy', function () {
+            windowEl.off('scroll resize', repositionHandler);
+          });
+
+        }
+      ]);
+  </script>
+
+  <!-- Global Suggestions Dropdown (Excel Find Style) -->
+  <div class="global-suggestions" ng-show="activeRow && activeRow.showSuggestions" ng-style="dropdownStyle"
+    ng-click="$event.stopPropagation()">
+    <div class="search-loading" ng-if="activeRow.searching">
+      <span class="spinner"></span> Searching master items...
+    </div>
+    <div class="no-results" ng-if="!activeRow.searching && activeRow.suggestions.length === 0">
+      ⚠ No results found
+    </div>
+    <div class="suggestions-table-wrap" ng-if="!activeRow.searching && activeRow.suggestions.length > 0">
+      <table class="suggestions-table">
+        <thead>
+          <tr>
+            <th style="width: 100%;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in activeRow.suggestions" ng-class="{active: activeRow.selectedIndex === $index}"
+            ng-mousedown="selectItem(activeRow, item)">
+            <td
+              style="text-align: left; font-weight: 500; color: #1e293b; white-space: normal; word-break: break-word;">
+              {{item.itemDescription}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hmwssbAbstractApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HMWSSB – General Abstract</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
+  <script src="hierarchy.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      background: #f0f0e8;
+      color: #222;
+      padding: 25px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #f5f5e8;
+      border: 1px solid #c8c87a;
+      border-radius: 6px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* ── Header ── */
+    .title-header {
+      background: #7a7a38;
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid #7a7a38;
+    }
+
+    .name-of-work-box {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      padding: 10px 14px;
+      color: #222;
+    }
+
+    .name-of-work-box span {
+      font-weight: 700;
+      color: #b33;
+    }
+
+    .name-of-work-box span::before {
+      content: '* ';
+    }
+
+    /* ── Table Styling ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border: 1px solid #c8daea;
+      padding: 8px 10px;
+      color: #222;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #a0c4de;
+      color: #1a3550;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      border: 1px solid #7fa8c0;
+    }
+
+    /* Column Widths */
+    .col-sno {
+      width: 8%;
+      text-align: center;
+    }
+
+    .col-desc {
+      width: 62%;
+      text-align: left;
+    }
+
+    .col-rs {
+      width: 8%;
+      text-align: center;
+    }
+
+    .col-amt {
+      width: 22%;
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    tbody tr td {
+      background: #e8f4fb;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #daeef8;
+    }
+
+    /* Part Sections */
+    .part-header-row td {
+      font-weight: 700;
+      background: #a0c4de !important;
+      color: #1a3550;
+      padding: 6px 10px;
+      text-align: left;
+      border: 1px solid #7fa8c0;
+    }
+
+    .part-i-total td {
+      background: #dbeafe !important;
+      color: #1e3a8a;
+      font-weight: 700;
+    }
+
+    /* Input Field */
+    .ls-input {
+      width: 100%;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      padding: 4px 6px;
+      font-size: 12px;
+      text-align: right;
+      font-weight: 700;
+      background: #fff;
+      color: #222;
+      outline: none;
+    }
+
+    .ls-input:focus {
+      border-color: #5a9fd4;
+    }
+
+    /* Grand Total */
+    .grand-total-row td {
+      background: #5a7a3a !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    /* Total in Words */
+    .words-box {
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 13px;
+      margin-top: 15px;
+      margin-bottom: 25px;
+      color: #1a3550;
+    }
+
+    .error-banner {
+      background: #fde8e8;
+      border: 1px solid #e08080;
+      color: #b33;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* ── Action Buttons ── */
+    .actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed #c8c87a;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 3px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease-in-out;
+    }
+
+    .btn-back {
+      background: #7f8c8d;
+      color: white;
+    }
+
+    .btn-back:hover {
+      background: #6c7a7d;
+    }
+
+    .btn-save-db {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-save-db:hover {
+      background: #219653;
+    }
+
+    .btn-save-db[disabled] {
+      background: #bdc3c7;
+      cursor: not-allowed;
+    }
+
+    .btn-print {
+      background: #2980b9;
+      color: white;
+    }
+
+    .btn-print:hover {
+      background: #1f618d;
+    }
+
+    .btn-download {
+      background: #1f7246;
+      color: white;
+    }
+
+    .btn-download:hover {
+      background: #155231;
+    }
+
+    /* ── Error Banner ── */
+    .error-banner {
+      background: #fde8e8;
+      border: 1px solid #e08080;
+      color: #b33;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    /* ── Print Styles ── */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        color: #000;
+      }
+
+      .container {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+        background: white;
+      }
+
+      .title-header {
+        background: transparent;
+        color: #000;
+        border: none;
+        border-bottom: 2px solid #000;
+        padding: 0 0 8px 0;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .name-of-work-box {
+        background: transparent;
+        border: none;
+        padding: 10px 0;
+      }
+
+      .name-of-work-box span {
+        color: #000;
+      }
+
+      .words-box {
+        background: transparent;
+        border: none;
+        color: #000;
+        padding: 10px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        background: transparent !important;
+        color: #000 !important;
+      }
+
+      th {
+        border: 1px solid #000;
+      }
+
+      .part-header-row td {
+        border: 1px solid #000;
+      }
+
+      .actions-bar {
+        display: none;
+      }
+
+      .ls-input {
+        border: none;
+        background: transparent;
+        color: #000;
+        padding: 0;
+        text-align: right;
+      }
+    }
+  </style>
+</head>
+
+<body ng-controller="AbstractCtrl">
+
+  <div class="container">
+
+    <!-- Error Banner -->
+    <div class="error-banner" ng-if="apiError">
+      ⚠ {{apiError}}
+    </div>
+
+    <!-- General Abstract Header -->
+    <div class="title-header">
+      General Abstract
+    </div>
+
+    <!-- Name of Work & Location Hierarchy Details -->
+    <div class="name-of-work-box" style="display: flex; flex-direction: column; gap: 8px;">
+      <div><span>Name of Work:</span> {{nameOfWork}}</div>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 6px; padding-top: 8px; border-top: 1px dashed #d4c97a; font-size: 12px; color: #222; text-align: left;">
+        <div><span>CORP:</span> {{corp || 'N/A'}}</div>
+        <div><span>Zone Name:</span> {{zoneName || 'N/A'}}</div>
+        <div><span>DIVISION:</span> {{division || 'N/A'}}</div>
+        <div><span>Circle Name:</span> {{circleName || 'N/A'}}</div>
+        <div><span>Ward Name:</span> {{wardName || 'N/A'}}</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <table>
+      <thead>
+        <tr>
+          <th class="col-sno">Sl.No</th>
+          <th class="col-desc">Description</th>
+          <th class="col-rs"></th>
+          <th class="col-amt">Amount Rs.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Part I Section -->
+        <tr class="part-header-row">
+          <td colspan="4">Part-I - Working Items</td>
+        </tr>
+        <tr>
+          <td class="text-center">1</td>
+          <td>Cost of Material</td>
+          <td class="text-center"></td>
+          <td class="text-right">{{costOfMaterial | number:2}}</td>
+        </tr>
+        <tr>
+          <td class="text-center">2</td>
+          <td>Cost of Civil work</td>
+          <td class="text-center"></td>
+          <td class="text-right">{{costOfCivilWork | number:2}}</td>
+        </tr>
+        <tr class="part-i-total">
+          <td></td>
+          <td class="text-right">Cost of Estimate : Part-I</td>
+          <td class="text-center"></td>
+          <td class="text-right">{{partITotal() | number:2}}</td>
+        </tr>
+
+        <!-- Part II Section -->
+        <tr class="part-header-row">
+          <td colspan="4">Part-II - Reimbursible Items</td>
+        </tr>
+        <tr>
+          <td class="text-center">3</td>
+          <td>GST @ {{gstPercent}}%</td>
+          <td class="text-center">Rs.</td>
+          <td class="text-right">{{gstAmount() | number:2}}</td>
+        </tr>
+
+        <!-- Part III Section -->
+        <tr class="part-header-row">
+          <td colspan="4">Part-III: LS provisions</td>
+        </tr>
+        <tr>
+          <td class="text-center">4</td>
+          <td>LS unforeseen items and rounding off</td>
+          <td class="text-center">Rs.</td>
+          <td class="text-right" style="padding: 3px 5px;">
+            <input type="number" class="ls-input" ng-model="unforeseenAmount" ng-change="updateTotals()" min="0"
+              step="0.01" />
+          </td>
+        </tr>
+
+        <!-- Grand Total Row -->
+        <tr class="grand-total-row">
+          <td class="text-center">5</td>
+          <td class="text-right" style="text-transform: uppercase;">Grand Total (Part I + II + III)</td>
+          <td class="text-center">Rs.</td>
+          <td class="text-right">{{grandTotal() | number:2}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Total In Words -->
+    <div class="words-box">
+      {{totalInWords}}
+    </div>
+
+    <!-- Multi-Signature Block -->
+    <div style="margin-top: 50px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; border-top: 1px solid #c8c87a; padding-top: 15px; margin-bottom: 30px; text-align: center;">
+      
+      <!-- Prepared by AE -->
+      <div style="padding: 10px; border: 1px dashed rgba(122, 122, 56, 0.3); border-radius: 4px; background: rgba(255,255,255,0.4);">
+        <div style="font-size: 10px; color: #7f8c8d; font-weight: 700; text-transform: uppercase; margin-bottom: 5px;">Prepared by (AE)</div>
+        <div ng-if="preparedByName">
+          <div style="font-weight: 700; color: #2c3e50; font-size: 12px;">{{preparedByName}}</div>
+          <div style="font-size: 10px; color: #555; margin-top: 2px;">{{preparedByDesignation}}</div>
+          <div style="font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px;">✓ Signed</div>
+        </div>
+        <div ng-if="!preparedByName" style="font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0;">Pending Signature</div>
+      </div>
+
+      <!-- Verified by DGM -->
+      <div style="padding: 10px; border: 1px dashed rgba(122, 122, 56, 0.3); border-radius: 4px; background: rgba(255,255,255,0.4);">
+        <div style="font-size: 10px; color: #7f8c8d; font-weight: 700; text-transform: uppercase; margin-bottom: 5px;">Verified by (DGM)</div>
+        <div ng-if="verifiedByName">
+          <div style="font-weight: 700; color: #2c3e50; font-size: 12px;">{{verifiedByName}}</div>
+          <div style="font-size: 10px; color: #555; margin-top: 2px;">{{verifiedByDesignation}}</div>
+          <div style="font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px;">✓ Signed</div>
+        </div>
+        <div ng-if="!verifiedByName" style="font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0;">Pending Scrutiny</div>
+      </div>
+
+      <!-- Recommended by GM -->
+      <div style="padding: 10px; border: 1px dashed rgba(122, 122, 56, 0.3); border-radius: 4px; background: rgba(255,255,255,0.4);">
+        <div style="font-size: 10px; color: #7f8c8d; font-weight: 700; text-transform: uppercase; margin-bottom: 5px;">Recommended by (GM)</div>
+        <div ng-if="recommendedByName">
+          <div style="font-weight: 700; color: #2c3e50; font-size: 12px;">{{recommendedByName}}</div>
+          <div style="font-size: 10px; color: #555; margin-top: 2px;">{{recommendedByDesignation}}</div>
+          <div style="font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px;">✓ Signed</div>
+        </div>
+        <div ng-if="!recommendedByName" style="font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0;">Pending Recom.</div>
+      </div>
+
+      <!-- Reviewed by CGM -->
+      <div style="padding: 10px; border: 1px dashed rgba(122, 122, 56, 0.3); border-radius: 4px; background: rgba(255,255,255,0.4);">
+        <div style="font-size: 10px; color: #7f8c8d; font-weight: 700; text-transform: uppercase; margin-bottom: 5px;">Reviewed by (CGM)</div>
+        <div ng-if="forwardedByName">
+          <div style="font-weight: 700; color: #2c3e50; font-size: 12px;">{{forwardedByName}}</div>
+          <div style="font-size: 10px; color: #555; margin-top: 2px;">{{forwardedByDesignation}}</div>
+          <div style="font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px;">✓ Signed</div>
+        </div>
+        <div ng-if="!forwardedByName" style="font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0;">Pending Review</div>
+      </div>
+
+      <!-- Sanctioned by DOP -->
+      <div style="padding: 10px; border: 1px dashed rgba(122, 122, 56, 0.3); border-radius: 4px; background: rgba(255,255,255,0.4);">
+        <div style="font-size: 10px; color: #7f8c8d; font-weight: 700; text-transform: uppercase; margin-bottom: 5px;">Sanctioned by (DOP)</div>
+        <div ng-if="sanctionedByName">
+          <div style="font-weight: 700; color: #2c3e50; font-size: 12px;">{{sanctionedByName}}</div>
+          <div style="font-size: 10px; color: #555; margin-top: 2px;">{{sanctionedByDesignation}}</div>
+          <div style="font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px;">✓ Approved</div>
+        </div>
+        <div ng-if="!sanctionedByName" style="font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0;">Pending Sanction</div>
+      </div>
+
+    </div>
+
+    <!-- Actions Panel -->
+    <div class="actions-bar" style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button class="btn btn-back" ng-click="goBack()" style="margin-right: auto;">
+        ⬅ Back to Measurement Sheet
+      </button>
+
+      <!-- Save Estimate: only shown if user has edit rights for this status -->
+      <button class="btn btn-save-db" ng-click="saveEstimateToDb()" ng-if="isEditable()" ng-disabled="saving">
+        <span ng-if="saving">💾 Saving...</span>
+        <span ng-if="!saving">💾 Save Estimate</span>
+      </button>
+
+      <!-- Forward/Recommend Button -->
+      <button class="btn" style="background: #3498db; color: white;" 
+              ng-click="performWorkflowAction('FORWARD')" 
+              ng-if="canForward()" ng-disabled="saving || workflowActing">
+        <span ng-if="workflowActing">⌛ Processing...</span>
+        <span ng-if="!workflowActing">➔ {{getForwardActionLabel()}}</span>
+      </button>
+
+      <!-- Return Button -->
+      <button class="btn" style="background: #e67e22; color: white;" 
+              ng-click="performWorkflowAction('RETURN')" 
+              ng-if="canReturn()" ng-disabled="saving || workflowActing">
+        <span ng-if="workflowActing">⌛ Processing...</span>
+        <span ng-if="!workflowActing">↩ Return to {{getReturnActionLabel()}}</span>
+      </button>
+
+      <!-- Print Button -->
+      <button class="btn btn-print" onclick="window.print()" ng-disabled="saving || workflowActing">
+        🖨 Print Abstract
+      </button>
+
+      <button class="btn btn-download" ng-click="downloadExcel()" ng-disabled="saving || workflowActing">
+        Download Sheet
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    angular.module('hmwssbAbstractApp', [])
+      .controller('AbstractCtrl', ['$scope', '$http', '$timeout',
+        function ($scope, $http, $timeout) {
+
+          /* ── Authentication Session Check ── */
+          var loggedInUserStr = localStorage.getItem('hmwssb_logged_in_user');
+          if (!loggedInUserStr) {
+            window.location.href = 'login.html';
+            return;
+          }
+          $scope.currentUser = JSON.parse(loggedInUserStr);
+
+          var API_BASE = 'http://localhost:8080/api';
+
+          // Load state from localStorage
+          var savedState = localStorage.getItem('current_estimate_data');
+          if (!savedState) {
+            alert('No estimate data found! Returning to main page.');
+            window.location.href = 'index.html';
+            return;
+          }
+
+          var estimateData = JSON.parse(savedState);
+          $scope.estimateId = estimateData.id;
+          $scope.nameOfWork = estimateData.nameOfWork;
+          $scope.costOfMaterial = estimateData.costOfMaterial || 0;
+          $scope.costOfCivilWork = estimateData.costOfCivilWork || 0;
+          $scope.gstPercent = estimateData.gstPercent || 0;
+          $scope.unforeseenAmount = estimateData.unforeseenAmount || 0;
+          $scope.items = estimateData.items || [];
+
+          $scope.corp = estimateData.corp || '';
+          $scope.zoneName = estimateData.zoneName || '';
+          $scope.division = estimateData.division || '';
+          $scope.circleName = estimateData.circleName || '';
+          $scope.wardName = estimateData.wardName || '';
+
+          $scope.status = estimateData.status || 'DRAFT';
+          $scope.preparedByName = estimateData.preparedByName;
+          $scope.preparedByDesignation = estimateData.preparedByDesignation;
+          $scope.verifiedByName = estimateData.verifiedByName;
+          $scope.verifiedByDesignation = estimateData.verifiedByDesignation;
+          $scope.recommendedByName = estimateData.recommendedByName;
+          $scope.recommendedByDesignation = estimateData.recommendedByDesignation;
+          $scope.forwardedByName = estimateData.forwardedByName;
+          $scope.forwardedByDesignation = estimateData.forwardedByDesignation;
+          $scope.sanctionedByName = estimateData.sanctionedByName;
+          $scope.sanctionedByDesignation = estimateData.sanctionedByDesignation;
+
+          $scope.saving = false;
+          $scope.workflowActing = false;
+
+          $scope.getStatusLabel = function (status) {
+            if (!status) return 'DRAFT';
+            switch (status) {
+              case 'DRAFT': return 'Draft';
+              case 'SUBMITTED_TO_DGM': return 'Pending DGM';
+              case 'SUBMITTED_TO_GM': return 'Pending GM';
+              case 'SUBMITTED_TO_CGM': return 'Pending CGM';
+              case 'SUBMITTED_TO_DOP': return 'Pending DOP';
+              case 'APPROVED': return 'Approved';
+              default: return status;
+            }
+          };
+
+          $scope.isEditable = function () {
+            var status = $scope.status || 'DRAFT';
+            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            if (status === 'DRAFT' && role === 'MANAGER') return true;
+            if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
+            if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
+            if (status === 'SUBMITTED_TO_CGM' && role === 'CGM') return true;
+            return false;
+          };
+
+          $scope.canForward = function () {
+            if (!$scope.estimateId) return false;
+            var status = $scope.status || 'DRAFT';
+            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            if (status === 'DRAFT' && role === 'MANAGER') return true;
+            if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
+            if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
+            if (status === 'SUBMITTED_TO_CGM' && role === 'CGM') return true;
+            if (status === 'SUBMITTED_TO_DOP' && role === 'DOP') return true;
+            return false;
+          };
+
+          $scope.getForwardActionLabel = function () {
+            var status = $scope.status || 'DRAFT';
+            switch (status) {
+              case 'DRAFT': return 'Forward to DGM';
+              case 'SUBMITTED_TO_DGM': return 'Forward to GM';
+              case 'SUBMITTED_TO_GM': return 'Forward to CGM';
+              case 'SUBMITTED_TO_CGM': return 'Forward to DOP';
+              case 'SUBMITTED_TO_DOP': return 'Approve & Sanction';
+              default: return 'Forward';
+            }
+          };
+
+          $scope.canReturn = function () {
+            if (!$scope.estimateId) return false;
+            var status = $scope.status || 'DRAFT';
+            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
+            if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
+            if (status === 'SUBMITTED_TO_CGM' && role === 'CGM') return true;
+            if (status === 'SUBMITTED_TO_DOP' && role === 'DOP') return true;
+            return false;
+          };
+
+          $scope.getReturnActionLabel = function () {
+            var status = $scope.status || 'DRAFT';
+            switch (status) {
+              case 'SUBMITTED_TO_DGM': return 'Manager (AE)';
+              case 'SUBMITTED_TO_GM': return 'DGM';
+              case 'SUBMITTED_TO_CGM': return 'GM';
+              case 'SUBMITTED_TO_DOP': return 'CGM';
+              default: return 'Previous Officer';
+            }
+          };
+
+          $scope.performWorkflowAction = function (actionType) {
+            if (!$scope.estimateId) {
+              alert('Please save the estimate first.');
+              return;
+            }
+
+            if (!confirm('Are you sure you want to ' + (actionType === 'FORWARD' ? 'forward/approve' : 'return') + ' this estimate?')) {
+              return;
+            }
+
+            $scope.workflowActing = true;
+            $scope.apiError = null;
+
+            $http.post(API_BASE + '/estimates/' + $scope.estimateId + '/action', {
+              action: actionType,
+              officerPhone: $scope.currentUser.phoneNumber
+            }).then(function (response) {
+              $scope.workflowActing = false;
+              var updatedEst = response.data;
+              
+              // Update local state and localStorage
+              $scope.status = updatedEst.status;
+              $scope.preparedByName = updatedEst.preparedByName;
+              $scope.preparedByDesignation = updatedEst.preparedByDesignation;
+              $scope.verifiedByName = updatedEst.verifiedByName;
+              $scope.verifiedByDesignation = updatedEst.verifiedByDesignation;
+              $scope.recommendedByName = updatedEst.recommendedByName;
+              $scope.recommendedByDesignation = updatedEst.recommendedByDesignation;
+              $scope.forwardedByName = updatedEst.forwardedByName;
+              $scope.forwardedByDesignation = updatedEst.forwardedByDesignation;
+              $scope.sanctionedByName = updatedEst.sanctionedByName;
+              $scope.sanctionedByDesignation = updatedEst.sanctionedByDesignation;
+
+              estimateData.id = updatedEst.id;
+              estimateData.status = updatedEst.status;
+              estimateData.preparedByName = updatedEst.preparedByName;
+              estimateData.preparedByDesignation = updatedEst.preparedByDesignation;
+              estimateData.verifiedByName = updatedEst.verifiedByName;
+              estimateData.verifiedByDesignation = updatedEst.verifiedByDesignation;
+              estimateData.recommendedByName = updatedEst.recommendedByName;
+              estimateData.recommendedByDesignation = updatedEst.recommendedByDesignation;
+              estimateData.forwardedByName = updatedEst.forwardedByName;
+              estimateData.forwardedByDesignation = updatedEst.forwardedByDesignation;
+              estimateData.sanctionedByName = updatedEst.sanctionedByName;
+              estimateData.sanctionedByDesignation = updatedEst.sanctionedByDesignation;
+              localStorage.setItem('current_estimate_data', JSON.stringify(estimateData));
+
+              alert('Workflow action completed successfully! New status: ' + $scope.getStatusLabel($scope.status));
+            }, function (error) {
+              $scope.workflowActing = false;
+              $scope.apiError = 'Failed to execute workflow action: ' + (error.data || 'unknown error');
+              console.error(error);
+            });
+          };
+
+          $scope.saving = false;
+          $scope.apiError = null;
+          $scope.totalInWords = '';
+
+          // Math calculations
+          $scope.partITotal = function () {
+            return $scope.costOfMaterial + $scope.costOfCivilWork;
+          };
+
+          $scope.gstAmount = function () {
+            return $scope.partITotal() * $scope.gstPercent / 100;
+          };
+
+          $scope.grandTotal = function () {
+            return $scope.partITotal() + $scope.gstAmount() + ($scope.unforeseenAmount || 0);
+          };
+
+          // Number to Indian Rupee Words
+          function getIndianRupeeWords(num) {
+            if (num === 0) return '(Rupees Zero Only)';
+
+            var roundedNum = Math.round(num * 100) / 100;
+            var parts = String(roundedNum).split('.');
+            var rupees = parseInt(parts[0], 10);
+            var paise = parts[1] ? parseInt(parts[1], 10) : 0;
+
+            var rupeeWords = convertIntegerToWords(rupees);
+            var paiseWords = paise > 0 ? convertIntegerToWords(paise) : '';
+
+            var result = '(Rupees ' + rupeeWords;
+            if (paiseWords) {
+              result += ' and ' + paiseWords + ' Paise';
+            }
+            result += ' Only)';
+            return result;
+          }
+
+          function convertIntegerToWords(num) {
+            if (num === 0) return 'Zero';
+
+            var ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+              'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            var tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+            function helper(n) {
+              if (n < 20) return ones[n];
+              if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+              if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + helper(n % 100) : '');
+              if (n < 100000) return helper(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 !== 0 ? ' ' + helper(n % 1000) : '');
+              if (n < 10000000) return helper(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 !== 0 ? ' ' + helper(n % 100000) : '');
+              return helper(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 !== 0 ? ' ' + helper(n % 10000000) : '');
+            }
+
+            return helper(num);
+          }
+
+          $scope.updateTotals = function () {
+            // Update storage item with current LS provision value
+            estimateData.unforeseenAmount = $scope.unforeseenAmount;
+            localStorage.setItem('current_estimate_data', JSON.stringify(estimateData));
+
+            // Compute words
+            $scope.totalInWords = getIndianRupeeWords($scope.grandTotal());
+          };
+
+          // Trigger initial calculation
+          $scope.updateTotals();
+
+          // Actions
+          $scope.goBack = function () {
+            window.location.href = 'index.html';
+          };
+
+          $scope.saveEstimateToDb = function () {
+            $scope.saving = true;
+            $scope.apiError = null;
+
+            var payload = {
+              id: $scope.estimateId,
+              nameOfWork: $scope.nameOfWork,
+              gstPercent: parseFloat($scope.gstPercent) || 0,
+              unforeseenAmount: parseFloat($scope.unforeseenAmount) || 0,
+              grandTotal: $scope.grandTotal(),
+              items: $scope.items,
+              corp: $scope.corp,
+              zoneName: $scope.zoneName,
+              division: $scope.division,
+              circleName: $scope.circleName,
+              wardName: $scope.wardName,
+              officerPhone: $scope.currentUser.phoneNumber
+            };
+
+            $http.post(API_BASE + '/estimates', payload)
+              .then(function (response) {
+                var savedEst = response.data;
+                $scope.estimateId = savedEst.id;
+                // Update local storage so if they refresh, the id is kept
+                estimateData.id = savedEst.id;
+                localStorage.setItem('current_estimate_data', JSON.stringify(estimateData));
+                $scope.saving = false;
+                alert('Estimate saved successfully to Database with ID: ' + savedEst.id);
+              }, function (error) {
+                $scope.saving = false;
+                $scope.apiError = 'Failed to save estimate to database. Make sure server is running.';
+                console.error(error);
+              });
+          };
+
+          $scope.downloadExcel = function () {
+            // Helper to make a styled cell
+            function makeCell(val, isBold, align, showBorder, size, fontName, numFormat) {
+              var cell = { v: val };
+              if (typeof val === 'number') {
+                cell.t = 'n';
+                cell.z = numFormat || '#,##,##0.00'; // Rupee standard format e.g. 2,05,518.76
+              } else {
+                cell.t = 's';
+              }
+
+              cell.s = {
+                font: {
+                  name: fontName || "Arial",
+                  sz: size || 10,
+                  bold: !!isBold
+                },
+                alignment: {
+                  horizontal: align || "left",
+                  vertical: "center",
+                  wrapText: true
+                }
+              };
+
+              if (showBorder) {
+                cell.s.border = {
+                  top: { style: "thin", color: { rgb: "000000" } },
+                  bottom: { style: "thin", color: { rgb: "000000" } },
+                  left: { style: "thin", color: { rgb: "000000" } },
+                  right: { style: "thin", color: { rgb: "000000" } }
+                };
+              }
+              return cell;
+            }
+
+            var wb = XLSX.utils.book_new();
+
+            // ─── SHEET 1: MATERIALS ───
+            var materialsRows = [];
+            // Row 1: Estimate for Material (Merged A1:J1)
+            var r1 = [makeCell("Estimate for Material", true, "center", false, 12)];
+            for (var i = 1; i < 10; i++) r1.push(makeCell("", false, "center", false));
+            materialsRows.push(r1);
+
+            // Row 2: Name of Work (Merged A2:J2)
+            var r2 = [makeCell("Name of Work: " + $scope.nameOfWork, true, "center", false, 9)];
+            for (var i = 1; i < 10; i++) r2.push(makeCell("", false, "center", false));
+            materialsRows.push(r2);
+
+            // Row 3: Empty Row
+            materialsRows.push(new Array(10).fill(null).map(function () { return makeCell("", false, "center", false); }));
+
+            // Row 4: Table Headers
+            var headers = ["S.No", "Description of Work", "No", "L", "B", "D", "Qty", "Rate", "Unit", "Amount"];
+            materialsRows.push(headers.map(function (h) { return makeCell(h, true, "center", true, 9); }));
+
+            var matIndex = 1;
+            var matTotal = 0;
+            $scope.items.forEach(function (item) {
+              var isMat = item.isMaterial;
+              var isMaterialSelected = false;
+              if (isMat !== undefined && isMat !== null) {
+                var s = String(isMat).trim().toLowerCase();
+                if (s === 'yes' || s === 'true' || s === '1' || s === 'y') {
+                  isMaterialSelected = true;
+                }
+              }
+              if (isMaterialSelected) {
+                materialsRows.push([
+                  makeCell(matIndex++, false, "center", true, null, null, '0'),
+                  makeCell(item.description, false, "left", true),
+                  makeCell(item.num || 1, false, "right", true, null, null, '0'),
+                  makeCell(item.length > 0 ? item.length : "", false, "right", true),
+                  makeCell(item.breadth > 0 ? item.breadth : "", false, "right", true),
+                  makeCell(item.depth > 0 ? item.depth : "", false, "right", true),
+                  makeCell(item.quantity || 0, false, "right", true),
+                  makeCell(item.rate || 0, false, "right", true),
+                  makeCell(item.unit || "", false, "center", true),
+                  makeCell(item.amount || 0, false, "right", true)
+                ]);
+                matTotal += item.amount || 0;
+              }
+            });
+
+            // Subtotal Row
+            var subTotalMatRowIdx = materialsRows.length;
+            var rMatSub = [];
+            rMatSub.push(makeCell("Part-I: Cost of materials Total", true, "right", true, 9));
+            for (var i = 1; i < 9; i++) rMatSub.push(makeCell("", true, "right", true, 9));
+            rMatSub.push(makeCell(matTotal, true, "right", true, 9));
+            materialsRows.push(rMatSub);
+
+            var ws_materials = XLSX.utils.aoa_to_sheet(materialsRows);
+            ws_materials['!cols'] = [
+              { wch: 6 }, { wch: 45 }, { wch: 6 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 15 }
+            ];
+            ws_materials['!merges'] = [
+              { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
+              { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } },
+              { s: { r: subTotalMatRowIdx, c: 0 }, e: { r: subTotalMatRowIdx, c: 8 } }
+            ];
+
+            // ─── SHEET 2: CIVIL WORKS ───
+            var civilRows = [];
+            // Row 1: Estimate for Civil Work (Merged A1:J1)
+            var rc1 = [makeCell("Estimate for Civil Work", true, "center", false, 12)];
+            for (var i = 1; i < 10; i++) rc1.push(makeCell("", false, "center", false));
+            civilRows.push(rc1);
+
+            // Row 2: Name of Work (Merged A2:J2)
+            var rc2 = [makeCell("Name of Work: " + $scope.nameOfWork, true, "center", false, 9)];
+            for (var i = 1; i < 10; i++) rc2.push(makeCell("", false, "center", false));
+            civilRows.push(rc2);
+
+            // Row 3: Empty Row
+            civilRows.push(new Array(10).fill(null).map(function () { return makeCell("", false, "center", false); }));
+
+            // Row 4: Table Headers
+            civilRows.push(headers.map(function (h) { return makeCell(h, true, "center", true, 9); }));
+
+            var civIndex = 1;
+            var civTotal = 0;
+            $scope.items.forEach(function (item) {
+              var isMat = item.isMaterial;
+              var isMaterialSelected = false;
+              if (isMat !== undefined && isMat !== null) {
+                var s = String(isMat).trim().toLowerCase();
+                if (s === 'yes' || s === 'true' || s === '1' || s === 'y') {
+                  isMaterialSelected = true;
+                }
+              }
+              if (!isMaterialSelected) {
+                civilRows.push([
+                  makeCell(civIndex++, false, "center", true, null, null, '0'),
+                  makeCell(item.description, false, "left", true),
+                  makeCell(item.num || 1, false, "right", true, null, null, '0'),
+                  makeCell(item.length > 0 ? item.length : "", false, "right", true),
+                  makeCell(item.breadth > 0 ? item.breadth : "", false, "right", true),
+                  makeCell(item.depth > 0 ? item.depth : "", false, "right", true),
+                  makeCell(item.quantity || 0, false, "right", true),
+                  makeCell(item.rate || 0, false, "right", true),
+                  makeCell(item.unit || "", false, "center", true),
+                  makeCell(item.amount || 0, false, "right", true)
+                ]);
+                civTotal += item.amount || 0;
+              }
+            });
+
+            // Subtotal Row
+            var subTotalCivRowIdx = civilRows.length;
+            var rCivSub = [];
+            rCivSub.push(makeCell("Part-I: Working Items Total", true, "right", true, 9));
+            for (var i = 1; i < 9; i++) rCivSub.push(makeCell("", true, "right", true, 9));
+            rCivSub.push(makeCell(civTotal, true, "right", true, 9));
+            civilRows.push(rCivSub);
+
+            var ws_civil = XLSX.utils.aoa_to_sheet(civilRows);
+            ws_civil['!cols'] = [
+              { wch: 6 }, { wch: 45 }, { wch: 6 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 15 }
+            ];
+            ws_civil['!merges'] = [
+              { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
+              { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } },
+              { s: { r: subTotalCivRowIdx, c: 0 }, e: { r: subTotalCivRowIdx, c: 8 } }
+            ];
+
+            // ─── SHEET 3: GENERAL ABSTRACT ───
+            var abstractRows = [];
+            // Row 1: General Abstract Title (Merged A1:D1)
+            var ra1 = [makeCell("GENERAL ABSTRACT", true, "center", false, 14)];
+            for (var i = 1; i < 4; i++) ra1.push(makeCell("", false, "center", false));
+            abstractRows.push(ra1);
+
+            // Row 2: Name of Work (Merged A2:D2)
+            var ra2 = [makeCell("Name of Work: " + $scope.nameOfWork, true, "left", false, 9)];
+            for (var i = 1; i < 4; i++) ra2.push(makeCell("", false, "center", false));
+            abstractRows.push(ra2);
+
+            // Row 3: Location Info (Merged A3:D3)
+            var locStr = "CORP: " + ($scope.corp || 'N/A') + " | Zone: " + ($scope.zoneName || 'N/A') + " | Division: " + ($scope.division || 'N/A') + " | Circle: " + ($scope.circleName || 'N/A') + " | Ward: " + ($scope.wardName || 'N/A');
+            var ra3 = [makeCell(locStr, true, "left", false, 9)];
+            for (var i = 1; i < 4; i++) ra3.push(makeCell("", false, "center", false));
+            abstractRows.push(ra3);
+
+            // Row 4: Empty Row
+            abstractRows.push(new Array(4).fill(null).map(function () { return makeCell("", false, "center", false); }));
+
+            // Row 4: Table Headers
+            abstractRows.push([
+              makeCell("Sl.No", true, "center", true, 9),
+              makeCell("Description", true, "left", true, 9),
+              makeCell("", true, "center", true, 9),
+              makeCell("Amount Rs.", true, "right", true, 9)
+            ]);
+
+            // Row 5: Part-I - Working Items header (Merged A5:D5)
+            var ra5 = [makeCell("Part-I - Working Items", true, "left", true, 9)];
+            for (var i = 1; i < 4; i++) ra5.push(makeCell("", true, "left", true, 9));
+            abstractRows.push(ra5);
+
+            // Row 6: Cost of Material
+            abstractRows.push([
+              makeCell(1, false, "center", true, null, null, '0'),
+              makeCell("Cost of Material", false, "left", true),
+              makeCell("", false, "center", true),
+              makeCell($scope.costOfMaterial, false, "right", true)
+            ]);
+
+            // Row 7: Cost of Civil work
+            abstractRows.push([
+              makeCell(2, false, "center", true, null, null, '0'),
+              makeCell("Cost of Civil work", false, "left", true),
+              makeCell("", false, "center", true),
+              makeCell($scope.costOfCivilWork, false, "right", true)
+            ]);
+
+            // Row 8: Cost of Estimate : Part-I (Merge A8:C8)
+            var ra8 = [];
+            ra8.push(makeCell("Cost of Estimate : Part-I", true, "right", true, 9));
+            for (var i = 1; i < 3; i++) ra8.push(makeCell("", true, "right", true, 9));
+            ra8.push(makeCell($scope.partITotal(), true, "right", true, 9));
+            abstractRows.push(ra8);
+
+            // Row 9: Part-II - Reimbursible Items header (Merged A9:D9)
+            var ra9 = [makeCell("Part-II - Reimbursible Items", true, "left", true, 9)];
+            for (var i = 1; i < 4; i++) ra9.push(makeCell("", true, "left", true, 9));
+            abstractRows.push(ra9);
+
+            // Row 10: GST @ 18%
+            abstractRows.push([
+              makeCell(3, false, "center", true, null, null, '0'),
+              makeCell("GST @ " + $scope.gstPercent + "%", false, "left", true),
+              makeCell("Rs.", false, "center", true),
+              makeCell($scope.gstAmount(), false, "right", true)
+            ]);
+
+            // Row 11: Part-III: LS provisions header (Merged A11:D11)
+            var ra11 = [makeCell("Part-III: LS provisions", true, "left", true, 9)];
+            for (var i = 1; i < 4; i++) ra11.push(makeCell("", true, "left", true, 9));
+            abstractRows.push(ra11);
+
+            // Row 12: LS unforeseen items
+            abstractRows.push([
+              makeCell(4, false, "center", true, null, null, '0'),
+              makeCell("LS unforeseen items and rounding off", false, "left", true),
+              makeCell("Rs.", false, "center", true),
+              makeCell($scope.unforeseenAmount || 0, false, "right", true)
+            ]);
+
+            // Row 13: Grand Total (Part I + II + III) (Merge A13:C13 is not needed, just normal cells)
+            abstractRows.push([
+              makeCell(5, true, "center", true, 9, null, '0'),
+              makeCell("Grand Total (Part I + II + III)", true, "right", true, 9),
+              makeCell("Rs.", true, "center", true, 9),
+              makeCell($scope.grandTotal(), true, "right", true, 9)
+            ]);
+
+            // Row 14: Empty row
+            abstractRows.push(new Array(4).fill(null).map(function () { return makeCell("", false, "center", false); }));
+
+            // Row 15: Total in words (Merged A15:D15)
+            var ra15 = [makeCell($scope.totalInWords, true, "center", false, 9)];
+            for (var i = 1; i < 4; i++) ra15.push(makeCell("", true, "center", false));
+            abstractRows.push(ra15);
+
+            // Row 16: Empty row
+            abstractRows.push(new Array(4).fill(null).map(function () { return makeCell("", false, "center", false); }));
+
+            // Signature Block Header
+            abstractRows.push(new Array(4).fill(null).map(function () { return makeCell("", false, "center", false); }));
+            abstractRows.push([
+              makeCell("Workflow Processing Signatures:", true, "left", false, 11),
+              makeCell("", false, "left", false),
+              makeCell("", false, "left", false),
+              makeCell("", false, "left", false)
+            ]);
+            abstractRows.push(new Array(4).fill(null).map(function () { return makeCell("", false, "center", false); }));
+
+            // Prepared by AE
+            abstractRows.push([
+              makeCell("Prepared by (AE):", true, "left", false),
+              makeCell($scope.preparedByName || "Pending Signature", false, "left", false),
+              makeCell("Designation:", true, "right", false),
+              makeCell($scope.preparedByDesignation || "N/A", false, "left", false)
+            ]);
+
+            // Verified by DGM
+            abstractRows.push([
+              makeCell("Verified by (DGM):", true, "left", false),
+              makeCell($scope.verifiedByName || "Pending Scrutiny", false, "left", false),
+              makeCell("Designation:", true, "right", false),
+              makeCell($scope.verifiedByDesignation || "N/A", false, "left", false)
+            ]);
+
+            // Recommended by GM
+            abstractRows.push([
+              makeCell("Recommended by (GM):", true, "left", false),
+              makeCell($scope.recommendedByName || "Pending Recommendation", false, "left", false),
+              makeCell("Designation:", true, "right", false),
+              makeCell($scope.recommendedByDesignation || "N/A", false, "left", false)
+            ]);
+
+            // Reviewed by CGM
+            abstractRows.push([
+              makeCell("Reviewed by (CGM):", true, "left", false),
+              makeCell($scope.forwardedByName || "Pending Review", false, "left", false),
+              makeCell("Designation:", true, "right", false),
+              makeCell($scope.forwardedByDesignation || "N/A", false, "left", false)
+            ]);
+
+            // Sanctioned by DOP
+            abstractRows.push([
+              makeCell("Sanctioned by (DOP):", true, "left", false),
+              makeCell($scope.sanctionedByName || "Pending Sanction", false, "left", false),
+              makeCell("Designation:", true, "right", false),
+              makeCell($scope.sanctionedByDesignation || "N/A", false, "left", false)
+            ]);
+
+            var ws_abstract = XLSX.utils.aoa_to_sheet(abstractRows);
+            ws_abstract['!cols'] = [
+              { wch: 18 }, { wch: 35 }, { wch: 15 }, { wch: 25 }
+            ];
+            ws_abstract['!merges'] = [
+              { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+              { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
+              { s: { r: 2, c: 0 }, e: { r: 2, c: 3 } },
+              { s: { r: 5, c: 0 }, e: { r: 5, c: 3 } },
+              { s: { r: 8, c: 0 }, e: { r: 8, c: 2 } },
+              { s: { r: 9, c: 0 }, e: { r: 9, c: 3 } },
+              { s: { r: 11, c: 0 }, e: { r: 11, c: 3 } },
+              { s: { r: 15, c: 0 }, e: { r: 15, c: 3 } },
+              { s: { r: 17, c: 0 }, e: { r: 17, c: 3 } }
+            ];
+
+            // Append sheets
+            XLSX.utils.book_append_sheet(wb, ws_materials, "Materials");
+            XLSX.utils.book_append_sheet(wb, ws_civil, "Civil Works");
+            XLSX.utils.book_append_sheet(wb, ws_abstract, "General Abstract");
+
+            // Save workbook
+            var cleanName = $scope.nameOfWork.substring(0, 30).replace(/[^a-zA-Z0-9]/g, "_");
+            var fileName = "Estimate_Abstract_" + cleanName + ".xlsx";
+            XLSX.writeFile(wb, fileName);
+          };
+
+        }
+      ]);
+  </script>
+
+</body>
+
+</html>
