@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hmwssbApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HMWSSB – Measurement Sheet</title>
+  <link rel="stylesheet" href="styles/theme.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script src="hierarchy.js"></script>
+  <style>
+    /* ── Government Header ── */
+    .page-header {
+      background: var(--primary);
+      color: var(--text-white);
+      padding: 10px 20px;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-header-logo {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-header-logo svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    .page-header-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .page-header-sub {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    /* ── User Bar ── */
+    .user-bar {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-top: none;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #2c3e50;
+    }
+
+    .user-designation {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .location-select {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .location-select label {
+      font-weight: 600;
+      color: var(--error-text);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .location-select select {
+      border: 1px solid var(--border-input);
+      border-radius: var(--radius-sm);
+      padding: 3px 8px;
+      font-size: 11px;
+      height: 26px;
+      background: #fff;
+      outline: none;
+      max-width: 380px;
+    }
+
+    /* ── Workflow Tracker ── */
+    .workflow-bar {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .workflow-label {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 10px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+
+    .workflow-steps {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      justify-content: space-around;
+      min-width: 580px;
+    }
+
+    .wf-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .wf-step-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      border: 2px solid #cbd5e1;
+      background: #e2e8f0;
+      color: #64748b;
+      transition: all 0.3s ease;
+    }
+
+    .wf-step-circle.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(122, 122, 56, 0.2);
+    }
+
+    .wf-step-circle.completed {
+      background: var(--btn-success);
+      color: #fff;
+      border-color: var(--btn-success);
+    }
+
+    .wf-step-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: #64748b;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .wf-step-label.active {
+      color: var(--primary);
+    }
+
+    .wf-step-label.completed {
+      color: var(--btn-success);
+    }
+
+    .wf-arrow {
+      color: #cbd5e1;
+      font-weight: 700;
+      font-size: 12px;
+      margin: 0 2px;
+    }
+
+    /* ── Hierarchy Section ── */
+    .hierarchy-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .hierarchy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hierarchy-field label {
+      display: block;
+      font-weight: 600;
+      color: var(--error-text);
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .hierarchy-field label::before {
+      content: '* ';
+    }
+
+    .hierarchy-field select {
+      width: 100%;
+      border: 1px solid var(--border-input);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      font-size: 12px;
+      background: #fff;
+      height: 28px;
+    }
+
+    /* ── Name of Work ── */
+    .name-of-work {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    .name-of-work label {
+      font-weight: 600;
+      color: var(--error-text);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .name-of-work label::before {
+      content: '* ';
+    }
+
+    .name-of-work input {
+      flex: 1;
+      border: 1px solid var(--border-input);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .name-of-work input:focus {
+      border-color: var(--border-input-focus);
+    }
+
+    /* ── Measurement Table ── */
+    .measure-table-wrap {
+      overflow-x: auto;
+    }
+
+    .measure-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 900px;
+    }
+
+    .measure-table th {
+      background: var(--table-header-bg);
+      color: var(--table-header-text);
+      font-weight: 600;
+      font-size: 11px;
+      padding: 6px 4px;
+      text-align: center;
+      border: 1px solid var(--table-header-border);
+      white-space: nowrap;
+    }
+
+    .measure-table td {
+      padding: 4px 3px;
+      border: 1px solid var(--table-border);
+      text-align: center;
+      background: var(--table-row-odd);
+      vertical-align: middle;
+    }
+
+    .measure-table tbody tr:nth-child(even) td {
+      background: var(--table-row-even);
+    }
+
+    .measure-table tbody tr:hover td {
+      background: #cde4f4;
+    }
+
+    .measure-table td input[type="number"],
+    .measure-table td input[type="text"] {
+      width: 100%;
+      border: 1px solid #bbb;
+      border-radius: var(--radius-sm);
+      padding: 3px 4px;
+      font-size: 11px;
+      text-align: center;
+      background: #fff;
+      outline: none;
+    }
+
+    .measure-table td input[type="text"].desc-input {
+      text-align: left;
+    }
+
+    .measure-table td input:focus {
+      border-color: var(--border-input-focus);
+    }
+
+    .measure-table td input[readonly] {
+      background: #e2e8f0;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .radio-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 11px;
+    }
+
+    .row-total-bar td {
+      background: var(--primary) !important;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 6px 10px;
+      text-align: right;
+      border: 1px solid var(--primary-dark);
+    }
+
+    /* ── Column widths ── */
+    .col-sno { width: 4%; }
+    .col-ismat { width: 8%; }
+    .col-desc { width: 22%; }
+    .col-nums { width: 7%; }
+    .col-len { width: 7%; }
+    .col-bre { width: 7%; }
+    .col-dep { width: 6%; }
+    .col-qty { width: 7%; }
+    .col-rate { width: 7%; }
+    .col-unit { width: 6%; }
+    .col-amt { width: 8%; }
+    .col-act { width: 9%; }
+
+    /* ── Totals Panel ── */
+    .totals-panel {
+      margin-top: 12px;
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .totals-header {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 6px 14px;
+    }
+
+    .totals-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 10px 14px;
+      align-items: center;
+    }
+
+    .total-field {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .total-field label {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .total-field input {
+      width: 130px;
+      border: 1px solid #bbb;
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      font-size: 12px;
+      text-align: right;
+      background: #fff;
+    }
+
+    .total-field input[readonly] {
+      background: #f5f5f5;
+    }
+
+    .total-field select {
+      border: 1px solid #bbb;
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      font-size: 12px;
+      background: #fff;
+      width: 70px;
+    }
+
+    /* ── Saved Estimates ── */
+    .estimates-panel {
+      margin-top: 16px;
+    }
+
+    .estimates-header {
+      background: #2c3e50;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .estimates-body {
+      padding: 10px;
+      background: var(--bg-highlight);
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .estimates-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .estimates-table th {
+      background: #d5dbdb;
+      color: #2c3e50;
+      border: 1px solid #bdc3c7;
+      padding: 5px 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .estimates-table td {
+      border: 1px solid #bdc3c7;
+      background: #fff;
+      padding: 5px 6px;
+      font-size: 12px;
+    }
+
+    .estimates-table tr:hover td {
+      background: #f0f7ff;
+    }
+
+    /* ── Autocomplete ── */
+    .desc-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .global-suggestions {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border: 1px solid #a4c2e6;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      display: none;
+      padding: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .suggestions-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .suggestions-list li {
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.1s;
+    }
+
+    .suggestions-list li:last-child {
+      border-bottom: none;
+    }
+
+    .suggestions-list li:hover,
+    .suggestions-list li.active {
+      background: #f0f7ff;
+    }
+
+    .search-loading {
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .no-results {
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--error-text);
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body ng-controller="MeasurementCtrl" ng-click="closeAllSuggestions()">
+
+  <div class="sheet-wrapper">
+
+    <!-- Government Header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-header-logo">
+          <svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2zm-1,17.93c-3.95-.49-7-3.85-7-7.93,0-.62.08-1.21.21-1.79L9,15v1c0,1.1.9,2,2,2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55,0,1-.45,1-1V7h2c1.1,0,2-.9,2-2v-.41c2.93,1.19,5,4.06,5,7.41,0,2.08-.8,3.97-2.1,5.39z"/></svg>
+        </div>
+        <div>
+          <div class="page-header-title">HMWSSB – Works Measurement Sheet</div>
+          <div class="page-header-sub">Hyderabad Metropolitan Water Supply and Sewerage Board</div>
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" ng-click="logout()">Logout</button>
+    </div>
+
+    <!-- User Bar -->
+    <div class="user-bar">
+      <div class="user-info">
+        <div class="user-avatar">{{currentUser.name.charAt(0)}}</div>
+        <div>
+          <div class="user-name">{{currentUser.name}}</div>
+          <div class="user-designation">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
+        </div>
+      </div>
+      <div class="location-select" ng-if="locationOptions.length > 0">
+        <label>Access Location:</label>
+        <select ng-model="selectedLocationKey" ng-change="onLocationChange()">
+          <option ng-repeat="opt in locationOptions" ng-value="opt.key">
+            {{opt.label}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Workflow Tracker -->
+    <div class="workflow-bar mt-2">
+      <div class="workflow-label">Workflow:</div>
+      <div class="workflow-steps">
+        <div class="wf-step">
+          <div class="wf-step-circle" ng-class="getStepClass('DRAFT')">1</div>
+          <div class="wf-step-label" ng-class="getStepLabelClass('DRAFT')">Draft (AE)</div>
+        </div>
+        <span class="wf-arrow">&#10132;</span>
+        <div class="wf-step">
+          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_DGM')">2</div>
+          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_DGM')">DGM Scrutiny</div>
+        </div>
+        <span class="wf-arrow">&#10132;</span>
+        <div class="wf-step">
+          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_GM')">3</div>
+          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_GM')">GM Recommend</div>
+        </div>
+        <span class="wf-arrow">&#10132;</span>
+        <div class="wf-step">
+          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_CGM')">4</div>
+          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_CGM')">CGM Review</div>
+        </div>
+        <span class="wf-arrow">&#10132;</span>
+        <div class="wf-step">
+          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_DOP')">5</div>
+          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_DOP')">DOP Sanction</div>
+        </div>
+        <span class="wf-arrow">&#10132;</span>
+        <div class="wf-step">
+          <div class="wf-step-circle" ng-class="getStepClass('APPROVED')">&#10003;</div>
+          <div class="wf-step-label" ng-class="getStepLabelClass('APPROVED')">Approved</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Error -->
+    <div class="alert alert-error" ng-if="apiError">{{apiError}}</div>
+
+    <!-- Name of Work -->
+    <div class="name-of-work">
+      <label>Name Of Work</label>
+      <input type="text" ng-model="nameOfWork" placeholder="Enter name of work" ng-disabled="!isEditable()" />
+    </div>
+
+    <!-- Hierarchy Selection -->
+    <div class="hierarchy-grid">
+      <div class="hierarchy-field">
+        <label>CORP</label>
+        <select ng-model="selectedCorp" ng-change="onCorpChange()" ng-options="c for c in corps" ng-disabled="!isEditable()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>Zone Name</label>
+        <select ng-model="selectedZone" ng-change="onZoneChange()" ng-options="z for z in zones" ng-disabled="!selectedCorp || !isEditable()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>DIVISION</label>
+        <select ng-model="selectedDivision" ng-change="onDivisionChange()" ng-options="d for d in divisions" ng-disabled="!selectedZone || !isEditable()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>Circle</label>
+        <select ng-model="selectedCircle" ng-change="onCircleChange()" ng-options="cir for cir in circles" ng-disabled="!selectedDivision || !isEditable()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div class="hierarchy-field">
+        <label>Ward</label>
+        <select ng-model="selectedWard" ng-options="w for w in wards" ng-disabled="!selectedCircle || !isEditable()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Measurement Table -->
+    <div class="measure-table-wrap">
+      <table class="measure-table">
+        <colgroup>
+          <col class="col-sno"><col class="col-ismat"><col class="col-desc">
+          <col class="col-nums"><col class="col-len"><col class="col-bre">
+          <col class="col-dep"><col class="col-qty"><col class="col-rate">
+          <col class="col-unit"><col class="col-amt"><col class="col-act">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>S.No</th><th>Material</th><th>Description</th>
+            <th>No</th><th>Length</th><th>Breadth</th>
+            <th>Depth</th><th>Qty</th><th>Rate</th>
+            <th>Unit</th><th>Amount</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in rows">
+            <td>{{$index + 1}}</td>
+            <td>
+              <div class="radio-group">
+                <label><input type="radio" name="mat_{{$index}}" ng-model="row.isMaterial" value="Yes" ng-disabled="!isEditable()" /> Yes</label>
+                <label><input type="radio" name="mat_{{$index}}" ng-model="row.isMaterial" value="No" ng-disabled="!isEditable()" /> No</label>
+              </div>
+            </td>
+            <td ng-click="$event.stopPropagation()">
+              <div class="desc-wrapper">
+                <input class="desc-input" type="text" ng-model="row.description"
+                  ng-keydown="onDescriptionKeydown($event, row)" ng-keyup="onDescriptionKeyup($event, row)"
+                  ng-focus="onDescriptionFocus($event, row)" placeholder="Type to search..." autocomplete="off" ng-disabled="!isEditable()" />
+              </div>
+            </td>
+            <td><input type="number" ng-model="row.num" ng-change="computeRow(row)" min="1" ng-disabled="!isEditable()" /></td>
+            <td><input type="number" ng-model="row.length" ng-change="computeRow(row)" min="0" step="0.01" ng-disabled="!isEditable()" /></td>
+            <td><input type="number" ng-model="row.breadth" ng-change="computeRow(row)" min="0" step="0.01" ng-disabled="!isEditable()" /></td>
+            <td><input type="number" ng-model="row.depth" ng-change="computeRow(row)" min="0" step="0.01" ng-disabled="!isEditable()" /></td>
+            <td><input type="number" ng-model="row.quantity" readonly /></td>
+            <td><input type="number" ng-model="row.rate" readonly /></td>
+            <td><input type="text" ng-model="row.unit" readonly /></td>
+            <td class="font-bold">{{row.amount | number:2}}</td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-success btn-sm" ng-click="addRow()" ng-if="isEditable()">Add</button>
+              <button class="btn btn-danger btn-sm" ng-click="removeRow($index)" ng-if="isEditable() && rows.length > 1">Del</button>
+              <span ng-if="!isEditable()" class="text-muted" style="font-style:italic;font-size:10px;">Read-Only</span>
+            </td>
+          </tr>
+          <tr class="row-total-bar">
+            <td colspan="11">Total &nbsp;&nbsp; {{rowTotal() | number:2}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals Panel -->
+    <div class="totals-panel">
+      <div class="totals-header">Totals</div>
+      <div class="totals-body">
+        <div class="total-field">
+          <label>Total Amount</label>
+          <input type="text" readonly ng-value="rowTotal().toFixed(2)" />
+        </div>
+        <div class="total-field">
+          <label>GST</label>
+          <select ng-model="gstPercent" ng-change="computeTotals()" ng-disabled="!isEditable()">
+            <option value="0">0%</option>
+            <option value="5">5%</option>
+            <option value="12">12%</option>
+            <option value="18">18%</option>
+          </select>
+          <input type="text" readonly ng-value="gstAmount().toFixed(2)" />
+        </div>
+        <div class="total-field">
+          <label>Grand Total</label>
+          <input type="text" readonly ng-value="grandTotal().toFixed(2)" />
+        </div>
+        <div style="margin-left:auto;display:flex;gap:6px;">
+          <button class="btn btn-primary" ng-click="saveEstimate()" ng-disabled="savingEstimate">
+            <span ng-if="savingEstimate"><span class="spinner"></span></span>
+            <span ng-if="!savingEstimate && isEditable()">Generate Estimate</span>
+            <span ng-if="!savingEstimate && !isEditable()">View Abstract</span>
+          </button>
+          <button class="btn btn-secondary" ng-click="resetForm()" ng-if="currentUser.role === 'MANAGER'">New</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Estimates -->
+    <div class="estimates-panel">
+      <div class="estimates-header">
+        <span>Saved Estimates</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <select ng-model="filterStatus" ng-change="loadSavedEstimates()" style="border:1px solid rgba(255,255,255,0.3);background:transparent;color:#fff;border-radius:var(--radius-sm);padding:2px 6px;font-size:11px;">
+            <option value="">All Status</option>
+            <option value="DRAFT">Draft</option>
+            <option value="SUBMITTED_TO_DGM">Pending DGM</option>
+            <option value="SUBMITTED_TO_GM">Pending GM</option>
+            <option value="SUBMITTED_TO_CGM">Pending CGM</option>
+            <option value="SUBMITTED_TO_DOP">Pending DOP</option>
+            <option value="APPROVED">Approved</option>
+          </select>
+          <button class="btn btn-sm" style="background:transparent;border:1px solid rgba(255,255,255,0.4);color:#fff;"
+                  ng-click="loadSavedEstimates()">Refresh</button>
+        </div>
+      </div>
+      <div class="estimates-body">
+        <!-- Summary View for GM/CGM/DOP -->
+        <div ng-if="summaryData.length > 0 && !selectedSummaryKey" style="margin-bottom:12px;">
+          <div style="font-weight:700;font-size:12px;color:#2c3e50;margin-bottom:6px;">Summary by {{summaryGroupBy}} (click to drill down)</div>
+          <table class="estimates-table">
+            <thead>
+              <tr>
+                <th style="width:30%">{{summaryGroupBy}}</th>
+                <th style="width:12%">Total</th>
+                <th style="width:15%">Draft</th>
+                <th style="width:15%">Pending</th>
+                <th style="width:15%">Approved</th>
+                <th style="width:13%">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="s in summaryData" ng-click="selectSummaryRow(s.key)" style="cursor:pointer;">
+                <td class="font-bold" style="color:#2c3e50;">{{s.key}}</td>
+                <td class="text-center">{{s.total}}</td>
+                <td class="text-center"><span class="badge badge-draft">{{s.draft}}</span></td>
+                <td class="text-center"><span class="badge badge-pending">{{s.pending}}</span></td>
+                <td class="text-center"><span class="badge badge-approved">{{s.approved}}</span></td>
+                <td class="text-right font-bold" style="color:#27ae60;">{{s.grandTotal | number:2}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Drilldown View -->
+        <div ng-if="selectedSummaryKey" style="margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <button class="btn btn-sm btn-secondary" ng-click="clearSummaryDrilldown()">&#8592; Back to Summary</button>
+            <span style="font-weight:700;font-size:12px;color:#2c3e50;">{{selectedSummaryKey}} — {{drilldownEstimates.length}} estimates</span>
+          </div>
+        </div>
+
+        <table class="estimates-table">
+          <thead>
+            <tr>
+              <th style="width:8%">ID</th>
+              <th style="width:35%">Name Of Work</th>
+              <th style="width:14%">Total</th>
+              <th style="width:14%">Status</th>
+              <th style="width:16%">Date</th>
+              <th style="width:13%">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="est in (selectedSummaryKey ? drilldownEstimates : savedEstimates)">
+              <td class="text-center">{{est.id}}</td>
+              <td class="font-bold" style="color:#2c3e50;">{{est.nameOfWork || 'Unnamed Work'}}</td>
+              <td class="text-right font-bold" style="color:#27ae60;">{{est.grandTotal | number:2}}</td>
+              <td class="text-center">
+                <span class="badge" ng-class="getStatusBadgeClass(est.status)">{{getStatusLabel(est.status)}}</span>
+              </td>
+              <td class="text-center text-muted">{{formatDate(est.createdAt)}}</td>
+              <td class="text-center">
+                <button class="btn btn-primary btn-sm" ng-click="loadEstimate(est.id)">Load</button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteEstimate(est.id)"
+                        ng-if="currentUser.role === 'MANAGER' && (!est.status || est.status === 'DRAFT')">Del</button>
+              </td>
+            </tr>
+            <tr ng-if="savedEstimates.length === 0">
+              <td colspan="6" class="text-center text-muted" style="font-style:italic;padding:12px;">No saved estimates found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    angular.module('hmwssbApp', ['hmwssbShared'])
+      .controller('MeasurementCtrl', ['$scope', '$http', '$timeout', 'AuthService', 'StatusService', 'ModalService', 'Utils',
+        function ($scope, $http, $timeout, AuthService, StatusService, ModalService, Utils) {
+
+          if (!AuthService.requireLogin()) return;
+          $scope.currentUser = AuthService.getUser();
+          $scope.currentEstimateStatus = 'DRAFT';
+
+          // Signature fields
+          $scope.currentPreparedByName = null;
+          $scope.currentPreparedByDesignation = null;
+          $scope.currentVerifiedByName = null;
+          $scope.currentVerifiedByDesignation = null;
+          $scope.currentRecommendedByName = null;
+          $scope.currentRecommendedByDesignation = null;
+          $scope.currentForwardedByName = null;
+          $scope.currentForwardedByDesignation = null;
+          $scope.currentSanctionedByName = null;
+          $scope.currentSanctionedByDesignation = null;
+
+          $scope.isEditable = function () {
+            return StatusService.isEditable($scope.currentEstimateStatus, $scope.currentUser.role);
+          };
+
+          $scope.getStepClass = function (stepStatus) {
+            var active = $scope.currentEstimateStatus || 'DRAFT';
+            if (active === stepStatus) return 'active';
+            var order = StatusService.getStatusOrder();
+            if (order.indexOf(active) > order.indexOf(stepStatus)) return 'completed';
+            return '';
+          };
+
+          $scope.getStepLabelClass = function (stepStatus) {
+            var active = $scope.currentEstimateStatus || 'DRAFT';
+            if (active === stepStatus) return 'active';
+            var order = StatusService.getStatusOrder();
+            if (order.indexOf(active) > order.indexOf(stepStatus)) return 'completed';
+            return '';
+          };
+
+          $scope.getStatusLabel = StatusService.getLabel;
+          $scope.getStatusBadgeClass = StatusService.getBadgeClass;
+          $scope.formatDate = Utils.formatDate;
+
+          $scope.logout = function () { AuthService.logout(); };
+
+          $scope.locationOptions = [];
+          $scope.selectedLocationKey = '';
+
+          function buildLocationOptions() {
+            var role = $scope.currentUser.role;
+            var locs = $scope.currentUser.locations || [];
+            var options = [];
+
+            if (role === 'MANAGER') {
+              locs.forEach(function(loc, i) {
+                if (loc.wardName) {
+                  options.push({
+                    key: 'ward_' + i,
+                    label: loc.circleName + ' \u2014 ' + loc.wardName,
+                    corp: loc.corp, zone: loc.zoneName, division: loc.division,
+                    circle: loc.circleName, ward: loc.wardName, filterType: 'ward'
+                  });
+                }
+              });
+              if (options.length === 0) {
+                locs.forEach(function(loc, i) {
+                  options.push({
+                    key: 'loc_' + i,
+                    label: (loc.circleName || 'Unknown') + (loc.wardName ? ' \u2014 ' + loc.wardName : ''),
+                    corp: loc.corp, zone: loc.zoneName, division: loc.division,
+                    circle: loc.circleName, ward: loc.wardName || '', filterType: 'circle'
+                  });
+                });
+              }
+            } else if (role === 'DGM') {
+              var userCircle = null, userCorp = null, userZone = null, userDiv = null;
+              for (var i = 0; i < locs.length; i++) {
+                if (locs[i].circleName) { userCircle = locs[i].circleName; userCorp = locs[i].corp; userZone = locs[i].zoneName; userDiv = locs[i].division; break; }
+              }
+              if (userCircle) {
+                options.push({
+                  key: 'circle_all',
+                  label: 'All Wards in ' + userCircle,
+                  corp: userCorp, zone: userZone, division: userDiv,
+                  circle: userCircle, ward: '', filterType: 'circle'
+                });
+                var wardsInCircle = getWardsForCircle(userCorp, userZone, userDiv, userCircle);
+                wardsInCircle.forEach(function(ward) {
+                  options.push({
+                    key: 'ward_' + ward,
+                    label: '  \u2514 ' + ward,
+                    corp: userCorp, zone: userZone, division: userDiv,
+                    circle: userCircle, ward: ward, filterType: 'ward'
+                  });
+                });
+              }
+            } else if (role === 'GM') {
+              var divisions = [];
+              locs.forEach(function(loc) {
+                if (loc.division && divisions.indexOf(loc.division) === -1) divisions.push(loc.division);
+              });
+              var userCorp = null, userZone = null;
+              for (var i = 0; i < locs.length; i++) {
+                if (locs[i].corp) { userCorp = locs[i].corp; userZone = locs[i].zoneName; break; }
+              }
+              divisions.forEach(function(div) {
+                options.push({
+                  key: 'div_' + div,
+                  label: 'All Wards in Division ' + div,
+                  corp: userCorp, zone: userZone, division: div,
+                  circle: '', ward: '', filterType: 'division'
+                });
+                var circlesInDiv = getCirclesForDivision(userCorp, userZone, div);
+                circlesInDiv.forEach(function(cir) {
+                  options.push({
+                    key: 'cir_' + div + '_' + cir,
+                    label: '  \u2514 ' + cir,
+                    corp: userCorp, zone: userZone, division: div,
+                    circle: cir, ward: '', filterType: 'circle'
+                  });
+                });
+              });
+            } else if (role === 'CGM') {
+              var userCorp = null, userZone = null;
+              for (var i = 0; i < locs.length; i++) {
+                if (locs[i].zoneName) { userCorp = locs[i].corp; userZone = locs[i].zoneName; break; }
+              }
+              if (userZone) {
+                options.push({
+                  key: 'zone_all',
+                  label: 'All Wards in ' + userZone,
+                  corp: userCorp, zone: userZone, division: '',
+                  circle: '', ward: '', filterType: 'zone'
+                });
+                var divsInZone = getDivisionsForZone(userCorp, userZone);
+                divsInZone.forEach(function(div) {
+                  options.push({
+                    key: 'div_' + div,
+                    label: '  \u2514 Division ' + div,
+                    corp: userCorp, zone: userZone, division: div,
+                    circle: '', ward: '', filterType: 'division'
+                  });
+                });
+              }
+            }
+
+            $scope.locationOptions = options;
+            if (options.length > 0) {
+              $scope.selectedLocationKey = options[0].key;
+              onLocationSelect(options[0]);
+            }
+          }
+
+          function getWardsForCircle(corp, zone, div, circle) {
+            if (!WARD_HIERARCHY[corp] || !WARD_HIERARCHY[corp][zone]) return [];
+            if (!WARD_HIERARCHY[corp][zone][div]) return [];
+            return WARD_HIERARCHY[corp][zone][div][circle] || [];
+          }
+
+          function getCirclesForDivision(corp, zone, div) {
+            if (!WARD_HIERARCHY[corp] || !WARD_HIERARCHY[corp][zone]) return [];
+            if (!WARD_HIERARCHY[corp][zone][div]) return [];
+            return Object.keys(WARD_HIERARCHY[corp][zone][div]);
+          }
+
+          function getDivisionsForZone(corp, zone) {
+            if (!WARD_HIERARCHY[corp] || !WARD_HIERARCHY[corp][zone]) return [];
+            return Object.keys(WARD_HIERARCHY[corp][zone]);
+          }
+
+          function onLocationSelect(opt) {
+            populateHierarchy(opt.corp, opt.zone, opt.division, opt.circle, opt.ward);
+            $scope.filterWard = opt.ward || '';
+            $scope.filterCircle = opt.circle || '';
+            $scope.filterDivision = opt.division || '';
+            $scope.filterZone = opt.zone || '';
+            $scope.loadSavedEstimates();
+          }
+
+          $scope.onLocationChange = function() {
+            var opt = $scope.locationOptions.find(function(o) { return o.key === $scope.selectedLocationKey; });
+            if (opt) onLocationSelect(opt);
+          };
+
+          var API_BASE = APP_CONFIG.API_BASE;
+          var SEARCH_DEBOUNCE_MS = APP_CONFIG.SEARCH_DEBOUNCE_MS;
+          var MIN_SEARCH_LENGTH = APP_CONFIG.MIN_SEARCH_LENGTH;
+
+          $scope.nameOfWork = '';
+          $scope.gstPercent = '0';
+          $scope.apiError = null;
+          var searchTimers = {};
+
+          /* ── Hierarchy ── */
+          $scope.hierarchyData = WARD_HIERARCHY;
+          $scope.corps = Object.keys($scope.hierarchyData);
+          $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+          $scope.selectedCorp = ''; $scope.selectedZone = ''; $scope.selectedDivision = '';
+          $scope.selectedCircle = ''; $scope.selectedWard = '';
+
+          $scope.onCorpChange = function () {
+            $scope.selectedZone = ''; $scope.selectedDivision = ''; $scope.selectedCircle = ''; $scope.selectedWard = '';
+            $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+            if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
+              $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
+            }
+          };
+
+          $scope.onZoneChange = function () {
+            $scope.selectedDivision = ''; $scope.selectedCircle = ''; $scope.selectedWard = '';
+            $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+            if ($scope.selectedCorp && $scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
+              $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
+            }
+          };
+
+          $scope.onDivisionChange = function () {
+            $scope.selectedCircle = ''; $scope.selectedWard = '';
+            $scope.circles = []; $scope.wards = [];
+            if ($scope.selectedCorp && $scope.selectedZone && $scope.selectedDivision &&
+                $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
+              $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
+            }
+          };
+
+          $scope.onCircleChange = function () {
+            $scope.selectedWard = ''; $scope.wards = [];
+            if ($scope.selectedCorp && $scope.selectedZone && $scope.selectedDivision && $scope.selectedCircle &&
+                $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
+              $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
+            }
+          };
+
+          function populateHierarchy(corp, zone, div, circle, ward) {
+            $scope.selectedCorp = corp || '';
+            if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
+              $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
+              $scope.selectedZone = zone || '';
+              if ($scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
+                $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
+                $scope.selectedDivision = div || '';
+                if ($scope.selectedDivision && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
+                  $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
+                  $scope.selectedCircle = circle || '';
+                  if ($scope.selectedCircle && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
+                    $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
+                    $scope.selectedWard = ward || '';
+                  }
+                }
+              }
+            } else {
+              $scope.selectedZone = ''; $scope.selectedDivision = ''; $scope.selectedCircle = ''; $scope.selectedWard = '';
+              $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+            }
+          }
+
+          /* ── Rows ── */
+          function newRow() {
+            return { isMaterial: 'Yes', description: '', num: 1, length: null, breadth: null, depth: null,
+                     quantity: 1, rate: 0, unit: '', amount: 0, suggestions: [], showSuggestions: false, searching: false, itemId: null };
+          }
+          $scope.rows = [newRow()];
+
+          /* ── Autocomplete ── */
+          $scope.activeRow = null;
+
+          function scrollActiveIntoView() {
+            $timeout(function () {
+              var el = document.querySelector('.suggestions-list li.active');
+              if (el) el.scrollIntoView({ block: 'nearest' });
+            }, 10);
+          }
+
+          $scope.onDescriptionFocus = function ($event, row) {
+            $scope.activeRow = row;
+            $scope.positionDropdown($event.target);
+            if (row.description && row.description.length >= MIN_SEARCH_LENGTH && row.suggestions && row.suggestions.length > 0) {
+              row.showSuggestions = true;
+            } else if (row.description && row.description.length >= MIN_SEARCH_LENGTH) {
+              $scope.onDescriptionKeyup($event, row);
+            }
+          };
+
+          $scope.onDescriptionKeydown = function ($event, row) {
+            var s = row.suggestions || [];
+            if ($event.keyCode === 40) {
+              $event.preventDefault();
+              if (s.length > 0) { row.selectedIndex = (row.selectedIndex === undefined || row.selectedIndex === null) ? 0 : Math.min(row.selectedIndex + 1, s.length - 1); scrollActiveIntoView(); }
+            } else if ($event.keyCode === 38) {
+              $event.preventDefault();
+              if (s.length > 0) { row.selectedIndex = (row.selectedIndex === undefined || row.selectedIndex === null) ? s.length - 1 : Math.max(row.selectedIndex - 1, 0); scrollActiveIntoView(); }
+            } else if ($event.keyCode === 13) {
+              $event.preventDefault();
+              if (row.showSuggestions && s.length > 0 && row.selectedIndex >= 0) { $scope.selectItem(row, s[row.selectedIndex]); }
+            } else if ($event.keyCode === 27) {
+              $event.preventDefault();
+              row.showSuggestions = false;
+              $scope.activeRow = null;
+            }
+          };
+
+          $scope.onDescriptionKeyup = function ($event, row) {
+            if ([38, 40, 13, 27].indexOf($event.keyCode) !== -1) return;
+            var query = row.description;
+            if (!query || query.length < MIN_SEARCH_LENGTH) {
+              row.suggestions = []; row.showSuggestions = false;
+              if ($scope.activeRow === row) $scope.activeRow = null;
+              return;
+            }
+            $scope.activeRow = row;
+            $scope.positionDropdown($event.target);
+            var key = row.$$hashKey;
+            if (searchTimers[key]) $timeout.cancel(searchTimers[key]);
+            searchTimers[key] = $timeout(function () {
+              row.searching = true; row.showSuggestions = true;
+              $http.get(API_BASE + '/items/search', { params: { q: query } }).then(function (r) {
+                row.suggestions = r.data; row.searching = false;
+                row.showSuggestions = r.data.length > 0; row.selectedIndex = 0;
+                $scope.apiError = null;
+              }, function () {
+                row.searching = false; row.suggestions = []; row.showSuggestions = false;
+                $scope.apiError = 'Could not reach the server. Is the application running?';
+              });
+            }, SEARCH_DEBOUNCE_MS);
+          };
+
+          $scope.selectItem = function (row, item) {
+            row.description = item.itemDescription; row.rate = item.rate || 0;
+            row.unit = item.unit || ''; row.itemId = item.slno;
+            row.suggestions = []; row.showSuggestions = false; row.selectedIndex = 0;
+            if ($scope.activeRow === row) $scope.activeRow = null;
+            computeAmount(row);
+          };
+
+          $scope.dropdownTop = '0px';
+          $scope.dropdownLeft = '0px';
+
+          $scope.positionDropdown = function (target) {
+            if (!target) return;
+            var rect = target.getBoundingClientRect();
+            $scope.dropdownTop = (rect.bottom + window.scrollY + 4) + 'px';
+            $scope.dropdownLeft = (rect.left + window.scrollX) + 'px';
+          };
+
+          $scope.closeAllSuggestions = function () {
+            $scope.rows.forEach(function (r) { r.showSuggestions = false; });
+            $scope.activeRow = null;
+          };
+
+          /* ── Calculations ── */
+          function computeAmount(row) { row.amount = (row.quantity || 0) * (row.rate || 0); }
+
+          $scope.computeRow = function (row) {
+            var l = row.length, b = row.breadth, d = row.depth, num = row.num || 1;
+            if (l === null && b === null && d === null) { row.quantity = num; }
+            else { row.quantity = num * (l || 1) * (b || 1) * (d || 1); }
+            computeAmount(row);
+          };
+
+          $scope.rowTotal = function () { return $scope.rows.reduce(function (s, r) { return s + (r.amount || 0); }, 0); };
+          $scope.gstAmount = function () { return $scope.rowTotal() * (parseFloat($scope.gstPercent) || 0) / 100; };
+          $scope.grandTotal = function () { return $scope.rowTotal() + $scope.gstAmount(); };
+          $scope.computeTotals = function () {};
+
+          $scope.addRow = function () { $scope.rows.push(newRow()); };
+          $scope.removeRow = function (index) { if ($scope.rows.length > 1) $scope.rows.splice(index, 1); };
+
+          /* ── Save / Load ── */
+          $scope.savedEstimates = [];
+          $scope.savingEstimate = false;
+          $scope.currentEstimateId = null;
+
+          $scope.loadSavedEstimates = function () {
+            var params = { officerPhone: $scope.currentUser.phoneNumber };
+            if ($scope.filterWard) params.wardName = $scope.filterWard;
+            if ($scope.filterCircle) params.circleName = $scope.filterCircle;
+            if ($scope.filterDivision) params.division = $scope.filterDivision;
+            if ($scope.filterStatus) params.status = $scope.filterStatus;
+            $http.get(API_BASE + '/estimates', { params: params })
+              .then(function (r) { $scope.savedEstimates = r.data; buildSummary(); },
+                    function () { $scope.apiError = 'Could not load saved estimates.'; });
+          };
+
+          $scope.filterWard = '';
+          $scope.filterCircle = '';
+          $scope.filterDivision = '';
+          $scope.filterZone = '';
+          $scope.filterStatus = '';
+          $scope.summaryData = [];
+          $scope.summaryGroupBy = '';
+          $scope.selectedSummaryKey = '';
+          $scope.drilldownEstimates = [];
+
+          function buildSummary() {
+            var role = $scope.currentUser.role;
+            if (role === 'MANAGER' || role === 'DGM') {
+              $scope.summaryData = [];
+              return;
+            }
+            var groupField = role === 'GM' ? 'circleName' : role === 'CGM' ? 'division' : 'zoneName';
+            $scope.summaryGroupBy = groupField === 'circleName' ? 'Circle' : groupField === 'division' ? 'Division' : 'Zone';
+            var groups = {};
+            $scope.savedEstimates.forEach(function (est) {
+              var key = est[groupField] || 'Unknown';
+              if (!groups[key]) groups[key] = { total: 0, draft: 0, pending: 0, approved: 0, grandTotal: 0 };
+              groups[key].total++;
+              var s = est.status || 'DRAFT';
+              if (s === 'DRAFT') groups[key].draft++;
+              else if (s === 'APPROVED') groups[key].approved++;
+              else groups[key].pending++;
+              groups[key].grandTotal += est.grandTotal || 0;
+            });
+            var arr = [];
+            Object.keys(groups).forEach(function (k) {
+              arr.push({ key: k, total: groups[k].total, draft: groups[k].draft, pending: groups[k].pending, approved: groups[k].approved, grandTotal: groups[k].grandTotal });
+            });
+            $scope.summaryData = arr;
+            $scope.selectedSummaryKey = '';
+            $scope.drilldownEstimates = [];
+          }
+
+          $scope.selectSummaryRow = function (key) {
+            $scope.selectedSummaryKey = key;
+            var role = $scope.currentUser.role;
+            var field = role === 'GM' ? 'circleName' : role === 'CGM' ? 'division' : 'zoneName';
+            $scope.drilldownEstimates = $scope.savedEstimates.filter(function (est) {
+              return (est[field] || 'Unknown') === key;
+            });
+          };
+
+          $scope.clearSummaryDrilldown = function () {
+            $scope.selectedSummaryKey = '';
+            $scope.drilldownEstimates = [];
+          };
+
+          $scope.saveEstimate = function () {
+            if (!$scope.nameOfWork || $scope.nameOfWork.trim() === '') {
+              ModalService.alert('Required', 'Please enter a Name of Work before saving.');
+              return;
+            }
+            var itemsMapped = $scope.rows.map(function (row, idx) {
+              return { sno: idx + 1, isMaterial: row.isMaterial, description: row.description,
+                       num: row.num || 1, length: row.length, breadth: row.breadth, depth: row.depth,
+                       quantity: row.quantity || 0, rate: row.rate || 0, unit: row.unit || '', amount: row.amount || 0 };
+            });
+            var estimateData = {
+              id: $scope.currentEstimateId, status: $scope.currentEstimateStatus || 'DRAFT',
+              nameOfWork: $scope.nameOfWork, gstPercent: parseFloat($scope.gstPercent) || 0,
+              items: itemsMapped, corp: $scope.selectedCorp, zoneName: $scope.selectedZone,
+              division: $scope.selectedDivision, circleName: $scope.selectedCircle, wardName: $scope.selectedWard,
+              officerPhone: $scope.currentUser.phoneNumber,
+              preparedByName: $scope.currentPreparedByName, preparedByDesignation: $scope.currentPreparedByDesignation,
+              verifiedByName: $scope.currentVerifiedByName, verifiedByDesignation: $scope.currentVerifiedByDesignation,
+              recommendedByName: $scope.currentRecommendedByName, recommendedByDesignation: $scope.currentRecommendedByDesignation,
+              forwardedByName: $scope.currentForwardedByName, forwardedByDesignation: $scope.currentForwardedByDesignation,
+              sanctionedByName: $scope.currentSanctionedByName, sanctionedByDesignation: $scope.currentSanctionedByDesignation
+            };
+            localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
+            window.location.href = 'abstract.html';
+          };
+
+          $scope.loadEstimate = function (id) {
+            $scope.apiError = null;
+            $http.get(API_BASE + '/estimates/' + id).then(function (r) {
+              var est = r.data;
+              $scope.currentEstimateId = est.id;
+              $scope.currentEstimateStatus = est.status || 'DRAFT';
+              $scope.currentPreparedByName = est.preparedByName;
+              $scope.currentPreparedByDesignation = est.preparedByDesignation;
+              $scope.currentVerifiedByName = est.verifiedByName;
+              $scope.currentVerifiedByDesignation = est.verifiedByDesignation;
+              $scope.currentRecommendedByName = est.recommendedByName;
+              $scope.currentRecommendedByDesignation = est.recommendedByDesignation;
+              $scope.currentForwardedByName = est.forwardedByName;
+              $scope.currentForwardedByDesignation = est.forwardedByDesignation;
+              $scope.currentSanctionedByName = est.sanctionedByName;
+              $scope.currentSanctionedByDesignation = est.sanctionedByDesignation;
+              $scope.nameOfWork = est.nameOfWork;
+              $scope.gstPercent = String(est.gstPercent);
+              populateHierarchy(est.corp, est.zoneName, est.division, est.circleName, est.wardName);
+              $scope.rows = est.items.map(function (item) {
+                return { isMaterial: item.isMaterial || 'Yes', description: item.description || '',
+                         num: item.num || 1, length: item.length || 0, breadth: item.breadth || 0,
+                         depth: item.depth || 0, quantity: item.quantity || 0, rate: item.rate || 0,
+                         unit: item.unit || '', amount: item.amount || 0, suggestions: [], showSuggestions: false, searching: false, itemId: item.id };
+              });
+              if ($scope.rows.length === 0) $scope.rows = [newRow()];
+            }, function () { $scope.apiError = 'Could not load the estimate.'; });
+          };
+
+          $scope.deleteEstimate = function (id) {
+            ModalService.confirm('Delete Estimate', 'Are you sure you want to delete estimate #' + id + '?', function () {
+              $scope.apiError = null;
+              $http.delete(API_BASE + '/estimates/' + id, { params: { officerPhone: $scope.currentUser.phoneNumber } })
+                .then(function () {
+                  if ($scope.currentEstimateId === id) $scope.resetForm();
+                  $scope.loadSavedEstimates();
+                }, function () { $scope.apiError = 'Could not delete the estimate.'; });
+            });
+          };
+
+          $scope.resetForm = function () {
+            $scope.currentEstimateId = null;
+            $scope.currentEstimateStatus = 'DRAFT';
+            $scope.currentPreparedByName = null; $scope.currentPreparedByDesignation = null;
+            $scope.currentVerifiedByName = null; $scope.currentVerifiedByDesignation = null;
+            $scope.currentRecommendedByName = null; $scope.currentRecommendedByDesignation = null;
+            $scope.currentForwardedByName = null; $scope.currentForwardedByDesignation = null;
+            $scope.currentSanctionedByName = null; $scope.currentSanctionedByDesignation = null;
+            $scope.nameOfWork = ''; $scope.gstPercent = '0';
+            $scope.rows = [newRow()];
+            populateHierarchy('', '', '', '', '');
+            localStorage.removeItem(APP_CONFIG.ESTIMATE_KEY);
+          };
+
+          /* ── Init ── */
+          buildLocationOptions();
+
+          var savedState = localStorage.getItem(APP_CONFIG.ESTIMATE_KEY);
+          if (savedState) {
+            try {
+              var est = JSON.parse(savedState);
+              $scope.currentEstimateId = est.id;
+              $scope.currentEstimateStatus = est.status || 'DRAFT';
+              $scope.currentPreparedByName = est.preparedByName;
+              $scope.currentPreparedByDesignation = est.preparedByDesignation;
+              $scope.currentVerifiedByName = est.verifiedByName;
+              $scope.currentVerifiedByDesignation = est.verifiedByDesignation;
+              $scope.currentRecommendedByName = est.recommendedByName;
+              $scope.currentRecommendedByDesignation = est.recommendedByDesignation;
+              $scope.currentForwardedByName = est.forwardedByName;
+              $scope.currentForwardedByDesignation = est.forwardedByDesignation;
+              $scope.currentSanctionedByName = est.sanctionedByName;
+              $scope.currentSanctionedByDesignation = est.sanctionedByDesignation;
+              $scope.nameOfWork = est.nameOfWork;
+              $scope.gstPercent = String(est.gstPercent);
+              populateHierarchy(est.corp, est.zoneName, est.division, est.circleName, est.wardName);
+              if (est.items && est.items.length > 0) {
+                $scope.rows = est.items.map(function (item) {
+                  return { isMaterial: item.isMaterial || 'Yes', description: item.description || '',
+                           num: item.num || 1, length: item.length || 0, breadth: item.breadth || 0,
+                           depth: item.depth || 0, quantity: item.quantity || 0, rate: item.rate || 0,
+                           unit: item.unit || '', amount: item.amount || 0, suggestions: [], showSuggestions: false, searching: false, itemId: item.id };
+                });
+              }
+            } catch (e) { console.error('Error parsing saved state', e); }
+          }
+        }
+      ]);
+  </script>
+
+  <!-- Global Suggestions Dropdown -->
+  <div class="global-suggestions" ng-show="activeRow && activeRow.showSuggestions"
+       ng-style="{'top': dropdownTop, 'left': dropdownLeft, 'width': '650px', 'display': activeRow && activeRow.showSuggestions ? 'block' : 'none'}"
+       ng-click="$event.stopPropagation()">
+    <div class="search-loading" ng-if="activeRow.searching">
+      <span class="spinner spinner-dark"></span> Searching items...
+    </div>
+    <div class="no-results" ng-if="!activeRow.searching && activeRow.suggestions.length === 0">No results found</div>
+    <ul class="suggestions-list" ng-if="!activeRow.searching && activeRow.suggestions.length > 0">
+      <li ng-repeat="item in activeRow.suggestions" ng-class="{active: activeRow.selectedIndex === $index}"
+          ng-mousedown="selectItem(activeRow, item)">{{item.itemDescription}}</li>
+    </ul>
+  </div>
+
+</body>
+</html>

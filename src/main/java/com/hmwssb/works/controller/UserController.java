@@ -49,7 +49,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("User name is required.");
         }
         if (user.getPassword() == null || user.getPassword().strip().isEmpty()) {
-            user.setPassword("12345678"); // Default password
+            user.setPassword("1234"); // Default password
         }
 
         // Standardize phone number format

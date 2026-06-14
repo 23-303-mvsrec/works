@@ -34,10 +34,9 @@ public class EstimateController {
 
         return userRepository.findById(phone.strip())
             .map(user -> {
-                String role = user.getRole();
                 if (estimate.getId() == null) {
-                    if (!"MANAGER".equalsIgnoreCase(role)) {
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only MANAGER can create a new estimate.");
+                    if (!hasRoleAtLocation(user, "MANAGER", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a MANAGER assigned to this ward can create this estimate.");
                     }
                     estimate.setStatus("DRAFT");
                     estimate.setPreparedByName(user.getName());
@@ -50,18 +49,18 @@ public class EstimateController {
                             String currentStatus = existing.getStatus();
                             if (currentStatus == null) currentStatus = "DRAFT";
 
-                            boolean allowed = false;
-                            if ("DRAFT".equalsIgnoreCase(currentStatus) && "MANAGER".equalsIgnoreCase(role)) {
-                                allowed = true;
-                            } else if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus) && "DGM".equalsIgnoreCase(role)) {
-                                allowed = true;
-                            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus) && "GM".equalsIgnoreCase(role)) {
-                                allowed = true;
-                            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus) && "CGM".equalsIgnoreCase(role)) {
-                                allowed = true;
+                            String requiredRole = null;
+                            if ("DRAFT".equalsIgnoreCase(currentStatus)) {
+                                requiredRole = "MANAGER";
+                            } else if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+                                requiredRole = "DGM";
+                            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+                                requiredRole = "GM";
+                            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+                                requiredRole = "CGM";
                             }
 
-                            if (!allowed) {
+                            if (requiredRole == null || !hasRoleAtLocation(user, requiredRole, existing.getCorp(), existing.getZoneName(), existing.getDivision(), existing.getCircleName(), existing.getWardName())) {
                                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                                     .body("You do not have permission to edit this estimate at its current status: " + currentStatus);
                             }
@@ -92,50 +91,56 @@ public class EstimateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Estimate>> list(@RequestParam(name = "officerPhone", required = false) String officerPhone) {
+    public ResponseEntity<?> list(
+            @RequestParam(name = "officerPhone", required = false) String officerPhone,
+            @RequestParam(name = "role", required = false) String activeRole,
+            @RequestParam(name = "corp", required = false) String corp,
+            @RequestParam(name = "zoneName", required = false) String zoneName,
+            @RequestParam(name = "division", required = false) String division,
+            @RequestParam(name = "circleName", required = false) String circleName,
+            @RequestParam(name = "wardName", required = false) String wardName) {
+
         if (officerPhone == null || officerPhone.trim().isEmpty()) {
             return ResponseEntity.ok(estimateRepository.findAll());
         }
 
-        return userRepository.findById(officerPhone.strip())
-                .map(user -> {
-                    List<Estimate> all = estimateRepository.findAll();
-                    String role = user.getRole();
-                    if ("DOP".equalsIgnoreCase(role)) {
-                        return ResponseEntity.ok(all);
-                    }
+        java.util.Optional<User> userOpt = userRepository.findById(officerPhone.strip());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Officer account not found.");
+        }
+        User user = userOpt.get();
 
-                    List<UserLocation> locs = user.getLocations();
-                    List<Estimate> filtered = all.stream().filter(est -> {
-                        if ("MANAGER".equalsIgnoreCase(role)) {
-                            if (user.getPhoneNumber().equals(est.getOfficerPhone())) {
-                                return true;
-                            }
-                            return locs.stream().anyMatch(loc ->
-                                safeEquals(loc.getCorp(), est.getCorp()) &&
-                                safeEquals(loc.getZoneName(), est.getZoneName()) &&
-                                safeEquals(loc.getDivision(), est.getDivision()) &&
-                                safeEquals(loc.getCircleName(), est.getCircleName()) &&
-                                safeEquals(loc.getWardName(), est.getWardName())
-                            );
-                        } else if ("DGM".equalsIgnoreCase(role) || "GM".equalsIgnoreCase(role)) {
-                            return locs.stream().anyMatch(loc ->
-                                safeEquals(loc.getCorp(), est.getCorp()) &&
-                                safeEquals(loc.getZoneName(), est.getZoneName()) &&
-                                safeEquals(loc.getDivision(), est.getDivision())
-                            );
-                        } else if ("CGM".equalsIgnoreCase(role)) {
-                            return locs.stream().anyMatch(loc ->
-                                safeEquals(loc.getCorp(), est.getCorp()) &&
-                                safeEquals(loc.getZoneName(), est.getZoneName())
-                            );
-                        }
-                        return false;
-                    }).toList();
+        if (activeRole == null || activeRole.trim().isEmpty()) {
+            return ResponseEntity.ok(List.of());
+        }
 
-                    return ResponseEntity.ok(filtered);
-                })
-                .orElseGet(() -> ResponseEntity.ok(estimateRepository.findAll()));
+        boolean hasAssignment = hasRoleAtLocation(user, activeRole, corp, zoneName, division, circleName, wardName);
+
+        if (!hasAssignment) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have access to this location/role scope.");
+        }
+
+        List<Estimate> all = estimateRepository.findAll();
+        List<Estimate> filtered = all.stream().filter(est -> {
+            if ("DOP".equalsIgnoreCase(activeRole)) {
+                return true;
+            }
+            if ("CGM".equalsIgnoreCase(activeRole)) {
+                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName());
+            }
+            if ("GM".equalsIgnoreCase(activeRole)) {
+                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName()) && safeEquals(division, est.getDivision());
+            }
+            if ("DGM".equalsIgnoreCase(activeRole)) {
+                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName()) && safeEquals(division, est.getDivision()) && safeEquals(circleName, est.getCircleName());
+            }
+            if ("MANAGER".equalsIgnoreCase(activeRole)) {
+                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName()) && safeEquals(division, est.getDivision()) && safeEquals(circleName, est.getCircleName()) && safeEquals(wardName, est.getWardName());
+            }
+            return false;
+        }).toList();
+
+        return ResponseEntity.ok(filtered);
     }
 
     @GetMapping("/{id}")
@@ -180,50 +185,76 @@ public class EstimateController {
         String currentStatus = estimate.getStatus();
         if (currentStatus == null) currentStatus = "DRAFT";
 
-        String role = user.getRole();
         if ("FORWARD".equalsIgnoreCase(action)) {
-            if ("MANAGER".equalsIgnoreCase(role) && "DRAFT".equalsIgnoreCase(currentStatus)) {
+            if ("DRAFT".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "MANAGER", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a MANAGER for this ward can forward this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_DGM");
                 estimate.setPreparedByName(user.getName());
                 estimate.setPreparedByDesignation(user.getDesignation());
-            } else if ("DGM".equalsIgnoreCase(role) && "SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "DGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DGM for this circle can verify this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_GM");
                 estimate.setVerifiedByName(user.getName());
                 estimate.setVerifiedByDesignation(user.getDesignation());
-            } else if ("GM".equalsIgnoreCase(role) && "SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "GM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a GM for this division can recommend this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_CGM");
                 estimate.setRecommendedByName(user.getName());
                 estimate.setRecommendedByDesignation(user.getDesignation());
-            } else if ("CGM".equalsIgnoreCase(role) && "SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "CGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a CGM for this zone can forward this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_DOP");
                 estimate.setForwardedByName(user.getName());
                 estimate.setForwardedByDesignation(user.getDesignation());
-            } else if ("DOP".equalsIgnoreCase(role) && "SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "DOP", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DOP can approve/sanction this estimate.");
+                }
                 estimate.setStatus("APPROVED");
                 estimate.setSanctionedByName(user.getName());
                 estimate.setSanctionedByDesignation(user.getDesignation());
             } else {
-                return ResponseEntity.badRequest().body("Invalid transition for role " + role + " and status " + currentStatus);
+                return ResponseEntity.badRequest().body("Invalid forward transition for status " + currentStatus);
             }
         } else if ("RETURN".equalsIgnoreCase(action)) {
-            if ("DGM".equalsIgnoreCase(role) && "SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+            if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "DGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DGM for this circle can return this estimate.");
+                }
                 estimate.setStatus("DRAFT");
                 estimate.setVerifiedByName(null);
                 estimate.setVerifiedByDesignation(null);
-            } else if ("GM".equalsIgnoreCase(role) && "SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "GM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a GM for this division can return this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_DGM");
                 estimate.setRecommendedByName(null);
                 estimate.setRecommendedByDesignation(null);
-            } else if ("CGM".equalsIgnoreCase(role) && "SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "CGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a CGM for this zone can return this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_GM");
                 estimate.setForwardedByName(null);
                 estimate.setForwardedByDesignation(null);
-            } else if ("DOP".equalsIgnoreCase(role) && "SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
+            } else if ("SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
+                if (!hasRoleAtLocation(user, "DOP", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DOP can return this estimate.");
+                }
                 estimate.setStatus("SUBMITTED_TO_CGM");
                 estimate.setSanctionedByName(null);
                 estimate.setSanctionedByDesignation(null);
             } else {
-                return ResponseEntity.badRequest().body("Invalid transition for role " + role + " and status " + currentStatus);
+                return ResponseEntity.badRequest().body("Invalid return transition for status " + currentStatus);
             }
         } else {
             return ResponseEntity.badRequest().body("Invalid action: " + action);
@@ -231,6 +262,28 @@ public class EstimateController {
 
         Estimate saved = estimateRepository.save(estimate);
         return ResponseEntity.ok(saved);
+    }
+
+    private boolean hasRoleAtLocation(User user, String requiredRole, String corp, String zoneName, String division, String circleName, String wardName) {
+        return user.getLocations().stream().anyMatch(loc -> {
+            if (!safeEquals(loc.getRole(), requiredRole)) return false;
+            if ("DOP".equalsIgnoreCase(requiredRole)) {
+                return safeEquals(loc.getCorp(), "Corporate");
+            }
+            if ("CGM".equalsIgnoreCase(requiredRole)) {
+                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName);
+            }
+            if ("GM".equalsIgnoreCase(requiredRole)) {
+                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName) && safeEquals(loc.getDivision(), division);
+            }
+            if ("DGM".equalsIgnoreCase(requiredRole)) {
+                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName) && safeEquals(loc.getDivision(), division) && safeEquals(loc.getCircleName(), circleName);
+            }
+            if ("MANAGER".equalsIgnoreCase(requiredRole)) {
+                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName) && safeEquals(loc.getDivision(), division) && safeEquals(loc.getCircleName(), circleName) && safeEquals(loc.getWardName(), wardName);
+            }
+            return false;
+        });
     }
 
     private boolean safeEquals(String s1, String s2) {

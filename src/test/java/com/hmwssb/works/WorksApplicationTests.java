@@ -80,7 +80,8 @@ class WorksApplicationTests {
 				.andExpect(jsonPath("$[*].itemDescription", hasItem("Lowering C.I. Pipes in trench")))
 				.andExpect(jsonPath("$[*].itemDescription", hasItem("Lowering D.I. Pipes in ground")));
 
-		// 4. Search with non-existent keyword combination (should not return either of our test items)
+		// 4. Search with non-existent keyword combination (should not return either of
+		// our test items)
 		mockMvc.perform(get("/api/items/search").param("q", "Lowering C.I. ground"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[*].itemDescription", not(hasItem("Lowering C.I. Pipes in trench"))))
@@ -177,7 +178,8 @@ class WorksApplicationTests {
 
 		try {
 			// 1. Manager (7995010510) forwards DRAFT -> SUBMITTED_TO_DGM
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -202,7 +204,8 @@ class WorksApplicationTests {
 					.andExpect(status().isForbidden());
 
 			// 3. DGM (7331185790) forwards SUBMITTED_TO_DGM -> SUBMITTED_TO_GM
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -214,8 +217,10 @@ class WorksApplicationTests {
 					.andExpect(jsonPath("$.status").value("SUBMITTED_TO_GM"))
 					.andExpect(jsonPath("$.verifiedByName").value("T.N SAINATH GOUD"));
 
-			// 4. DGM (7331185790) tries to forward again (should be blocked as it's now with GM)
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			// 4. DGM (7331185790) tries to forward again (should be blocked as it's now
+			// with GM)
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -226,7 +231,8 @@ class WorksApplicationTests {
 					.andExpect(status().isBadRequest());
 
 			// 5. GM (9989994708) returns SUBMITTED_TO_GM -> SUBMITTED_TO_DGM
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -239,7 +245,8 @@ class WorksApplicationTests {
 					.andExpect(jsonPath("$.recommendedByName").value((String) null)); // signature cleared
 
 			// 6. DGM forwards SUBMITTED_TO_DGM -> SUBMITTED_TO_GM again
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -250,7 +257,8 @@ class WorksApplicationTests {
 					.andExpect(status().isOk());
 
 			// 7. GM (9989994708) forwards SUBMITTED_TO_GM -> SUBMITTED_TO_CGM
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -263,7 +271,8 @@ class WorksApplicationTests {
 					.andExpect(jsonPath("$.recommendedByName").value("M.MAHENDER"));
 
 			// 8. CGM (9989989507) forwards SUBMITTED_TO_CGM -> SUBMITTED_TO_DOP
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -276,7 +285,8 @@ class WorksApplicationTests {
 					.andExpect(jsonPath("$.forwardedByName").value("P.NAGENDRA KUMAR"));
 
 			// 9. DOP (9989999753) approves SUBMITTED_TO_DOP -> APPROVED
-			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/estimates/" + estId + "/action")
+			mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+					.post("/api/estimates/" + estId + "/action")
 					.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
 					.content("""
 							{
@@ -287,6 +297,85 @@ class WorksApplicationTests {
 					.andExpect(status().isOk())
 					.andExpect(jsonPath("$.status").value("APPROVED"))
 					.andExpect(jsonPath("$.sanctionedByName").value("Vasa SatyaNarayana"));
+
+		} finally {
+			estimateRepository.deleteById(estId);
+		}
+	}
+
+	@Test
+	void testRoleSpecificLocationQueryValidation() throws Exception {
+		// 1. Create a mock estimate for Ward 51 under Circle 11
+		com.hmwssb.works.model.Estimate est = new com.hmwssb.works.model.Estimate();
+		est.setNameOfWork("Scoped Estimate Test");
+		est.setGstPercent(18.0);
+		est.setGrandTotal(5000.0);
+		est.setCorp("MMC");
+		est.setZoneName("LB Nagar");
+		est.setDivision("5");
+		est.setCircleName("11 - Nagole");
+		est.setWardName("51 - Kuntloor");
+		est.setOfficerPhone("7995010510"); // MANAGER (K.RAMAKRISHNA GOUD)
+		est.setStatus("DRAFT");
+
+		final com.hmwssb.works.model.Estimate saved = estimateRepository.save(est);
+		Integer estId = saved.getId();
+
+		try {
+			// A. Test listing for Manager K.RAMAKRISHNA GOUD (7995010510) in his correct Ward scope -> OK
+			mockMvc.perform(get("/api/estimates")
+					.param("officerPhone", "7995010510")
+					.param("role", "MANAGER")
+					.param("corp", "MMC")
+					.param("zoneName", "LB Nagar")
+					.param("division", "5")
+					.param("circleName", "11 - Nagole")
+					.param("wardName", "51 - Kuntloor"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$[*].id", hasItem(estId)));
+
+			// B. Test listing for Manager K.RAMAKRISHNA GOUD in an incorrect Ward scope -> FORBIDDEN
+			mockMvc.perform(get("/api/estimates")
+					.param("officerPhone", "7995010510")
+					.param("role", "MANAGER")
+					.param("corp", "MMC")
+					.param("zoneName", "LB Nagar")
+					.param("division", "5")
+					.param("circleName", "11 - Nagole")
+					.param("wardName", "52 - Another Ward"))
+					.andExpect(status().isForbidden());
+
+			// C. Test listing for DGM T.N SAINATH GOUD (7331185790) in his correct Circle scope -> OK
+			mockMvc.perform(get("/api/estimates")
+					.param("officerPhone", "7331185790")
+					.param("role", "DGM")
+					.param("corp", "MMC")
+					.param("zoneName", "LB Nagar")
+					.param("division", "5")
+					.param("circleName", "11 - Nagole"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$[*].id", hasItem(estId)));
+
+			// D. Test listing for DGM T.N SAINATH GOUD in incorrect Circle scope -> FORBIDDEN
+			mockMvc.perform(get("/api/estimates")
+					.param("officerPhone", "7331185790")
+					.param("role", "DGM")
+					.param("corp", "MMC")
+					.param("zoneName", "LB Nagar")
+					.param("division", "5")
+					.param("circleName", "12 - Saroornagar"))
+					.andExpect(status().isForbidden());
+
+			// E. Test listing for DGM T.N SAINATH GOUD with MANAGER role (which he doesn't have) -> FORBIDDEN
+			mockMvc.perform(get("/api/estimates")
+					.param("officerPhone", "7331185790")
+					.param("role", "MANAGER")
+					.param("corp", "MMC")
+					.param("zoneName", "LB Nagar")
+					.param("division", "5")
+					.param("circleName", "11 - Nagole")
+					.param("wardName", "51 - Kuntloor"))
+					.andExpect(status().isForbidden());
 
 		} finally {
 			estimateRepository.deleteById(estId);

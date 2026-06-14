@@ -97,7 +97,7 @@ foreach ($row in $rows) {
                 locations = @()
             }
         }
-        $loc = @{ corp = "Corporate"; zoneName = $null; division = $null; circleName = $null; wardName = $null }
+        $loc = @{ corp = "Corporate"; zoneName = $null; division = $null; circleName = $null; wardName = $null; role = "DOP" }
         $exists = $false
         foreach ($l in $users[$dopPhone].locations) {
             if ($l.corp -eq "Corporate") { $exists = $true; break }
@@ -118,7 +118,7 @@ foreach ($row in $rows) {
                 locations = @()
             }
         }
-        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $null; circleName = $null; wardName = $null }
+        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $null; circleName = $null; wardName = $null; role = "CGM" }
         $exists = $false
         foreach ($l in $users[$cgmPhone].locations) {
             if ($l.corp -eq "MMC" -and $l.zoneName -eq $zoneName) { $exists = $true; break }
@@ -139,7 +139,7 @@ foreach ($row in $rows) {
                 locations = @()
             }
         }
-        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $division; circleName = $null; wardName = $null }
+        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $division; circleName = $null; wardName = $null; role = "GM" }
         $exists = $false
         foreach ($l in $users[$gmPhone].locations) {
             if ($l.corp -eq "MMC" -and $l.zoneName -eq $zoneName -and $l.division -eq $division) { $exists = $true; break }
@@ -160,7 +160,7 @@ foreach ($row in $rows) {
                 locations = @()
             }
         }
-        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $division; circleName = $circleName; wardName = $null }
+        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $division; circleName = $circleName; wardName = $null; role = "DGM" }
         $exists = $false
         foreach ($l in $users[$dgmPhone].locations) {
             if ($l.corp -eq "MMC" -and $l.zoneName -eq $zoneName -and $l.division -eq $division -and $l.circleName -eq $circleName) { $exists = $true; break }
@@ -181,7 +181,7 @@ foreach ($row in $rows) {
                 locations = @()
             }
         }
-        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $division; circleName = $circleName; wardName = $wardName }
+        $loc = @{ corp = "MMC"; zoneName = $zoneName; division = $division; circleName = $circleName; wardName = $wardName; role = "MANAGER" }
         $exists = $false
         foreach ($l in $users[$managerPhone].locations) {
             if ($l.corp -eq "MMC" -and $l.zoneName -eq $zoneName -and $l.division -eq $division -and $l.circleName -eq $circleName -and $l.wardName -eq $wardName) { $exists = $true; break }

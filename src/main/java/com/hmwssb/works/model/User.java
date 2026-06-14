@@ -15,7 +15,7 @@ public class User {
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
-
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 

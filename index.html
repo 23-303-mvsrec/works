@@ -562,13 +562,24 @@
       
       <!-- Multi-location selection if user has multiple locations -->
       <div ng-if="currentUser.locations.length > 1" style="display: flex; align-items: center; gap: 8px;">
-        <label style="font-weight: 600; color: #b33; font-size: 12px;">Active Location:</label>
+        <label style="font-weight: 600; color: #b33; font-size: 12px;">Active Location Scope:</label>
         <select ng-model="selectedActiveLocationIndex" ng-change="selectActiveLocation(selectedActiveLocationIndex)" 
-                style="border: 1px solid #ccc; border-radius: 3px; padding: 3px 6px; font-size: 11px; height: 26px; outline: none; background: #fff; width: 350px;">
+                style="border: 1px solid #ccc; border-radius: 3px; padding: 3px 6px; font-size: 11px; height: 26px; outline: none; background: #fff; width: 450px;">
           <option ng-repeat="loc in currentUser.locations" ng-value="$index">
-            {{loc.corp}} &bull; {{loc.zoneName}} &bull; Div-{{loc.division}} &bull; {{loc.circleName}} &bull; {{loc.wardName}}
+            {{loc.role}} - {{loc.corp}} &bull; {{loc.zoneName}} &bull; {{loc.division ? 'Div-' + loc.division : ''}} {{loc.circleName ? '&bull; ' + loc.circleName : ''}} {{loc.wardName ? '&bull; ' + loc.wardName : ''}}
           </option>
         </select>
+      </div>
+      
+      <!-- Single location scope display -->
+      <div ng-if="currentUser.locations.length === 1" style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+        <span style="font-weight: 600; color: #b33;">Location Scope:</span>
+        <span style="font-weight: 500; color: #2c3e50;">
+          {{currentUser.locations[0].role}} - {{currentUser.locations[0].corp}} &bull; {{currentUser.locations[0].zoneName}}
+          <span ng-if="currentUser.locations[0].division">&bull; Div-{{currentUser.locations[0].division}}</span>
+          <span ng-if="currentUser.locations[0].circleName">&bull; {{currentUser.locations[0].circleName}}</span>
+          <span ng-if="currentUser.locations[0].wardName">&bull; {{currentUser.locations[0].wardName}}</span>
+        </span>
       </div>
       
       <button ng-click="logout()" style="background: #c0392b; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
@@ -646,32 +657,32 @@
     <div class="hierarchy-row">
       <div class="hierarchy-field">
         <label>CORP</label>
-        <select ng-model="selectedCorp" ng-change="onCorpChange()" ng-options="c for c in corps" ng-disabled="!isEditable()">
-          <option value="">-- Select CORP --</option>
+        <select ng-model="selectedCorp" ng-change="onCorpChange()" ng-options="c for c in corps" ng-disabled="isFieldDisabled('corp')">
+          <option value="">{{currentActiveRole === 'MANAGER' ? '-- Select CORP --' : '-- All CORPs --'}}</option>
         </select>
       </div>
       <div class="hierarchy-field">
         <label>Zone Name</label>
-        <select ng-model="selectedZone" ng-change="onZoneChange()" ng-options="z for z in zones" ng-disabled="!selectedCorp || !isEditable()">
-          <option value="">-- Select Zone --</option>
+        <select ng-model="selectedZone" ng-change="onZoneChange()" ng-options="z for z in zones" ng-disabled="isFieldDisabled('zone')">
+          <option value="">{{currentActiveRole === 'MANAGER' ? '-- Select Zone --' : '-- All Zones --'}}</option>
         </select>
       </div>
       <div class="hierarchy-field">
         <label>DIVISION</label>
-        <select ng-model="selectedDivision" ng-change="onDivisionChange()" ng-options="d for d in divisions" ng-disabled="!selectedZone || !isEditable()">
-          <option value="">-- Select Division --</option>
+        <select ng-model="selectedDivision" ng-change="onDivisionChange()" ng-options="d for d in divisions" ng-disabled="isFieldDisabled('division')">
+          <option value="">{{currentActiveRole === 'MANAGER' ? '-- Select Division --' : '-- All Divisions --'}}</option>
         </select>
       </div>
       <div class="hierarchy-field">
         <label>Circle No. &amp; Name</label>
-        <select ng-model="selectedCircle" ng-change="onCircleChange()" ng-options="cir for cir in circles" ng-disabled="!selectedDivision || !isEditable()">
-          <option value="">-- Select Circle --</option>
+        <select ng-model="selectedCircle" ng-change="onCircleChange()" ng-options="cir for cir in circles" ng-disabled="isFieldDisabled('circle')">
+          <option value="">{{currentActiveRole === 'MANAGER' ? '-- Select Circle --' : '-- All Circles --'}}</option>
         </select>
       </div>
       <div class="hierarchy-field">
         <label>Ward No. &amp; Name</label>
-        <select ng-model="selectedWard" ng-options="w for w in wards" ng-disabled="!selectedCircle || !isEditable()">
-          <option value="">-- Select Ward --</option>
+        <select ng-model="selectedWard" ng-options="w for w in wards" ng-disabled="isFieldDisabled('ward')">
+          <option value="">{{currentActiveRole === 'MANAGER' ? '-- Select Ward --' : '-- All Wards --'}}</option>
         </select>
       </div>
     </div>
@@ -810,7 +821,7 @@
             <span ng-if="!savingEstimate && isEditable()">Generate Estimate</span>
             <span ng-if="!savingEstimate && !isEditable()">View Abstract</span>
           </button>
-          <button class="btn-new" ng-click="resetForm()" ng-if="currentUser.role === 'MANAGER'">
+          <button class="btn-new" ng-click="resetForm()" ng-if="currentActiveRole === 'MANAGER'">
             New Estimate
           </button>
         </div>
@@ -833,48 +844,58 @@
           <thead>
             <tr>
               <th
-                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 10%; padding: 6px 4px; text-align: center;">
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 8%; padding: 6px 4px; text-align: center;">
                 ID</th>
               <th
-                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 35%; padding: 6px 4px; text-align: left;">
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 25%; padding: 6px 4px; text-align: left;">
                 Name Of Work</th>
               <th
-                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 15%; padding: 6px 4px; text-align: right;">
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 22%; padding: 6px 4px; text-align: left;">
+                Location Scope</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 13%; padding: 6px 4px; text-align: left;">
+                Prepared By</th>
+              <th
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 10%; padding: 6px 4px; text-align: right;">
                 Grand Total (₹)</th>
               <th
-                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 15%; padding: 6px 4px; text-align: center;">
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 10%; padding: 6px 4px; text-align: center;">
                 Status</th>
               <th
-                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 15%; padding: 6px 4px; text-align: center;">
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 7%; padding: 6px 4px; text-align: center;">
                 Saved Date</th>
               <th
-                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 10%; padding: 6px 4px; text-align: center;">
+                style="background: #d5dbdb; color: #2c3e50; border: 1px solid #bdc3c7; width: 5%; padding: 6px 4px; text-align: center;">
                 Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="est in savedEstimates">
-              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center;">{{est.id}}
+            <tr ng-repeat="est in savedEstimates | filter: filterEstimates">
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center;">{{est.id}}</td>
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: left; font-weight: 500; color: #2c3e50;">
+                {{est.nameOfWork || 'Unnamed Work'}}
               </td>
-              <td
-                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: left; font-weight: 500; color: #2c3e50;">
-                {{est.nameOfWork || 'Unnamed Work'}}</td>
-              <td
-                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: right; font-weight: 600; color: #27ae60;">
-                {{est.grandTotal | number:2}}</td>
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: left; color: #555; font-size: 11px;">
+                {{est.corp}} &bull; {{est.zoneName}} &bull; {{est.division ? 'Div-' + est.division : 'N/A'}} &bull; {{est.circleName || 'N/A'}} &bull; {{est.wardName || 'N/A'}}
+              </td>
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: left; color: #555;">
+                {{est.preparedByName || 'N/A'}}
+              </td>
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 8px; text-align: right; font-weight: 600; color: #27ae60;">
+                {{est.grandTotal | number:2}}
+              </td>
               <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center;">
                 <span ng-style="getStatusBadgeStyle(est.status)" style="padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block;">
                   {{getStatusLabel(est.status)}}
                 </span>
               </td>
-              <td
-                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center; color: #7f8c8d;">
-                {{formatDate(est.createdAt)}}</td>
-              <td
-                style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center; white-space: nowrap;">
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center; color: #7f8c8d;">
+                {{formatDate(est.createdAt)}}
+              </td>
+              <td style="border: 1px solid #bdc3c7; background: #fff; padding: 6px 4px; text-align: center; white-space: nowrap;">
                 <button ng-click="loadEstimate(est.id)"
                   style="background: #2980b9; color: white; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer; margin-right: 4px;">Load</button>
-                <button ng-click="deleteEstimate(est.id)" ng-if="currentUser.role === 'MANAGER' && (!est.status || est.status === 'DRAFT')"
+                <button ng-click="deleteEstimate(est.id)" ng-if="currentActiveRole === 'MANAGER' && (!est.status || est.status === 'DRAFT')"
                   style="background: #c0392b; color: white; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
               </td>
             </tr>
@@ -905,6 +926,10 @@
           $scope.selectedActiveLocationIndex = 0;
           $scope.currentEstimateStatus = 'DRAFT';
 
+          // Active Context state
+          $scope.currentActiveLocation = null;
+          $scope.currentActiveRole = null;
+
           // Officers' names & designations loaded from the database
           $scope.currentPreparedByName = null;
           $scope.currentPreparedByDesignation = null;
@@ -919,7 +944,7 @@
 
           $scope.isEditable = function () {
             var status = $scope.currentEstimateStatus || 'DRAFT';
-            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            var role = $scope.currentActiveRole ? $scope.currentActiveRole.toUpperCase() : '';
             if (status === 'DRAFT' && role === 'MANAGER') return true;
             if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
             if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
@@ -976,15 +1001,58 @@
             }
           };
 
+          $scope.isFieldDisabled = function (fieldType) {
+            var role = $scope.currentActiveRole ? $scope.currentActiveRole.toUpperCase() : '';
+            if (role === 'MANAGER') {
+              return true; // All fields disabled
+            }
+            if (role === 'DGM') {
+              // Only ward name is editable (enabled)
+              return fieldType !== 'ward';
+            }
+            if (role === 'GM') {
+              // Circle and ward are editable
+              return fieldType !== 'circle' && fieldType !== 'ward';
+            }
+            if (role === 'CGM') {
+              // Division, circle, and ward are editable
+              return fieldType !== 'division' && fieldType !== 'circle' && fieldType !== 'ward';
+            }
+            if (role === 'DOP') {
+              // Zone, division, circle, and ward are editable
+              return fieldType === 'corp'; // only corp is locked
+            }
+            return true;
+          };
+
+          $scope.filterEstimates = function (est) {
+            if ($scope.selectedCorp && est.corp !== $scope.selectedCorp) return false;
+            if ($scope.selectedZone && est.zoneName !== $scope.selectedZone) return false;
+            if ($scope.selectedDivision && est.division !== $scope.selectedDivision) return false;
+            if ($scope.selectedCircle && est.circleName !== $scope.selectedCircle) return false;
+            if ($scope.selectedWard && est.wardName !== $scope.selectedWard) return false;
+            return true;
+          };
+
           $scope.logout = function () {
             localStorage.removeItem('hmwssb_logged_in_user');
             window.location.href = 'login.html';
           };
 
+          $scope.setActiveLocationAndRole = function (loc, index) {
+            $scope.selectedActiveLocationIndex = index;
+            $scope.currentActiveLocation = loc;
+            $scope.currentActiveRole = loc.role;
+            localStorage.setItem('current_active_role', loc.role);
+            localStorage.setItem('current_active_location', JSON.stringify(loc));
+          };
+
           $scope.selectActiveLocation = function (index) {
             if (!$scope.currentUser.locations || !$scope.currentUser.locations[index]) return;
             var loc = $scope.currentUser.locations[index];
+            $scope.setActiveLocationAndRole(loc, index);
             populateHierarchy(loc.corp, loc.zoneName, loc.division, loc.circleName, loc.wardName);
+            $scope.loadSavedEstimates();
           };
 
           /* ── Config ── */
@@ -1332,8 +1400,17 @@
 
           // Load List
           $scope.loadSavedEstimates = function () {
+            if (!$scope.currentActiveLocation) return;
             $http.get(API_BASE + '/estimates', {
-              params: { officerPhone: $scope.currentUser.phoneNumber }
+              params: { 
+                officerPhone: $scope.currentUser.phoneNumber,
+                role: $scope.currentActiveRole,
+                corp: $scope.currentActiveLocation.corp,
+                zoneName: $scope.currentActiveLocation.zoneName,
+                division: $scope.currentActiveLocation.division,
+                circleName: $scope.currentActiveLocation.circleName,
+                wardName: $scope.currentActiveLocation.wardName
+              }
             }).then(function (response) {
               $scope.savedEstimates = response.data;
             }, function (err) {
@@ -1503,7 +1580,12 @@
             $scope.nameOfWork = '';
             $scope.gstPercent = '0';
             $scope.rows = [newRow()];
-            populateHierarchy('', '', '', '', '');
+            if ($scope.currentActiveLocation) {
+              var loc = $scope.currentActiveLocation;
+              populateHierarchy(loc.corp, loc.zoneName, loc.division, loc.circleName, loc.wardName);
+            } else {
+              populateHierarchy('', '', '', '', '');
+            }
             localStorage.removeItem('current_estimate_data');
           };
 
@@ -1539,7 +1621,7 @@
                   if (loc.corp === est.corp && loc.zoneName === est.zoneName && 
                       loc.division === est.division && loc.circleName === est.circleName && 
                       loc.wardName === est.wardName) {
-                    $scope.selectedActiveLocationIndex = i;
+                    $scope.setActiveLocationAndRole(loc, i);
                     break;
                   }
                 }

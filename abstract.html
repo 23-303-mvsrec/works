@@ -335,8 +335,8 @@
         border: 1px solid #000;
       }
 
-      .actions-bar {
-        display: none;
+      .actions-bar, .user-header-bar {
+        display: none !important;
       }
 
       .ls-input {
@@ -353,6 +353,35 @@
 <body ng-controller="AbstractCtrl">
 
   <div class="container">
+
+    <!-- User Profile Header Bar -->
+    <div class="user-header-bar" style="display: flex; justify-content: space-between; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 10px 14px; margin-bottom: 14px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px; color: #1e5c99;">👤</span>
+        <div>
+          <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">{{currentUser.name}}</div>
+          <div style="font-size: 11px; color: #7f8c8d; font-weight: 500;">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
+        </div>
+      </div>
+      
+      <!-- Active location scope display -->
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+        <span style="font-weight: 600; color: #b33;">Active Scope:</span>
+        <span style="font-weight: 500; color: #2c3e50;" ng-if="currentActiveLocation">
+          {{currentActiveRole}} - {{currentActiveLocation.corp}} &bull; {{currentActiveLocation.zoneName}}
+          <span ng-if="currentActiveLocation.division">&bull; Div-{{currentActiveLocation.division}}</span>
+          <span ng-if="currentActiveLocation.circleName">&bull; {{currentActiveLocation.circleName}}</span>
+          <span ng-if="currentActiveLocation.wardName">&bull; {{currentActiveLocation.wardName}}</span>
+        </span>
+        <span style="font-weight: 500; color: #2c3e50;" ng-if="!currentActiveLocation">
+          {{currentActiveRole}}
+        </span>
+      </div>
+      
+      <button ng-click="goBack()" style="background: #7f8c8d; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
+        Back to Dashboard
+      </button>
+    </div>
 
     <!-- Error Banner -->
     <div class="error-banner" ng-if="apiError">
@@ -563,6 +592,13 @@
           }
           $scope.currentUser = JSON.parse(loggedInUserStr);
 
+          // Read active context from localStorage
+          var activeRoleStr = localStorage.getItem('current_active_role');
+          var activeLocStr = localStorage.getItem('current_active_location');
+
+          $scope.currentActiveRole = activeRoleStr || ($scope.currentUser && $scope.currentUser.role ? $scope.currentUser.role.toUpperCase() : '');
+          $scope.currentActiveLocation = activeLocStr ? JSON.parse(activeLocStr) : null;
+
           var API_BASE = 'http://localhost:8080/api';
 
           // Load state from localStorage
@@ -618,7 +654,7 @@
 
           $scope.isEditable = function () {
             var status = $scope.status || 'DRAFT';
-            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            var role = $scope.currentActiveRole ? $scope.currentActiveRole.toUpperCase() : '';
             if (status === 'DRAFT' && role === 'MANAGER') return true;
             if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
             if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
@@ -629,7 +665,7 @@
           $scope.canForward = function () {
             if (!$scope.estimateId) return false;
             var status = $scope.status || 'DRAFT';
-            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            var role = $scope.currentActiveRole ? $scope.currentActiveRole.toUpperCase() : '';
             if (status === 'DRAFT' && role === 'MANAGER') return true;
             if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
             if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
@@ -653,7 +689,7 @@
           $scope.canReturn = function () {
             if (!$scope.estimateId) return false;
             var status = $scope.status || 'DRAFT';
-            var role = ($scope.currentUser && $scope.currentUser.role) ? $scope.currentUser.role.toUpperCase() : '';
+            var role = $scope.currentActiveRole ? $scope.currentActiveRole.toUpperCase() : '';
             if (status === 'SUBMITTED_TO_DGM' && role === 'DGM') return true;
             if (status === 'SUBMITTED_TO_GM' && role === 'GM') return true;
             if (status === 'SUBMITTED_TO_CGM' && role === 'CGM') return true;

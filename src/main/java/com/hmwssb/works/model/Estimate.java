@@ -85,6 +85,10 @@ public class Estimate {
     @Column(name = "sanctioned_by_designation", length = 100)
     private String sanctionedByDesignation;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     // ── Lifecycle Hook ──────────────────────────────────────────────────────
     @PrePersist
     protected void onCreate() {
@@ -167,4 +171,7 @@ public class Estimate {
 
     public String getSanctionedByDesignation() { return sanctionedByDesignation; }
     public void setSanctionedByDesignation(String sanctionedByDesignation) { this.sanctionedByDesignation = sanctionedByDesignation; }
+
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 }

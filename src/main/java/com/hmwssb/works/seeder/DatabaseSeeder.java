@@ -25,7 +25,25 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Clearing users and seeding HMWSSB officer accounts from sample users.xlsx data...");
+        boolean needsReseed = false;
+        if (userRepository.count() > 0) {
+            long locationsWithNullRole = userRepository.findAll().stream()
+                .flatMap(u -> u.getLocations().stream())
+                .filter(loc -> loc.getRole() == null)
+                .count();
+            if (locationsWithNullRole > 0) {
+                needsReseed = true;
+            }
+        } else {
+            needsReseed = true;
+        }
+
+        if (!needsReseed) {
+            System.out.println("Users table already has " + userRepository.count() + " records with roles populated. Skipping seed.");
+            return;
+        }
+
+        System.out.println("Clearing old users and seeding HMWSSB officer accounts from sample users.xlsx data...");
         userRepository.deleteAll();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -43,7 +61,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 User user = new User();
                 user.setPhoneNumber(cleanString((String) rawUser.get("phoneNumber")));
                 user.setName(cleanString((String) rawUser.get("name")));
-                user.setPassword("12345678"); // Default password for all officers
+                user.setPassword("1234"); // Default password for all officers
                 user.setDesignation(cleanString((String) rawUser.get("designation")));
                 user.setRole(cleanString((String) rawUser.get("role")));
 
@@ -57,6 +75,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         loc.setDivision(cleanString((String) rawLoc.get("division")));
                         loc.setCircleName(cleanString((String) rawLoc.get("circleName")));
                         loc.setWardName(cleanString((String) rawLoc.get("wardName")));
+                        loc.setRole(cleanString((String) rawLoc.get("role")));
                         loc.setPhoneNumber(user.getPhoneNumber());
                         locations.add(loc);
                     }

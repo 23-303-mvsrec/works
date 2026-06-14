@@ -3,18 +3,20 @@
         "phoneNumber":  "7995010510",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  "51 - Kuntloor",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  "51 - Kuntloor"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "52 - Pedda Amberpet",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  "52 - Pedda Amberpet"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           }
                       ],
         "role":  "MANAGER",
@@ -25,18 +27,20 @@
         "phoneNumber":  "9989994708",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  null,
-                              "wardName":  null
+                              "role":  "GM",
+                              "division":  "5",
+                              "circleName":  null
                           },
                           {
-                              "division":  "6",
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  null,
-                              "wardName":  null
+                              "role":  "GM",
+                              "division":  "6",
+                              "circleName":  null
                           }
                       ],
         "role":  "GM",
@@ -47,11 +51,12 @@
         "phoneNumber":  "9989999753",
         "locations":  [
                           {
-                              "division":  null,
+                              "wardName":  null,
                               "corp":  "Corporate",
                               "zoneName":  null,
-                              "circleName":  null,
-                              "wardName":  null
+                              "role":  "DOP",
+                              "division":  null,
+                              "circleName":  null
                           }
                       ],
         "role":  "DOP",
@@ -62,18 +67,20 @@
         "phoneNumber":  "9989999546",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  "37 - Lingojiguda",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "13 - LB Nagar",
-                              "wardName":  "37 - Lingojiguda"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "13 - LB Nagar"
                           },
                           {
-                              "division":  "6",
+                              "wardName":  "38 - Champapet",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "13 - LB Nagar",
-                              "wardName":  "38 - Champapet"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "13 - LB Nagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -84,18 +91,20 @@
         "phoneNumber":  "9154866585",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  "42 - BN Reddy Nagar",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  "42 - BN Reddy Nagar"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           },
                           {
-                              "division":  "6",
+                              "wardName":  "43 - Vanasthalipuram",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  "43 - Vanasthalipuram"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -106,18 +115,20 @@
         "phoneNumber":  "9154866671",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  "39 - Kharmanghat",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "13 - LB Nagar",
-                              "wardName":  "39 - Kharmanghat"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "13 - LB Nagar"
                           },
                           {
-                              "division":  "6",
+                              "wardName":  "41 - Hastinapuram",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "13 - LB Nagar",
-                              "wardName":  "41 - Hastinapuram"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "13 - LB Nagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -128,11 +139,12 @@
         "phoneNumber":  "9989989507",
         "locations":  [
                           {
-                              "division":  null,
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  null,
-                              "wardName":  null
+                              "role":  "CGM",
+                              "division":  null,
+                              "circleName":  null
                           }
                       ],
         "role":  "CGM",
@@ -143,18 +155,20 @@
         "phoneNumber":  "7331185790",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  null
+                              "role":  "DGM",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "29 - Nagole",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  "29 - Nagole"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           }
                       ],
         "role":  "DGM",
@@ -165,18 +179,20 @@
         "phoneNumber":  "9154866620",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  "46 - GSI",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  "46 - GSI"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "47 - Lecturers Colony",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  "47 - Lecturers Colony"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           }
                       ],
         "role":  "MANAGER",
@@ -187,18 +203,20 @@
         "phoneNumber":  "9154297397",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  "34 - Doctors Colony",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "34 - Doctors Colony"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "35 - RK Puram",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "35 - RK Puram"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -209,18 +227,20 @@
         "phoneNumber":  "7331185782",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  null
+                              "role":  "DGM",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "36 - NTR Nagar",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "36 - NTR Nagar"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           }
                       ],
         "role":  "DGM",
@@ -231,11 +251,12 @@
         "phoneNumber":  "7995010496",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  "45 - Mansoorabad",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "11 â€“ Nagole",
-                              "wardName":  "45 - Mansoorabad"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "11 â€“ Nagole"
                           }
                       ],
         "role":  "MANAGER",
@@ -246,18 +267,20 @@
         "phoneNumber":  "9989996103",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "13 - LB Nagar",
-                              "wardName":  null
+                              "role":  "DGM",
+                              "division":  "6",
+                              "circleName":  "13 - LB Nagar"
                           },
                           {
-                              "division":  "6",
+                              "wardName":  "40 - Bairamalguda",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "13 - LB Nagar",
-                              "wardName":  "40 - Bairamalguda"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "13 - LB Nagar"
                           }
                       ],
         "role":  "DGM",
@@ -268,18 +291,20 @@
         "phoneNumber":  "9154866643",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  "44 - Chintalkunta",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  "44 - Chintalkunta"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           },
                           {
-                              "division":  "6",
+                              "wardName":  "48 - High Court Colony",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  "48 - High Court Colony"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -290,11 +315,12 @@
         "phoneNumber":  "9154866717",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  "49 - Sahebnagar",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  "49 - Sahebnagar"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -305,18 +331,20 @@
         "phoneNumber":  "9989994369",
         "locations":  [
                           {
-                              "division":  "6",
+                              "wardName":  null,
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  null
+                              "role":  "DGM",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           },
                           {
-                              "division":  "6",
+                              "wardName":  "50 - Hayathnagar",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "14 - Hayathnagar",
-                              "wardName":  "50 - Hayathnagar"
+                              "role":  "MANAGER",
+                              "division":  "6",
+                              "circleName":  "14 - Hayathnagar"
                           }
                       ],
         "role":  "DGM",
@@ -327,18 +355,20 @@
         "phoneNumber":  "9154866634",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  "32 - Gaddiannaram",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "32 - Gaddiannaram"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "33 - Saroornagar",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "33 - Saroornagar"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           }
                       ],
         "role":  "MANAGER",
@@ -349,18 +379,20 @@
         "phoneNumber":  "9154866700",
         "locations":  [
                           {
-                              "division":  "5",
+                              "wardName":  "30 - Kothapet",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "30 - Kothapet"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           },
                           {
-                              "division":  "5",
+                              "wardName":  "31 - Chaitanyapuri",
                               "corp":  "MMC",
                               "zoneName":  "LB Nagar",
-                              "circleName":  "12 - Saroornagar",
-                              "wardName":  "31 - Chaitanyapuri"
+                              "role":  "MANAGER",
+                              "division":  "5",
+                              "circleName":  "12 - Saroornagar"
                           }
                       ],
         "role":  "MANAGER",

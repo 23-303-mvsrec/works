@@ -1,0 +1,500 @@
+const WARD_HIERARCHY = {
+  "MMC": {
+    "Malkajgiri": {
+      "1": {
+        "1 - Keesara": [
+          "1 - Keesara",
+          "2 - Chandrapuri Colony",
+          "3 - Jawahar Nagar",
+          "4 - Dammaiguda",
+          "189 - Yapral",
+          "300 - Shamirpet"
+        ],
+        "2 - Alwal": [
+          "190 - Turkapally",
+          "191 - Macha Bollaram",
+          "192 - Temple Alwal",
+          "193 - Venkatapuram",
+          "194 - Bhudevi Nagar",
+          "195 - Kanajiguda"
+        ]
+      },
+      "2": {
+        "3 - Bowenpally": [
+          "196 - Monda Market",
+          "260 - Fateh Nagar",
+          "261 - Prakash Nagar",
+          "262 - Old Bowenpally",
+          "264 - Hasmathpet"
+        ],
+        "4 - Moula Ali": [
+          "184 - Balram Nagar",
+          "185 - Vinayak Nagar",
+          "186 - Moula Ali",
+          "187 - Kakatiya Nagar",
+          "188 - Neredmet"
+        ],
+        "5 - Malkajgiri": [
+          "180 - East Anandbagh",
+          "181 - Mirjalguda",
+          "182 - Goutham Nagar",
+          "183 - Malkajgiri"
+        ]
+      }
+    },
+    "Uppal": {
+      "3": {
+        "6 - Ghatkesar": [
+          "5 - Nagaram",
+          "6 - Ghatkesar",
+          "7 - Edulabad",
+          "8 - Pocharam"
+        ],
+        "7 - Kapra": [
+          "13 - Vampuguda",
+          "14 - Kapra",
+          "15 - Dr AS Rao Nagar",
+          "16 - Kushaiguda",
+          "17 - Cherlapally"
+        ]
+      },
+      "4": {
+        "8 - Nacharam": [
+          "18 - Shakthi Sai Nagar",
+          "19 - H.B. Colony",
+          "20 - Mallapur",
+          "21 - Nacharam",
+          "22 - HMT Nagar"
+        ],
+        "9 - Uppal": [
+          "23 - Chilkanagar",
+          "24 - Beerappagadda",
+          "25 - Habsiguda",
+          "26 - Ramanthapur",
+          "27 - Venkat Reddy Nagar",
+          "28 - Uppal"
+        ],
+        "10 - Boduppal": [
+          "9 - Medipally",
+          "10 - Peerzadiguda",
+          "11 - Boduppal",
+          "12 - Chengicherla"
+        ]
+      }
+    },
+    "LB Nagar": {
+      "5": {
+        "11 - Nagole": [
+          "29 - Nagole",
+          "45 - Mansoorabad",
+          "46 - GSI",
+          "47 - Lecturers Colony",
+          "51 - Kuntloor",
+          "52 - Pedda Amberpet"
+        ],
+        "12 - Saroornagar": [
+          "30 - Kothapet",
+          "31 - Chaitanyapuri",
+          "32 - Gaddiannaram",
+          "33 - Saroornagar",
+          "34 - Doctors Colony",
+          "35 - RK Puram",
+          "36 - NTR Nagar"
+        ]
+      },
+      "6": {
+        "13 - LB Nagar": [
+          "37 - Lingojiguda",
+          "38 - Champapet",
+          "39 - Kharmanghat",
+          "40 - Bairamalguda",
+          "41 - Hastinapuram"
+        ],
+        "14 - Hayathnagar": [
+          "42 - BN Reddy Nagar",
+          "43 - Vanasthalipuram",
+          "44 - Chintalkunta",
+          "48 - High Court Colony",
+          "49 - Sahebnagar",
+          "50 - Hayathnagar"
+        ]
+      }
+    }
+  },
+  "HMC": {
+    "Shamshabad": {
+      "7": {
+        "15 - Adibatla": [
+          "53 - Thorrur",
+          "54 - Kongara Kalan",
+          "55 - Adibatla",
+          "56 - Turkayamjal"
+        ],
+        "16 - Badangpet": [
+          "57 - Nadargul",
+          "58 - Prashanthi Hills",
+          "59 - Jillelaguda",
+          "60 - Meerpet",
+          "61 - Badangpet",
+          "62 - Balapur"
+        ]
+      },
+      "8": {
+        "17 - Jalpally": [
+          "63 - Shaheen Nagar",
+          "64 - Pahadi Shareef",
+          "65 - Jalpally"
+        ],
+        "18 - Shamshabad": [
+          "66 - Thukkuguda",
+          "67 - Mankhal",
+          "118 - Shamshabad",
+          "119 - Kothwalguda"
+        ]
+      }
+    },
+    "Rajendranagar": {
+      "9": {
+        "19 - Rajendra Nagar": [
+          "120 - Rajendra Nagar",
+          "121 - Bandlaguda Jagir",
+          "122 - Kismatpur",
+          "123 - Hydershahkote"
+        ],
+        "20 - Attapur": [
+          "112 - Attapur",
+          "113 - Hyderguda",
+          "114 - Suleman Nagar",
+          "115 - Shastripuram",
+          "116 - Katedan",
+          "117 - Mailardevpally"
+        ]
+      },
+      "10": {
+        "21 - Bahadurpura": [
+          "103 - Doodh Bowli",
+          "108 - Teegal Kunta",
+          "109 - Chandu Lal Baradari",
+          "110 - Ramnasthpura",
+          "111 - Kishanbagh"
+        ],
+        "22 - Falaknuma": [
+          "104 - Shah Ali Banda",
+          "105 - Falaknuma",
+          "106 - Jahanuma",
+          "107 - Nawab Saheb Kunta"
+        ],
+        "23 - Chandrayangutta": [
+          "68 - Bandlaguda",
+          "69 - Noori Nagar",
+          "70 - Barkas",
+          "71 - Kanchanbagh",
+          "72 - Chandrayangutta"
+        ],
+        "24 - Jangammet": [
+          "73 - Riyasat Nagar",
+          "74 - Lalitha Bagh",
+          "75 - Jangammet",
+          "76 - Phool Bagh",
+          "77 - Quadri Chaman"
+        ]
+      }
+    },
+    "Charminar": {
+      "11": {
+        "26 - Yakutpura": [
+          "78 - Gowlipura",
+          "79 - Talab Chanchalam",
+          "80 - Yakutpura",
+          "81 - Dabeerpura",
+          "82 - Rein Bazar",
+          "83 - Madannapet"
+        ],
+        "28 - Charminar": [
+          "97 - Purani Haveli",
+          "98 - Pathergatti",
+          "99 - Hari Bowli",
+          "100 - Qazipura",
+          "101 - Ghansi Bazar",
+          "102 - Purana Pul"
+        ]
+      },
+      "12": {
+        "25 - Santosh Nagar": [
+          "84 - Bhanu Nagar",
+          "85 - Santosh Nagar",
+          "86 - IS SADAN",
+          "87 - Saraswati Nagar"
+        ],
+        "27 - Malakpet": [
+          "88 - Saidabad",
+          "89 - Asmangadh",
+          "93 - Akberbagh",
+          "94 - Chawani"
+        ],
+        "29 - Moosarambagh": [
+          "90 - Moosarambagh",
+          "91 - Old Malakpet",
+          "92 - MCH Colony",
+          "95 - Kala Dera",
+          "96 - Azampura"
+        ]
+      }
+    },
+    "Golconda": {
+      "13": {
+        "30 - Goshamahal": [
+          "148 - Dattatreya Nagar",
+          "149 - Manghalhat",
+          "150 - Goshamahal",
+          "151 - Begum Bazar",
+          "152 - Jambagh",
+          "153 - Exhibition Grounds"
+        ],
+        "31 - Karwan": [
+          "134 - Langar Houz",
+          "135 - Gudimalkapur",
+          "136 - Karwan",
+          "137 - Tappachabutra",
+          "138 - Ziaguda"
+        ]
+      },
+      "14": {
+        "32 - Golconda": [
+          "129 - Nizam Colony",
+          "130 - Nanalnagar",
+          "131 - Tolichowki",
+          "132 - Golconda",
+          "133 - Ibrahimbagh",
+          "223 - Shaikpet",
+          "224 - OU Colony"
+        ],
+        "33 - Mehdipatnam": [
+          "139 - Asif Nagar",
+          "140 - Padmanabha Nagar",
+          "141 - Mehdipatnam",
+          "142 - Syed Nagar"
+        ],
+        "34 - Masab Tank": [
+          "143 - Vijayanagar Colony",
+          "144 - Ahmed Nagar",
+          "145 - Shanti Nagar",
+          "147 - Mallepally"
+        ]
+      }
+    },
+    "Khairatabad": {
+      "15": {
+        "35 - Khairatabad": [
+          "146 - Red Hills",
+          "154 - Gunfoundry",
+          "217 - Irrum Manzil",
+          "218 - Somajiguda",
+          "219 - Khairatabad",
+          "220 - Himayathnagar"
+        ],
+        "36 - Jubilee Hills": [
+          "215 - Jubilee Hills",
+          "216 - Venkateshwara Colony",
+          "221 - Banjara Hills",
+          "222 - Film Nagar"
+        ]
+      },
+      "16": {
+        "37 - Borabanda": [
+          "210 - Krishna Nagar",
+          "211 - Rahamath Nagar",
+          "212 - Karmika Nagar",
+          "213 - Rajeev Nagar",
+          "214 - Borabanda"
+        ],
+        "38 - Yousufguda": [
+          "205 - Erragadda",
+          "206 - Vengal Rao Nagar",
+          "207 - Srinagar Colony",
+          "208 - Yousufguda",
+          "209 - AG Colony"
+        ],
+        "39 - Ameerpet": [
+          "200 - Begumpet",
+          "201 - Ameerpet",
+          "202 - SR Nagar",
+          "203 - BK Guda",
+          "204 - Sanathnagar"
+        ]
+      }
+    },
+    "Secunderabad": {
+      "17": {
+        "40 - Kavadiguda": [
+          "165 - Gandhi Nagar",
+          "166 - Kavadiguda",
+          "167 - Bakaram",
+          "168 - Bholakpur",
+          "197 - Padmarao Nagar",
+          "198 - Bansilalpet",
+          "199 - Ramgopalpet"
+        ],
+        "41 - Musheerabad": [
+          "163 - Adikmet",
+          "164 - Bagh Lingampally",
+          "169 - Musheerabad",
+          "170 - Ramnagar",
+          "171 - Bapuji Nagar"
+        ],
+        "42 - Amberpet": [
+          "155 - BARKATPURA",
+          "156 - Kachiguda",
+          "157 - Golnaka",
+          "158 - Patel Nagar",
+          "159 - Amberpet",
+          "160 - Bagh Amberpet",
+          "161 - Tilak Nagar",
+          "162 - Nallakunta"
+        ]
+      },
+      "18": {
+        "43 - Tarnaka": [
+          "172 - Boudha Nagar",
+          "173 - Tarnaka",
+          "174 - Seethaphalmandi",
+          "175 - Chilkalguda"
+        ],
+        "44 - Mettuguda": [
+          "176 - Mettuguda",
+          "177 - Lalapet",
+          "178 - North Lalaguda",
+          "179 - Addagutta"
+        ]
+      }
+    }
+  },
+  "CMC": {
+    "Serilingampally": {
+      "19": {
+        "46 - Patancheruvu": [
+          "263 - Tellapur",
+          "265 - Muthangi",
+          "266 - Patancheruvu",
+          "267 - JP Colony"
+        ],
+        "47 - Ameenpur": [
+          "268 - Ramachandrapuram (RC Puram)",
+          "269 - Bharathi Nagar",
+          "270 - Beeramguda",
+          "271 - Ameenpur",
+          "272 - Bollaram"
+        ]
+      },
+      "20": {
+        "45 - Narsingi": [
+          "124 - Narsingi",
+          "125 - Kokapet",
+          "126 - Gandipet",
+          "127 - Manikonda",
+          "128 - Neknampur"
+        ],
+        "48 - Miyapur": [
+          "236 - Hafeezpet",
+          "237 - Madeenaguda",
+          "238 - Chanda Nagar",
+          "239 - Deepthisri Nagar",
+          "240 - Miyapur",
+          "241 - Maktha Mahabubpet"
+        ],
+        "49 - Serilingampally": [
+          "225 - Gachibowli",
+          "226 - Nallagandla",
+          "227 - Serilingampally",
+          "228 - Masjid Banda",
+          "229 - Sri Ram Nagar",
+          "234 - Kondapur"
+        ]
+      }
+    },
+    "Kukatpally": {
+      "21": {
+        "50 - Madhapur": [
+          "230 - Anjaiah Nagar",
+          "231 - HITEC City",
+          "232 - Madhapur",
+          "233 - Izzath Nagar",
+          "235 - Matrusri Nagar",
+          "242 - Mayuri Nagar"
+        ],
+        "51 - Allwyn Colony": [
+          "243 - Hyder Nagar",
+          "244 - Bhagya Nagar Colony",
+          "245 - Shamshiguda",
+          "246 - Allwyn Colony",
+          "247 - Vivekananda Nagar Colony",
+          "248 - Venkateshwara Nagar"
+        ]
+      },
+      "22": {
+        "52 - Kukatpally": [
+          "249 - Kukatpally",
+          "250 - Balaji Nagar",
+          "251 - Vasanth Nagar",
+          "252 - KPHB Colony",
+          "253 - Kaithalapur",
+          "254 - Gayatri Nagar"
+        ],
+        "53 - Moosapet": [
+          "255 - Allapur",
+          "256 - Moti Nagar",
+          "257 - Moosapet",
+          "258 - Prashanth Nagar",
+          "259 - Balanagar"
+        ]
+      }
+    },
+    "Quthbullapur": {
+      "23": {
+        "54 - Chintal": [
+          "279 - Rodamestri Nagar",
+          "280 - Jagathgiri Gutta",
+          "281 - Ranga Reddy Nagar",
+          "282 - Chintal",
+          "283 - Giri Nagar"
+        ],
+        "55 - Jeedimetla": [
+          "284 - Ganesh Nagar",
+          "285 - Padma Nagar",
+          "286 - Quthbullapur",
+          "287 - Pet Basheerabad"
+        ],
+        "56 - Kompally": [
+          "288 - Kompally",
+          "289 - Doolapally",
+          "290 - Subhash Nagar",
+          "292 - Saibaba Nagar"
+        ],
+        "57 - Gajularamaram": [
+          "277 - Mahadevpuram",
+          "278 - Gajularamaram",
+          "291 - Shapur Nagar",
+          "293 - Suraram"
+        ]
+      },
+      "24": {
+        "58 - Nizampet": [
+          "273 - Nizampet",
+          "274 - Bachupally",
+          "275 - Bhandari Layout",
+          "276 - Pragathi Nagar"
+        ],
+        "59 - Dundigal": [
+          "294 - Bahadurpally",
+          "295 - Bowrampet",
+          "296 - Dundigal"
+        ],
+        "60 - Medchal": [
+          "297 - Medchal",
+          "298 - Pudur - Kistapur",
+          "299 - Gundlapochampally"
+        ]
+      }
+    }
+  }
+};

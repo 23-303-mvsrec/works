@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hmwssbLoginApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HMWSSB – Officer Portal Login</title>
+  <link rel="stylesheet" href="styles/theme.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(122, 122, 56, 0.1) 0%, rgba(90, 122, 58, 0.03) 100%);
+      z-index: -1;
+      animation: floatBubble 10s infinite ease-in-out;
+    }
+
+    body::before {
+      width: 300px;
+      height: 300px;
+      top: -50px;
+      left: -50px;
+    }
+
+    body::after {
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: -5s;
+    }
+
+    @keyframes floatBubble {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(245, 245, 232, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(122, 122, 56, 0.12), 0 5px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(122, 122, 56, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .login-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 24px 28px 20px;
+      text-align: center;
+    }
+
+    .login-logo {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      margin-bottom: 12px;
+    }
+
+    .login-logo svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+    }
+
+    .login-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .login-subtitle {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 4px;
+    }
+
+    .login-body {
+      padding: 28px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 4px;
+    }
+
+    .input-wrapper .toggle-password:hover {
+      color: var(--primary);
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(122, 122, 56, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 6px;
+    }
+
+    .login-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(122, 122, 56, 0.35);
+    }
+
+    .login-btn:disabled {
+      background: #a0aec0;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .login-footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .alert-shake {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .phone-hint {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 3px;
+    }
+  </style>
+</head>
+
+<body ng-controller="LoginCtrl">
+
+  <div class="login-card">
+    <!-- Header with Government Branding -->
+    <div class="login-header">
+      <div class="login-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2zm-1,17.93c-3.95-.49-7-3.85-7-7.93,0-.62.08-1.21.21-1.79L9,15v1c0,1.1.9,2,2,2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55,0,1-.45,1-1V7h2c1.1,0,2-.9,2-2v-.41c2.93,1.19,5,4.06,5,7.41,0,2.08-.8,3.97-2.1,5.39z"/>
+        </svg>
+      </div>
+      <div class="login-title">HMWSSB Portal</div>
+      <div class="login-subtitle">Works Measurement &amp; Estimation System</div>
+    </div>
+
+    <div class="login-body">
+      <!-- Error Alert -->
+      <div class="alert alert-error" ng-if="errorMessage" ng-class="{'alert-shake': shakeError}">
+        <span>&#9888;</span> {{errorMessage}}
+      </div>
+
+      <!-- Success Alert -->
+      <div class="alert alert-success" ng-if="successMessage">
+        <span>&#10003;</span> {{successMessage}}
+      </div>
+
+      <!-- Login Form -->
+      <form ng-submit="executeLogin()" novalidate>
+        <div class="form-group">
+          <label class="form-label required" for="phone_input">Officer Phone Number</label>
+          <div class="input-wrapper">
+            <input type="tel" id="phone_input" class="form-control" ng-model="credentials.phoneNumber"
+                   placeholder="e.g. 9876543210" required maxlength="10" pattern="[0-9]{10}"
+                   autocomplete="username" />
+          </div>
+          <div class="phone-hint">Enter your 10-digit registered mobile number</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="password_input">Password</label>
+          <div class="input-wrapper">
+            <input ng-attr-type="{{showPassword ? 'text' : 'password'}}" id="password_input" class="form-control"
+                   ng-model="credentials.password" placeholder="Enter your password" required
+                   autocomplete="current-password" style="padding-right: 36px;" />
+            <button type="button" class="toggle-password" ng-click="showPassword = !showPassword"
+                    ng-bind="showPassword ? '&#128065;' : '&#128064;'" title="Toggle password visibility">
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" ng-disabled="submitting">
+          <span class="spinner" ng-if="submitting"></span>
+          <span ng-if="submitting">Authenticating...</span>
+          <span ng-if="!submitting">Login to Account</span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        Government of Telangana<br/>
+        Hyderabad Metropolitan Water Supply and Sewerage Board
+      </div>
+    </div>
+  </div>
+
+  <script>
+    angular.module('hmwssbLoginApp', ['hmwssbShared'])
+      .controller('LoginCtrl', ['$scope', '$http', 'AuthService',
+        function ($scope, $http, AuthService) {
+
+          // If already logged in, redirect
+          if (AuthService.isLoggedIn()) {
+            window.location.href = 'index.html';
+            return;
+          }
+
+          $scope.credentials = { phoneNumber: '', password: '' };
+          $scope.errorMessage = null;
+          $scope.successMessage = null;
+          $scope.submitting = false;
+          $scope.showPassword = false;
+          $scope.shakeError = false;
+
+          $scope.executeLogin = function () {
+            $scope.errorMessage = null;
+            $scope.successMessage = null;
+            $scope.shakeError = false;
+
+            if (!$scope.credentials.phoneNumber || !$scope.credentials.phoneNumber.trim()) {
+              $scope.errorMessage = 'Please enter your phone number.';
+              $scope.shakeError = true;
+              return;
+            }
+            if (!$scope.credentials.password || !$scope.credentials.password.trim()) {
+              $scope.errorMessage = 'Please enter your password.';
+              $scope.shakeError = true;
+              return;
+            }
+
+            $scope.submitting = true;
+
+            $http.post(APP_CONFIG.API_BASE + '/users/login', {
+              phoneNumber: $scope.credentials.phoneNumber.trim(),
+              password: $scope.credentials.password
+            }).then(function (response) {
+              $scope.submitting = false;
+              AuthService.setUser(response.data);
+              $scope.successMessage = 'Login successful! Redirecting...';
+              setTimeout(function () {
+                window.location.href = 'index.html';
+              }, 500);
+            }, function (error) {
+              $scope.submitting = false;
+              $scope.shakeError = true;
+              if (error.status === 401 || error.status === 400 || error.status === 404) {
+                $scope.errorMessage = error.data || 'Invalid phone number or password. Please try again.';
+              } else {
+                $scope.errorMessage = 'Could not reach the server. Please make sure the application is running.';
+              }
+            });
+          };
+        }
+      ]);
+  </script>
+</body>
+
+</html>
