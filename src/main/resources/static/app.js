@@ -202,6 +202,10 @@ hmwssbShared.factory('ModalService', ['$rootScope', '$compile', '$timeout', func
 /* ── Utility Functions ── */
 hmwssbShared.factory('Utils', [function () {
   return {
+    isLocalFileProtocol: function () {
+      return window.location.protocol === 'file:';
+    },
+
     isMaterialYes: function (val) {
       if (val === undefined || val === null) return false;
       var s = String(val).trim().toLowerCase();

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hmwssbAdminApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HMWSSB – Admin Portal</title>
+  <link rel="stylesheet" href="styles/theme.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <style>
+    /* ── Header Customization ── */
+    .page-header {
+      background: var(--primary);
+      color: var(--text-white);
+      padding: 10px 20px;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-header-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(122, 122, 56, 0.25);
+    }
+
+    .page-header-logo svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    .page-header-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .page-header-sub {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    /* ── User Session Info ── */
+    .user-bar {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-top: none;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .user-name {
+      font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: #2c3e50;
+    }
+
+    .user-designation {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* ── Controls Section ── */
+    .admin-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-box {
+      width: 180px;
+    }
+
+    /* ── Location Badge Styles ── */
+    .loc-badge {
+      display: inline-block;
+      background: #eaf2f8;
+      border: 1px solid #a4c2e6;
+      color: #1f4e79;
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin: 2px;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .loc-badge-corp {
+      background: #fdf2e9;
+      border-color: #f5cba7;
+      color: #b9770e;
+    }
+
+    /* ── Modal Overlay and Content ── */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-content-lg {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 780px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.2s ease;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    /* ── Location Assignment Box ── */
+    .assignment-box {
+      background: #f9f9f2;
+      border: 1px dashed var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .assignment-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-size: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 4px;
+    }
+
+    .assignment-inputs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .assignment-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Assigned Locations Table ── */
+    .loc-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .loc-list-table th {
+      background: #e2e8f0;
+      color: #334155;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      padding: 5px;
+      border: 1px solid #cbd5e1;
+      text-align: left;
+    }
+
+    .loc-list-table td {
+      padding: 5px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+    }
+
+    .loc-list-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .file-warning {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff8e1;
+      border: 1px solid #f0d060;
+      color: #8a6d00;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 12px;
+      z-index: 99999;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+    }
+
+    .file-warning strong {
+      color: #b33;
+    }
+  </style>
+</head>
+
+<body ng-controller="AdminCtrl">
+
+  <div class="file-warning" ng-if="isLocalFile">
+    <span>&#9888;</span>
+    Opened via file:// &mdash; API calls will fail. Use <strong>http://localhost:8080/admin.html</strong>
+  </div>
+
+  <div class="container">
+    <div class="sheet-wrapper">
+
+      <!-- Government Header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-header-logo">
+            <svg viewBox="0 0 24 24">
+              <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2zm-1,17.93c-3.95-.49-7-3.85-7-7.93,0-.62.08-1.21.21-1.79L9,15v1c0,1.1.9,2,2,2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55,0,1-.45,1-1V7h2c1.1,0,2-.9,2-2v-.41c2.93,1.19,5,4.06,5,7.41,0,2.08-.8,3.97-2.1,5.39z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="page-header-title">HMWSSB – Officer Directory Admin Portal</div>
+            <div class="page-header-sub">Hyderabad Metropolitan Water Supply and Sewerage Board</div>
+          </div>
+        </div>
+        <div class="flex flex-center flex-gap-sm">
+          <a href="index.html" class="btn btn-outline btn-sm" style="border-color: #fff; color: #fff;">&#8592; Back to Estimates</a>
+          <button class="btn btn-danger btn-sm" ng-click="logout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- User Bar -->
+      <div class="user-bar">
+        <div class="user-info">
+          <div class="user-avatar">{{currentUser.name.charAt(0)}}</div>
+          <div>
+            <div class="user-name">{{currentUser.name}}</div>
+            <div class="user-designation">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
+          </div>
+        </div>
+        <div>
+          <span class="badge badge-approved" style="font-size:11px; padding:4px 10px;">{{currentUser.role}} Access Granted</span>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="alert alert-error" ng-if="apiError">
+        <span>&#9888;</span> {{apiError}}
+      </div>
+      <div class="alert alert-success" ng-if="apiSuccess">
+        <span>&#10003;</span> {{apiSuccess}}
+      </div>
+
+      <!-- Officer Dashboard Title & Controls -->
+      <div class="card mt-2">
+        <div class="card-header">Officer Accounts &amp; Geographic Access Control</div>
+        <div class="card-body">
+
+          <!-- Search Filters and Controls -->
+          <div class="admin-controls">
+            <div class="search-box">
+              <input type="text" class="form-control" ng-model="searchQuery" placeholder="Search by name, phone number, or designation..." />
+            </div>
+            <div class="filter-box">
+              <select class="form-control" ng-model="filterRole">
+                <option value="">All Roles</option>
+                <option value="MANAGER">MANAGER</option>
+                <option value="DGM">DGM</option>
+                <option value="GM">GM</option>
+                <option value="CGM">CGM</option>
+                <option value="DOP">DOP</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
+            </div>
+            <button class="btn btn-success" ng-click="openAddModal()">
+              <span>&#43;</span> Add Officer
+            </button>
+          </div>
+
+          <!-- Officers Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 5%">S.No</th>
+                  <th style="width: 18%">Name</th>
+                  <th style="width: 12%">Phone Number</th>
+                  <th style="width: 15%">Designation</th>
+                  <th style="width: 10%">System Role</th>
+                  <th style="width: 30%">Jurisdiction / Locations Scope</th>
+                  <th style="width: 10%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="user in filteredUsers = (users | filter:filterUserFn) | orderBy:'name'">
+                  <td>{{$index + 1}}</td>
+                  <td class="font-bold text-left" style="color: #2c3e50; padding-left: 8px;">{{user.name}}</td>
+                  <td class="font-bold">{{user.phoneNumber}}</td>
+                  <td class="text-left" style="padding-left: 8px;">{{user.designation || 'N/A'}}</td>
+                  <td>
+                    <span class="badge" ng-class="{'badge-approved': user.role === 'ADMIN' || user.role === 'DOP', 'badge-pending': user.role === 'DGM' || user.role === 'GM' || user.role === 'CGM', 'badge-draft': user.role === 'MANAGER'}">
+                      {{user.role}}
+                    </span>
+                  </td>
+                  <td class="text-left" style="padding: 6px;">
+                    <div ng-if="user.locations.length > 0">
+                      <span class="loc-badge" ng-repeat="loc in user.locations" ng-class="{'loc-badge-corp': loc.corp === 'Corporate'}">
+                        {{formatLocation(loc)}}
+                      </span>
+                    </div>
+                    <span class="text-muted" style="font-style: italic; font-size:11px;" ng-if="!user.locations || user.locations.length === 0">No jurisdictions assigned</span>
+                  </td>
+                  <td>
+                    <div class="flex flex-center flex-gap-sm" style="justify-content: center;">
+                      <button class="btn btn-primary btn-sm" ng-click="openEditModal(user)" title="Edit Officer">Edit</button>
+                      <button class="btn btn-danger btn-sm" ng-click="deleteUser(user)" title="Delete Officer" ng-disabled="user.phoneNumber === currentUser.phoneNumber">Del</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr ng-if="filteredUsers.length === 0">
+                  <td colspan="7" class="text-center text-muted" style="padding: 18px; font-style: italic;">No officers match the search query.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add / Edit Officer Modal Overlay -->
+  <div class="modal-overlay" ng-if="showModal">
+    <div class="modal-content-lg">
+      <div class="modal-header" ng-style="isEditMode ? {'background':'#2980b9'} : {'background':'#27ae60'}">
+        <span>{{isEditMode ? 'Edit: ' + formUser.name + ' (' + formUser.phoneNumber + ')' : 'Create New Officer Account'}}</span>
+        <button class="btn btn-sm btn-danger" style="padding: 2px 6px; font-size:12px;" ng-click="closeModal()">X</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="alert alert-error" ng-if="apiError" style="margin-bottom:10px;">
+          <span>&#9888;</span> {{apiError}}
+        </div>
+
+        <form ng-submit="saveUser()" novalidate>
+          <!-- Core fields grid -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div class="form-group">
+              <label class="form-label required">Phone Number (acts as Login ID)</label>
+              <input type="text" class="form-control" ng-model="formUser.phoneNumber" placeholder="10-digit number" required maxlength="10" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Officer Full Name</label>
+              <input type="text" class="form-control" ng-model="formUser.name" placeholder="e.g. M. MAHIPAL REDDY" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Designation</label>
+              <input type="text" class="form-control" ng-model="formUser.designation" placeholder="e.g. Manager (AE) or Deputy General Manager" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Primary Role</label>
+              <select class="form-control" ng-model="formUser.role" required>
+                <option value="MANAGER">MANAGER (AE)</option>
+                <option value="DGM">DGM</option>
+                <option value="GM">GM</option>
+                <option value="CGM">CGM</option>
+                <option value="DOP">DOP</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label required">Portal Password</label>
+              <input type="password" class="form-control" ng-model="formUser.password" placeholder="Default login password" required />
+            </div>
+          </div>
+
+          <!-- Location Scopes Editor Section -->
+          <div class="assignment-box">
+            <div class="assignment-title">Geographic Jurisdiction Assignments</div>
+            
+            <div class="assignment-inputs">
+              <div class="form-group">
+                <label class="form-label">CORP / Type</label>
+                <select class="form-control" ng-model="tempLoc.corp" ng-change="onCorpChange()">
+                  <option value="">-- Select --</option>
+                  <option ng-repeat="c in corps" ng-value="c">{{c}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Zone</label>
+                <select class="form-control" ng-model="tempLoc.zoneName" ng-change="onZoneChange()" ng-disabled="!tempLoc.corp || tempLoc.corp === 'Corporate'">
+                  <option value="">-- Select --</option>
+                  <option ng-repeat="z in zones" ng-value="z">{{z}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Division</label>
+                <select class="form-control" ng-model="tempLoc.division" ng-change="onDivisionChange()" ng-disabled="!tempLoc.zoneName">
+                  <option value="">-- Select --</option>
+                  <option ng-repeat="d in divisions" ng-value="d">Division {{d}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Circle</label>
+                <select class="form-control" ng-model="tempLoc.circleName" ng-change="onCircleChange()" ng-disabled="!tempLoc.division">
+                  <option value="">-- Select --</option>
+                  <option ng-repeat="cir in circles" ng-value="cir">{{cir}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Ward</label>
+                <select class="form-control" ng-model="tempLoc.wardName" ng-disabled="!tempLoc.circleName">
+                  <option value="">-- Select --</option>
+                  <option ng-repeat="w in wards" ng-value="w">{{w}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Role for this Scope</label>
+                <select class="form-control" ng-model="tempLoc.role">
+                  <option value="">-- Default (Officer's Role) --</option>
+                  <option value="MANAGER">MANAGER</option>
+                  <option value="DGM">DGM</option>
+                  <option value="GM">GM</option>
+                  <option value="CGM">CGM</option>
+                  <option value="DOP">DOP</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-info btn-block btn-sm" ng-click="addLocationToUser()">
+              &#43; Add Jurisdiction Scope
+            </button>
+
+            <!-- Current assigned scopes list -->
+            <div ng-if="formUser.locations.length > 0" style="margin-top:14px;">
+              <div style="font-weight:700; font-size:11px; color:var(--text-muted); margin-bottom:4px;">Currently Assigned Scopes:</div>
+              <table class="loc-list-table">
+                <thead>
+                  <tr>
+                    <th>Corp</th>
+                    <th>Zone</th>
+                    <th>Division</th>
+                    <th>Circle</th>
+                    <th>Ward</th>
+                    <th>Role Scope</th>
+                    <th style="width: 10%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="loc in formUser.locations">
+                    <td>{{loc.corp}}</td>
+                    <td>{{loc.zoneName || 'N/A'}}</td>
+                    <td>{{loc.division ? 'Division ' + loc.division : 'N/A'}}</td>
+                    <td>{{loc.circleName || 'N/A'}}</td>
+                    <td>{{loc.wardName || 'N/A'}}</td>
+                    <td><span class="badge badge-draft">{{loc.role || formUser.role}}</span></td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-danger btn-sm" style="padding:1px 5px; font-size:10px;" ng-click="removeLocationFromUser($index)">Remove</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Modal Footer Actions -->
+          <div class="modal-footer" style="margin-top:20px; padding-bottom:0;">
+            <button type="button" class="btn btn-secondary" ng-click="closeModal()">Cancel</button>
+            <button type="submit" class="btn" ng-class="isEditMode ? 'btn-primary' : 'btn-success'">
+              {{isEditMode ? 'Save Officer' : 'Create Officer'}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    angular.module('hmwssbAdminApp', ['hmwssbShared'])
+      .controller('AdminCtrl', ['$scope', '$http', '$timeout', 'AuthService', 'ModalService',
+        function ($scope, $http, $timeout, AuthService, ModalService) {
+          if (!AuthService.requireLogin()) return;
+          $scope.currentUser = AuthService.getUser();
+          $scope.isLocalFile = window.location.protocol === 'file:';
+          if ($scope.currentUser.role !== 'ADMIN' && $scope.currentUser.role !== 'DOP') {
+            window.location.href = 'index.html';
+            return;
+          }
+          $scope.logout = function () { AuthService.logout(); };
+
+          $scope.users = [];
+          $scope.searchQuery = '';
+          $scope.filterRole = '';
+          $scope.apiError = null;
+          $scope.apiSuccess = null;
+
+          var _successTimer = null;
+          $scope.showSuccess = function (msg) {
+            if (_successTimer) $timeout.cancel(_successTimer);
+            $scope.apiSuccess = msg;
+            _successTimer = $timeout(function () { $scope.apiSuccess = null; }, 5000);
+          };
+
+          // Hierarchy Options loaded from DB
+          $scope.hierarchyData = {};
+          $scope.corps = ["Corporate"];
+          $scope.zones = [];
+          $scope.divisions = [];
+          $scope.circles = [];
+          $scope.wards = [];
+
+          $http.get(APP_CONFIG.API_BASE + '/jurisdictions').then(function(response) {
+            var dbJurs = response.data;
+            var tree = {};
+            dbJurs.forEach(function(item) {
+              var corp = item.corp;
+              var zone = item.zoneName;
+              var div = item.division;
+              var circle = item.circleName;
+              var ward = item.wardName;
+              
+              if (corp && zone && div && circle && ward) {
+                if (!tree[corp]) tree[corp] = {};
+                if (!tree[corp][zone]) tree[corp][zone] = {};
+                if (!tree[corp][zone][div]) tree[corp][zone][div] = {};
+                if (!tree[corp][zone][div][circle]) tree[corp][zone][div][circle] = [];
+                if (tree[corp][zone][div][circle].indexOf(ward) === -1) {
+                  tree[corp][zone][div][circle].push(ward);
+                }
+              }
+            });
+            $scope.hierarchyData = tree;
+            $scope.corps = ["Corporate"].concat(Object.keys(tree));
+          }, function() {
+            $scope.apiError = 'Could not load jurisdictions from database.';
+          });
+
+          // Temp scope object
+          $scope.tempLoc = {
+            corp: '',
+            zoneName: '',
+            division: '',
+            circleName: '',
+            wardName: '',
+            role: ''
+          };
+
+          // Modal states
+          $scope.showModal = false;
+          $scope.isEditMode = false;
+          $scope.originalPhone = '';
+
+          $scope.formUser = {
+            phoneNumber: '',
+            name: '',
+            designation: '',
+            role: 'MANAGER',
+            password: '1234',
+            locations: []
+          };
+
+          // Load all users
+          $scope.loadUsers = function () {
+            $scope.apiError = null;
+            $http.get(APP_CONFIG.API_BASE + '/users').then(function (r) {
+              $scope.users = r.data;
+            }, function (err) {
+              $scope.apiError = 'Could not load users list from server. Please verify backend is running.';
+            });
+          };
+
+          $scope.loadUsers();
+
+          // Cascading Dropdowns
+          $scope.onCorpChange = function () {
+            $scope.tempLoc.zoneName = '';
+            $scope.tempLoc.division = '';
+            $scope.tempLoc.circleName = '';
+            $scope.tempLoc.wardName = '';
+            $scope.zones = [];
+            $scope.divisions = [];
+            $scope.circles = [];
+            $scope.wards = [];
+
+            if ($scope.tempLoc.corp && $scope.tempLoc.corp !== 'Corporate' && $scope.hierarchyData[$scope.tempLoc.corp]) {
+              $scope.zones = Object.keys($scope.hierarchyData[$scope.tempLoc.corp]);
+            }
+          };
+
+          $scope.onZoneChange = function () {
+            $scope.tempLoc.division = '';
+            $scope.tempLoc.circleName = '';
+            $scope.tempLoc.wardName = '';
+            $scope.divisions = [];
+            $scope.circles = [];
+            $scope.wards = [];
+
+            if ($scope.tempLoc.corp && $scope.tempLoc.zoneName && $scope.hierarchyData[$scope.tempLoc.corp][$scope.tempLoc.zoneName]) {
+              $scope.divisions = Object.keys($scope.hierarchyData[$scope.tempLoc.corp][$scope.tempLoc.zoneName]);
+            }
+          };
+
+          $scope.onDivisionChange = function () {
+            $scope.tempLoc.circleName = '';
+            $scope.tempLoc.wardName = '';
+            $scope.circles = [];
+            $scope.wards = [];
+
+            if ($scope.tempLoc.corp && $scope.tempLoc.zoneName && $scope.tempLoc.division &&
+                $scope.hierarchyData[$scope.tempLoc.corp][$scope.tempLoc.zoneName][$scope.tempLoc.division]) {
+              $scope.circles = Object.keys($scope.hierarchyData[$scope.tempLoc.corp][$scope.tempLoc.zoneName][$scope.tempLoc.division]);
+            }
+          };
+
+          $scope.onCircleChange = function () {
+            $scope.tempLoc.wardName = '';
+            $scope.wards = [];
+
+            if ($scope.tempLoc.corp && $scope.tempLoc.zoneName && $scope.tempLoc.division && $scope.tempLoc.circleName &&
+                $scope.hierarchyData[$scope.tempLoc.corp][$scope.tempLoc.zoneName][$scope.tempLoc.division][$scope.tempLoc.circleName]) {
+              $scope.wards = $scope.hierarchyData[$scope.tempLoc.corp][$scope.tempLoc.zoneName][$scope.tempLoc.division][$scope.tempLoc.circleName];
+            }
+          };
+
+          // Location Scope Builder
+          $scope.addLocationToUser = function () {
+            if (!$scope.tempLoc.corp) {
+              alert('Please select a CORP or Corporate.');
+              return;
+            }
+            
+            var newLoc = {
+              corp: $scope.tempLoc.corp,
+              zoneName: $scope.tempLoc.corp === 'Corporate' ? null : ($scope.tempLoc.zoneName || null),
+              division: $scope.tempLoc.corp === 'Corporate' ? null : ($scope.tempLoc.division || null),
+              circleName: $scope.tempLoc.corp === 'Corporate' ? null : ($scope.tempLoc.circleName || null),
+              wardName: $scope.tempLoc.corp === 'Corporate' ? null : ($scope.tempLoc.wardName || null),
+              role: $scope.tempLoc.role || null
+            };
+
+            $scope.formUser.locations.push(newLoc);
+
+            // Reset tempLoc input
+            $scope.tempLoc = { corp: '', zoneName: '', division: '', circleName: '', wardName: '', role: '' };
+            $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+          };
+
+          $scope.removeLocationFromUser = function (idx) {
+            $scope.formUser.locations.splice(idx, 1);
+          };
+
+          // Modals Control
+          $scope.openAddModal = function () {
+            $scope.isEditMode = false;
+            $scope.showModal = true;
+            $scope.apiError = null;
+            $scope.formUser = {
+              phoneNumber: '',
+              name: '',
+              designation: '',
+              role: 'MANAGER',
+              password: '1234',
+              locations: []
+            };
+          };
+
+          $scope.openEditModal = function (user) {
+            $scope.isEditMode = true;
+            $scope.showModal = true;
+            $scope.apiError = null;
+            $scope.originalPhone = user.phoneNumber;
+            $scope.formUser = {
+              phoneNumber: user.phoneNumber,
+              name: user.name,
+              designation: user.designation,
+              role: user.role,
+              password: user.password || '1234',
+              locations: angular.copy(user.locations || [])
+            };
+          };
+
+          $scope.closeModal = function () {
+            $scope.showModal = false;
+          };
+
+          // Save / Update User
+          $scope.saveUser = function () {
+            if (!$scope.formUser.phoneNumber || !$scope.formUser.phoneNumber.trim()) {
+              alert('Phone number is required.'); return;
+            }
+            var phone = $scope.formUser.phoneNumber.trim();
+            if (phone.length !== 10 || isNaN(phone)) {
+              alert('Phone number must be exactly 10 digits.'); return;
+            }
+            if (!$scope.formUser.name || !$scope.formUser.name.trim()) {
+              alert('Officer name is required.'); return;
+            }
+            if (!$scope.formUser.role) {
+              alert('Primary system role is required.'); return;
+            }
+
+            $scope.apiError = null;
+            $scope.apiSuccess = null;
+
+            var payload = angular.copy($scope.formUser);
+            payload.phoneNumber = phone;
+
+            if ($scope.isEditMode) {
+              $http.put(APP_CONFIG.API_BASE + '/users/' + $scope.originalPhone, payload).then(function (r) {
+                $scope.showModal = false;
+                $scope.showSuccess('Officer account successfully updated!');
+                $scope.loadUsers();
+              }, function (err) {
+                $scope.apiError = err.data || 'Failed to update officer details.';
+              });
+            } else {
+              $http.post(APP_CONFIG.API_BASE + '/users', payload).then(function (r) {
+                $scope.showModal = false;
+                $scope.showSuccess('Officer account successfully created!');
+                $scope.loadUsers();
+              }, function (err) {
+                $scope.apiError = err.data || 'Failed to create officer account.';
+              });
+            }
+          };
+
+          // Delete User
+          $scope.deleteUser = function (user) {
+            ModalService.confirm('Delete Officer Account', 'Are you sure you want to permanently delete ' + user.name + ' (' + user.phoneNumber + ')? This will also remove all geographic access mapping.', function () {
+              $scope.apiError = null;
+              $scope.apiSuccess = null;
+                $http.delete(APP_CONFIG.API_BASE + '/users/' + user.phoneNumber).then(function (r) {
+                $scope.showSuccess('Officer account successfully deleted.');
+                $scope.loadUsers();
+              }, function (err) {
+                $scope.apiError = err.data || 'Failed to delete officer account.';
+              });
+            });
+          };
+
+          // Formatting for List
+          $scope.formatLocation = function (loc) {
+            if (loc.corp === 'Corporate') return 'Corporate';
+            var parts = [];
+            if (loc.corp) parts.push(loc.corp);
+            if (loc.zoneName) parts.push(loc.zoneName);
+            if (loc.division) parts.push('Div ' + loc.division);
+            if (loc.circleName) parts.push(loc.circleName.replace(/â€“|-/g, '-'));
+            if (loc.wardName) parts.push(loc.wardName);
+            if (loc.role) parts.push('(' + loc.role + ')');
+            return parts.join(' ➔ ');
+          };
+
+          // Filter Function
+          $scope.filterUserFn = function (user) {
+            var q = $scope.searchQuery.toLowerCase();
+            var matchesQuery = !q ||
+              user.name.toLowerCase().indexOf(q) !== -1 ||
+              user.phoneNumber.indexOf(q) !== -1 ||
+              (user.designation && user.designation.toLowerCase().indexOf(q) !== -1);
+
+            var matchesRole = !$scope.filterRole || user.role === $scope.filterRole;
+
+            return matchesQuery && matchesRole;
+          };
+        }
+      ]);
+  </script>
+</body>
+
+</html>

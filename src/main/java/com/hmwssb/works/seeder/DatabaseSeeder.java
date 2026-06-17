@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmwssb.works.model.User;
 import com.hmwssb.works.model.UserLocation;
+import com.hmwssb.works.model.Jurisdiction;
 import com.hmwssb.works.repository.UserRepository;
+import com.hmwssb.works.repository.JurisdictionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -17,14 +21,44 @@ import java.util.Map;
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
 
-    private final UserRepository userRepository;
+    private static final Logger log = LoggerFactory.getLogger(DatabaseSeeder.class);
 
-    public DatabaseSeeder(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    private final JurisdictionRepository jurisdictionRepository;
+
+    public DatabaseSeeder(UserRepository userRepository, JurisdictionRepository jurisdictionRepository) {
         this.userRepository = userRepository;
+        this.jurisdictionRepository = jurisdictionRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        // 1. Seed Jurisdictions
+        ClassPathResource jurResource = new ClassPathResource("jurisdictions.json");
+        if (jurisdictionRepository.count() == 0 && jurResource.exists()) {
+            log.info("Seeding jurisdictions from jurisdictions.json...");
+            try (InputStream is = jurResource.getInputStream()) {
+                List<Map<String, Object>> rawJurs = mapper.readValue(is, new TypeReference<List<Map<String, Object>>>() {});
+                List<Jurisdiction> jursToSave = new ArrayList<>();
+                for (Map<String, Object> rawJur : rawJurs) {
+                    Jurisdiction jur = new Jurisdiction();
+                    jur.setCorp(cleanString((String) rawJur.get("corp")));
+                    jur.setZoneName(cleanString((String) rawJur.get("zoneName")));
+                    jur.setDivision(cleanString((String) rawJur.get("division")));
+                    jur.setCircleName(cleanString((String) rawJur.get("circleName")));
+                    jur.setWardName(cleanString((String) rawJur.get("wardName")));
+                    jursToSave.add(jur);
+                }
+                jurisdictionRepository.saveAll(jursToSave);
+                log.info("Successfully seeded {} jurisdictions from Excel data", jursToSave.size());
+            } catch (Exception e) {
+                log.error("Error seeding jurisdictions: {}", e.getMessage(), e);
+            }
+        }
+
+        // 2. Seed Users
         boolean needsReseed = false;
         if (userRepository.count() > 0) {
             long locationsWithNullRole = userRepository.findAll().stream()
@@ -39,17 +73,16 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
 
         if (!needsReseed) {
-            System.out.println("Users table already has " + userRepository.count() + " records with roles populated. Skipping seed.");
+            log.info("Users table already has {} records with roles populated. Skipping seed.", userRepository.count());
             return;
         }
 
-        System.out.println("Clearing old users and seeding HMWSSB officer accounts from sample users.xlsx data...");
+        log.info("Clearing old users and seeding HMWSSB officer accounts from sample users.xlsx data...");
         userRepository.deleteAll();
 
-        ObjectMapper mapper = new ObjectMapper();
         ClassPathResource resource = new ClassPathResource("users_parsed.json");
         if (!resource.exists()) {
-            System.err.println("Could not find users_parsed.json in classpath resources!");
+            log.error("Could not find users_parsed.json in classpath resources!");
             return;
         }
 
@@ -61,7 +94,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 User user = new User();
                 user.setPhoneNumber(cleanString((String) rawUser.get("phoneNumber")));
                 user.setName(cleanString((String) rawUser.get("name")));
-                user.setPassword("1234"); // Default password for all officers
+                user.setPassword("1234");
                 user.setDesignation(cleanString((String) rawUser.get("designation")));
                 user.setRole(cleanString((String) rawUser.get("role")));
 
@@ -85,10 +118,9 @@ public class DatabaseSeeder implements CommandLineRunner {
             }
 
             userRepository.saveAll(usersToSave);
-            System.out.println("Successfully seeded " + usersToSave.size() + " officer accounts from sample users.xlsx!");
+            log.info("Successfully seeded {} officer accounts from sample users.xlsx", usersToSave.size());
         } catch (Exception e) {
-            System.err.println("Error seeding users from json file: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error seeding users from json file: {}", e.getMessage(), e);
         }
     }
 
@@ -96,8 +128,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (input == null) {
             return null;
         }
-        String cleaned = input.replace("â€“", "-")
-                              .replace("â\u0080\u0093", "-")
+        String cleaned = input.replace("\u00e2\u0080\u0093", "-")
+                              .replace("\u00e2\u0080\u0093", "-")
                               .replace("?", "-")
                               .trim();
         return cleaned.isEmpty() ? null : cleaned;

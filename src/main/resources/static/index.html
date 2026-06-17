@@ -11,346 +11,129 @@
   <script src="app.js"></script>
   <script src="hierarchy.js"></script>
   <style>
-    /* ── Government Header ── */
-    .page-header {
-      background: var(--primary);
-      color: var(--text-white);
-      padding: 10px 20px;
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .sheet-wrapper {
+      background: #f5f5e8;
+      border: 1px solid #c8c87a;
+      border-radius: 6px;
+      padding: 16px;
     }
 
-    .page-header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .page-header-logo {
-      width: 36px;
-      height: 36px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .page-header-logo svg {
-      width: 20px;
-      height: 20px;
-      fill: #fff;
-    }
-
-    .page-header-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .page-header-sub {
-      font-size: 10px;
-      opacity: 0.8;
-    }
-
-    /* ── User Bar ── */
-    .user-bar {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-top: none;
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .user-name {
-      font-weight: 700;
-      font-size: 13px;
-      color: #2c3e50;
-    }
-
-    .user-designation {
-      font-size: 11px;
-      color: var(--text-light);
-    }
-
-    .location-select {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .location-select label {
-      font-weight: 600;
-      color: var(--error-text);
-      font-size: 11px;
-      white-space: nowrap;
-    }
-
-    .location-select select {
-      border: 1px solid var(--border-input);
-      border-radius: var(--radius-sm);
-      padding: 3px 8px;
-      font-size: 11px;
-      height: 26px;
-      background: #fff;
-      outline: none;
-      max-width: 380px;
-    }
-
-    /* ── Workflow Tracker ── */
-    .workflow-bar {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      overflow-x: auto;
-    }
-
-    .workflow-label {
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 10px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      margin-right: 8px;
-    }
-
-    .workflow-steps {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex: 1;
-      justify-content: space-around;
-      min-width: 580px;
-    }
-
-    .wf-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .wf-step-circle {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      border: 2px solid #cbd5e1;
-      background: #e2e8f0;
-      color: #64748b;
-      transition: all 0.3s ease;
-    }
-
-    .wf-step-circle.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(122, 122, 56, 0.2);
-    }
-
-    .wf-step-circle.completed {
-      background: var(--btn-success);
-      color: #fff;
-      border-color: var(--btn-success);
-    }
-
-    .wf-step-label {
-      font-size: 9px;
-      font-weight: 600;
-      color: #64748b;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    .wf-step-label.active {
-      color: var(--primary);
-    }
-
-    .wf-step-label.completed {
-      color: var(--btn-success);
-    }
-
-    .wf-arrow {
-      color: #cbd5e1;
-      font-weight: 700;
-      font-size: 12px;
-      margin: 0 2px;
-    }
-
-    /* ── Hierarchy Section ── */
     .hierarchy-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      margin-bottom: 12px;
+      gap: 12px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
     }
 
     @media (max-width: 768px) {
-      .hierarchy-grid {
-        grid-template-columns: 1fr;
-      }
+      .hierarchy-grid { grid-template-columns: 1fr; }
     }
 
     .hierarchy-field label {
       display: block;
       font-weight: 600;
-      color: var(--error-text);
-      font-size: 12px;
+      color: #b33;
+      font-size: 13px;
       margin-bottom: 3px;
     }
 
-    .hierarchy-field label::before {
-      content: '* ';
-    }
+    .hierarchy-field label::before { content: '* '; }
 
     .hierarchy-field select {
       width: 100%;
-      border: 1px solid var(--border-input);
-      border-radius: var(--radius-sm);
-      padding: 4px 8px;
-      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 5px 10px;
+      font-size: 13px;
       background: #fff;
       height: 28px;
     }
 
-    /* ── Name of Work ── */
+    .hierarchy-field select:focus { border-color: #7fa8d4; }
+
     .name-of-work {
       display: flex;
       align-items: center;
       gap: 10px;
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      margin-bottom: 12px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
     }
 
     .name-of-work label {
       font-weight: 600;
-      color: var(--error-text);
-      font-size: 12px;
+      color: #b33;
+      font-size: 13px;
       white-space: nowrap;
     }
 
-    .name-of-work label::before {
-      content: '* ';
-    }
+    .name-of-work label::before { content: '* '; }
 
     .name-of-work input {
       flex: 1;
-      border: 1px solid var(--border-input);
-      border-radius: var(--radius-sm);
+      border: 1px solid #ccc;
+      border-radius: 3px;
       padding: 5px 10px;
-      font-size: 12px;
-      outline: none;
+      font-size: 13px;
     }
 
-    .name-of-work input:focus {
-      border-color: var(--border-input-focus);
-    }
+    .name-of-work input:focus { border-color: #7fa8d4; }
 
-    /* ── Measurement Table ── */
-    .measure-table-wrap {
-      overflow-x: auto;
-    }
+    .measure-table-wrap { overflow-x: auto; }
 
     .measure-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      min-width: 900px;
+      min-width: 960px;
     }
 
     .measure-table th {
-      background: var(--table-header-bg);
-      color: var(--table-header-text);
+      background: #a0c4de;
+      color: #1a3550;
       font-weight: 600;
-      font-size: 11px;
-      padding: 6px 4px;
+      font-size: 12px;
+      padding: 7px 5px;
       text-align: center;
-      border: 1px solid var(--table-header-border);
+      border: 1px solid #7fa8c0;
       white-space: nowrap;
     }
 
     .measure-table td {
-      padding: 4px 3px;
-      border: 1px solid var(--table-border);
+      padding: 5px 4px;
+      border: 1px solid #c8daea;
       text-align: center;
-      background: var(--table-row-odd);
+      background: #e8f4fb;
       vertical-align: middle;
     }
 
-    .measure-table tbody tr:nth-child(even) td {
-      background: var(--table-row-even);
-    }
-
-    .measure-table tbody tr:hover td {
-      background: #cde4f4;
-    }
+    .measure-table tbody tr:nth-child(even) td { background: #daeef8; }
+    .measure-table tbody tr:hover td { background: #f0f7ff; }
 
     .measure-table td input[type="number"],
     .measure-table td input[type="text"] {
       width: 100%;
       border: 1px solid #bbb;
-      border-radius: var(--radius-sm);
-      padding: 3px 4px;
-      font-size: 11px;
+      border-radius: 3px;
+      padding: 4px 5px;
+      font-size: 12px;
       text-align: center;
       background: #fff;
-      outline: none;
     }
 
-    .measure-table td input[type="text"].desc-input {
-      text-align: left;
-    }
-
-    .measure-table td input:focus {
-      border-color: var(--border-input-focus);
-    }
+    .measure-table td input[type="text"].desc-input { text-align: left; }
+    .measure-table td input:focus { border-color: #5a9fd4; }
 
     .measure-table td input[readonly] {
       background: #e2e8f0;
       color: #475569;
       border: 1px solid #cbd5e1;
-      cursor: not-allowed;
     }
 
     .radio-group {
@@ -358,7 +141,6 @@
       gap: 8px;
       justify-content: center;
       align-items: center;
-      white-space: nowrap;
     }
 
     .radio-group label {
@@ -367,98 +149,91 @@
       gap: 3px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .row-total-bar td {
-      background: var(--primary) !important;
+      background: #5a7a3a !important;
       color: #fff;
       font-weight: 600;
       font-size: 12px;
       padding: 6px 10px;
       text-align: right;
-      border: 1px solid var(--primary-dark);
+      border: 1px solid #4a6830;
     }
 
-    /* ── Column widths ── */
     .col-sno { width: 4%; }
     .col-ismat { width: 8%; }
-    .col-desc { width: 22%; }
-    .col-nums { width: 7%; }
-    .col-len { width: 7%; }
-    .col-bre { width: 7%; }
-    .col-dep { width: 6%; }
+    .col-desc { width: 20%; }
+    .col-nums { width: 9%; }
+    .col-len { width: 6%; }
+    .col-bre { width: 6%; }
+    .col-dep { width: 5%; }
     .col-qty { width: 7%; }
     .col-rate { width: 7%; }
     .col-unit { width: 6%; }
-    .col-amt { width: 8%; }
-    .col-act { width: 9%; }
+    .col-amt { width: 7%; }
+    .col-act { width: 8%; }
 
-    /* ── Totals Panel ── */
     .totals-panel {
-      margin-top: 12px;
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-sm);
+      margin-top: 14px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
       overflow: hidden;
     }
 
     .totals-header {
-      background: var(--primary);
+      background: #7a7a38;
       color: #fff;
       font-weight: 600;
-      font-size: 12px;
-      padding: 6px 14px;
+      font-size: 13px;
+      padding: 7px 14px;
     }
 
     .totals-body {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
-      padding: 10px 14px;
+      gap: 20px;
+      padding: 12px 14px;
       align-items: center;
     }
 
     .total-field {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .total-field label {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: #555;
       white-space: nowrap;
       font-weight: 500;
     }
 
     .total-field input {
-      width: 130px;
+      width: 150px;
       border: 1px solid #bbb;
-      border-radius: var(--radius-sm);
-      padding: 4px 8px;
-      font-size: 12px;
+      border-radius: 3px;
+      padding: 5px 8px;
+      font-size: 13px;
       text-align: right;
       background: #fff;
     }
 
-    .total-field input[readonly] {
-      background: #f5f5f5;
-    }
+    .total-field input[readonly] { background: #f5f5f5; }
 
     .total-field select {
       border: 1px solid #bbb;
-      border-radius: var(--radius-sm);
-      padding: 4px 8px;
-      font-size: 12px;
+      border-radius: 3px;
+      padding: 5px 8px;
+      font-size: 13px;
       background: #fff;
-      width: 70px;
+      width: 90px;
     }
 
-    /* ── Saved Estimates ── */
-    .estimates-panel {
-      margin-top: 16px;
-    }
+    .estimates-panel { margin-top: 20px; }
 
     .estimates-header {
       background: #2c3e50;
@@ -466,29 +241,26 @@
       font-weight: 600;
       font-size: 12px;
       padding: 6px 14px;
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border-radius: 4px 4px 0 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .estimates-body {
-      padding: 10px;
-      background: var(--bg-highlight);
-      max-height: 220px;
+      padding: 12px;
+      background: #fffde7;
+      max-height: 250px;
       overflow-y: auto;
     }
 
-    .estimates-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    .estimates-table { width: 100%; border-collapse: collapse; }
 
     .estimates-table th {
       background: #d5dbdb;
       color: #2c3e50;
       border: 1px solid #bdc3c7;
-      padding: 5px 4px;
+      padding: 6px 4px;
       font-size: 11px;
       font-weight: 600;
     }
@@ -496,15 +268,12 @@
     .estimates-table td {
       border: 1px solid #bdc3c7;
       background: #fff;
-      padding: 5px 6px;
+      padding: 6px 4px;
       font-size: 12px;
     }
 
-    .estimates-table tr:hover td {
-      background: #f0f7ff;
-    }
+    .estimates-table tr:hover td { background: #f0f7ff; }
 
-    /* ── Autocomplete ── */
     .desc-wrapper {
       position: relative;
       width: 100%;
@@ -515,8 +284,8 @@
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(8px);
       border: 1px solid #a4c2e6;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.05);
       z-index: 9999;
       display: none;
       padding: 6px;
@@ -524,120 +293,139 @@
       overflow-y: auto;
     }
 
-    .suggestions-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+    .suggestions-list { list-style: none; padding: 0; margin: 0; }
 
     .suggestions-list li {
       padding: 8px 10px;
       cursor: pointer;
       font-size: 12px;
       border-bottom: 1px solid #f1f5f9;
-      transition: background 0.1s;
     }
 
-    .suggestions-list li:last-child {
-      border-bottom: none;
-    }
-
+    .suggestions-list li:last-child { border-bottom: none; }
     .suggestions-list li:hover,
-    .suggestions-list li.active {
-      background: #f0f7ff;
-    }
+    .suggestions-list li.active { background: #f0f7ff; }
 
-    .search-loading {
-      padding: 12px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-light);
-    }
+    .search-loading { padding: 12px; text-align: center; font-size: 12px; color: #64748b; }
 
-    .no-results {
-      padding: 12px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--error-text);
-      font-weight: 500;
+    .no-results { padding: 12px; text-align: center; font-size: 12px; color: #ef4444; font-weight: 500; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid #cbd5e1;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .file-warning {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff8e1;
+      border: 1px solid #f0d060;
+      color: #8a6d00;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 12px;
+      z-index: 99999;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+    }
+    .file-warning strong { color: #b33; }
   </style>
 </head>
 
 <body ng-controller="MeasurementCtrl" ng-click="closeAllSuggestions()">
 
+  <div class="file-warning" ng-if="isLocalFile">
+    <span>&#9888;</span>
+    Opened via file:// &mdash; API calls will fail. Use <strong>http://localhost:8080/index.html</strong>
+  </div>
+
   <div class="sheet-wrapper">
 
-    <!-- Government Header -->
-    <div class="page-header">
-      <div class="page-header-left">
-        <div class="page-header-logo">
-          <svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2zm-1,17.93c-3.95-.49-7-3.85-7-7.93,0-.62.08-1.21.21-1.79L9,15v1c0,1.1.9,2,2,2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55,0,1-.45,1-1V7h2c1.1,0,2-.9,2-2v-.41c2.93,1.19,5,4.06,5,7.41,0,2.08-.8,3.97-2.1,5.39z"/></svg>
-        </div>
+    <!-- User Profile Header Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 10px 14px; margin-bottom: 14px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px; color: #1e5c99;">&#128100;</span>
         <div>
-          <div class="page-header-title">HMWSSB – Works Measurement Sheet</div>
-          <div class="page-header-sub">Hyderabad Metropolitan Water Supply and Sewerage Board</div>
+          <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">{{currentUser.name}}</div>
+          <div style="font-size: 11px; color: #7f8c8d; font-weight: 500;">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
         </div>
       </div>
-      <button class="btn btn-danger btn-sm" ng-click="logout()">Logout</button>
-    </div>
 
-    <!-- User Bar -->
-    <div class="user-bar">
-      <div class="user-info">
-        <div class="user-avatar">{{currentUser.name.charAt(0)}}</div>
-        <div>
-          <div class="user-name">{{currentUser.name}}</div>
-          <div class="user-designation">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
-        </div>
-      </div>
-      <div class="location-select" ng-if="locationOptions.length > 0">
-        <label>Access Location:</label>
-        <select ng-model="selectedLocationKey" ng-change="onLocationChange()">
-          <option ng-repeat="opt in locationOptions" ng-value="opt.key">
-            {{opt.label}}
-          </option>
+      <div ng-if="locationOptions.length > 1" style="display: flex; align-items: center; gap: 8px;">
+        <label style="font-weight: 600; color: #b33; font-size: 12px;">Active Location Scope:</label>
+        <select ng-model="selectedLocationKey" ng-change="onLocationChange()"
+                style="border: 1px solid #ccc; border-radius: 3px; padding: 3px 6px; font-size: 11px; height: 26px; outline: none; background: #fff; width: 450px;">
+          <option ng-repeat="opt in locationOptions" ng-value="opt.key">{{opt.label}}</option>
         </select>
       </div>
+
+      <div ng-if="locationOptions.length === 1" style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+        <span style="font-weight: 600; color: #b33;">Location Scope:</span>
+        <span style="font-weight: 500; color: #2c3e50;">{{locationOptions[0].label}}</span>
+      </div>
+
+      <a href="admin.html" ng-if="currentUser.role === 'ADMIN' || currentUser.role === 'DOP'"
+         style="background: #27ae60; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none;">Admin Portal</a>
+      <button ng-click="logout()" style="background: #c0392b; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">Logout</button>
     </div>
 
-    <!-- Workflow Tracker -->
-    <div class="workflow-bar mt-2">
-      <div class="workflow-label">Workflow:</div>
-      <div class="workflow-steps">
-        <div class="wf-step">
-          <div class="wf-step-circle" ng-class="getStepClass('DRAFT')">1</div>
-          <div class="wf-step-label" ng-class="getStepLabelClass('DRAFT')">Draft (AE)</div>
+    <!-- Workflow Progress Visual Panel -->
+    <div style="background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; overflow-x: auto;">
+      <div style="font-weight: 700; color: #7a7a38; font-size: 11px; text-transform: uppercase; margin-right: 15px; white-space: nowrap;">Workflow Status:</div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: space-around; min-width: 650px;">
+
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('DRAFT')">1</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('DRAFT')">Draft (AE)</span>
         </div>
-        <span class="wf-arrow">&#10132;</span>
-        <div class="wf-step">
-          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_DGM')">2</div>
-          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_DGM')">DGM Scrutiny</div>
+        <span style="color: #cbd5e1; font-weight: 700;">&#10132;</span>
+
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_DGM')">2</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_DGM')">DGM Scrutiny</span>
         </div>
-        <span class="wf-arrow">&#10132;</span>
-        <div class="wf-step">
-          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_GM')">3</div>
-          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_GM')">GM Recommend</div>
+        <span style="color: #cbd5e1; font-weight: 700;">&#10132;</span>
+
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_GM')">3</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_GM')">GM Recommend</span>
         </div>
-        <span class="wf-arrow">&#10132;</span>
-        <div class="wf-step">
-          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_CGM')">4</div>
-          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_CGM')">CGM Review</div>
+        <span style="color: #cbd5e1; font-weight: 700;">&#10132;</span>
+
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_CGM')">4</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_CGM')">CGM Review</span>
         </div>
-        <span class="wf-arrow">&#10132;</span>
-        <div class="wf-step">
-          <div class="wf-step-circle" ng-class="getStepClass('SUBMITTED_TO_DOP')">5</div>
-          <div class="wf-step-label" ng-class="getStepLabelClass('SUBMITTED_TO_DOP')">DOP Sanction</div>
+        <span style="color: #cbd5e1; font-weight: 700;">&#10132;</span>
+
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('SUBMITTED_TO_DOP')">5</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('SUBMITTED_TO_DOP')">DOP Sanction</span>
         </div>
-        <span class="wf-arrow">&#10132;</span>
-        <div class="wf-step">
-          <div class="wf-step-circle" ng-class="getStepClass('APPROVED')">&#10003;</div>
-          <div class="wf-step-label" ng-class="getStepLabelClass('APPROVED')">Approved</div>
+        <span style="color: #cbd5e1; font-weight: 700;">&#10132;</span>
+
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="display: inline-flex; justify-content: center; align-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700;"
+                ng-style="getStepStyle('APPROVED')">&#10003;</span>
+          <span style="font-size: 11px; font-weight: 600;" ng-style="getStepTextStyle('APPROVED')">Approved</span>
         </div>
+
       </div>
     </div>
 
-    <!-- API Error -->
+    <!-- API error -->
     <div class="alert alert-error" ng-if="apiError">{{apiError}}</div>
 
     <!-- Name of Work -->
@@ -667,13 +455,13 @@
         </select>
       </div>
       <div class="hierarchy-field">
-        <label>Circle</label>
+        <label>Circle No. &amp; Name</label>
         <select ng-model="selectedCircle" ng-change="onCircleChange()" ng-options="cir for cir in circles" ng-disabled="!selectedDivision || !isEditable()">
           <option value="">-- Select --</option>
         </select>
       </div>
       <div class="hierarchy-field">
-        <label>Ward</label>
+        <label>Ward No. &amp; Name</label>
         <select ng-model="selectedWard" ng-options="w for w in wards" ng-disabled="!selectedCircle || !isEditable()">
           <option value="">-- Select --</option>
         </select>
@@ -691,10 +479,18 @@
         </colgroup>
         <thead>
           <tr>
-            <th>S.No</th><th>Material</th><th>Description</th>
-            <th>No</th><th>Length</th><th>Breadth</th>
-            <th>Depth</th><th>Qty</th><th>Rate</th>
-            <th>Unit</th><th>Amount</th><th>Action</th>
+            <th>S.No.</th>
+            <th>Is Material</th>
+            <th>Description</th>
+            <th>Numbers</th>
+            <th>Length</th>
+            <th>Breadth</th>
+            <th>Depth</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Unit</th>
+            <th>Amount</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -757,99 +553,62 @@
           <label>Grand Total</label>
           <input type="text" readonly ng-value="grandTotal().toFixed(2)" />
         </div>
-        <div style="margin-left:auto;display:flex;gap:6px;">
-          <button class="btn btn-primary" ng-click="saveEstimate()" ng-disabled="savingEstimate">
-            <span ng-if="savingEstimate"><span class="spinner"></span></span>
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+          <button ng-click="saveEstimate()" ng-disabled="savingEstimate"
+            style="background: #2980b9; color: #fff; border: none; border-radius: 3px; padding: 6px 14px; font-size: 13px; cursor: pointer; font-weight: 600;">
+            <span ng-if="savingEstimate">Processing...</span>
             <span ng-if="!savingEstimate && isEditable()">Generate Estimate</span>
             <span ng-if="!savingEstimate && !isEditable()">View Abstract</span>
           </button>
-          <button class="btn btn-secondary" ng-click="resetForm()" ng-if="currentUser.role === 'MANAGER'">New</button>
+          <button ng-click="resetForm()" ng-if="currentUser.role === 'MANAGER'"
+            style="background: #7f8c8d; color: #fff; border: none; border-radius: 3px; padding: 6px 14px; font-size: 13px; cursor: pointer; font-weight: 600;">
+            New Estimate
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Saved Estimates -->
+    <!-- Saved Estimates Section -->
     <div class="estimates-panel">
       <div class="estimates-header">
-        <span>Saved Estimates</span>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <select ng-model="filterStatus" ng-change="loadSavedEstimates()" style="border:1px solid rgba(255,255,255,0.3);background:transparent;color:#fff;border-radius:var(--radius-sm);padding:2px 6px;font-size:11px;">
-            <option value="">All Status</option>
-            <option value="DRAFT">Draft</option>
-            <option value="SUBMITTED_TO_DGM">Pending DGM</option>
-            <option value="SUBMITTED_TO_GM">Pending GM</option>
-            <option value="SUBMITTED_TO_CGM">Pending CGM</option>
-            <option value="SUBMITTED_TO_DOP">Pending DOP</option>
-            <option value="APPROVED">Approved</option>
-          </select>
-          <button class="btn btn-sm" style="background:transparent;border:1px solid rgba(255,255,255,0.4);color:#fff;"
-                  ng-click="loadSavedEstimates()">Refresh</button>
-        </div>
+        <span>Saved Estimates (Abstracts)</span>
+        <button ng-click="loadSavedEstimates()"
+          style="background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">
+          Refresh List
+        </button>
       </div>
       <div class="estimates-body">
-        <!-- Summary View for GM/CGM/DOP -->
-        <div ng-if="summaryData.length > 0 && !selectedSummaryKey" style="margin-bottom:12px;">
-          <div style="font-weight:700;font-size:12px;color:#2c3e50;margin-bottom:6px;">Summary by {{summaryGroupBy}} (click to drill down)</div>
-          <table class="estimates-table">
-            <thead>
-              <tr>
-                <th style="width:30%">{{summaryGroupBy}}</th>
-                <th style="width:12%">Total</th>
-                <th style="width:15%">Draft</th>
-                <th style="width:15%">Pending</th>
-                <th style="width:15%">Approved</th>
-                <th style="width:13%">Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="s in summaryData" ng-click="selectSummaryRow(s.key)" style="cursor:pointer;">
-                <td class="font-bold" style="color:#2c3e50;">{{s.key}}</td>
-                <td class="text-center">{{s.total}}</td>
-                <td class="text-center"><span class="badge badge-draft">{{s.draft}}</span></td>
-                <td class="text-center"><span class="badge badge-pending">{{s.pending}}</span></td>
-                <td class="text-center"><span class="badge badge-approved">{{s.approved}}</span></td>
-                <td class="text-right font-bold" style="color:#27ae60;">{{s.grandTotal | number:2}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Drilldown View -->
-        <div ng-if="selectedSummaryKey" style="margin-bottom:12px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <button class="btn btn-sm btn-secondary" ng-click="clearSummaryDrilldown()">&#8592; Back to Summary</button>
-            <span style="font-weight:700;font-size:12px;color:#2c3e50;">{{selectedSummaryKey}} — {{drilldownEstimates.length}} estimates</span>
-          </div>
-        </div>
-
         <table class="estimates-table">
           <thead>
             <tr>
-              <th style="width:8%">ID</th>
-              <th style="width:35%">Name Of Work</th>
-              <th style="width:14%">Total</th>
-              <th style="width:14%">Status</th>
-              <th style="width:16%">Date</th>
-              <th style="width:13%">Action</th>
+              <th style="width: 8%">ID</th>
+              <th style="width: 25%; text-align: left;">Name Of Work</th>
+              <th style="width: 22%; text-align: left;">Location Scope</th>
+              <th style="width: 13%; text-align: left;">Prepared By</th>
+              <th style="width: 10%; text-align: right;">Grand Total (&#8377;)</th>
+              <th style="width: 10%">Status</th>
+              <th style="width: 7%">Saved Date</th>
+              <th style="width: 5%">Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="est in (selectedSummaryKey ? drilldownEstimates : savedEstimates)">
+            <tr ng-repeat="est in savedEstimates">
               <td class="text-center">{{est.id}}</td>
-              <td class="font-bold" style="color:#2c3e50;">{{est.nameOfWork || 'Unnamed Work'}}</td>
-              <td class="text-right font-bold" style="color:#27ae60;">{{est.grandTotal | number:2}}</td>
+              <td style="text-align: left; font-weight: 500; color: #2c3e50;">{{est.nameOfWork || 'Unnamed Work'}}</td>
+              <td style="text-align: left; color: #555; font-size: 11px;">{{est.corp}} &bull; {{est.zoneName}} &bull; {{est.division ? 'Div-' + est.division : 'N/A'}} &bull; {{est.circleName || 'N/A'}} &bull; {{est.wardName || 'N/A'}}</td>
+              <td style="text-align: left; color: #555;">{{est.preparedByName || 'N/A'}}</td>
+              <td class="text-right font-bold" style="color: #27ae60;">{{est.grandTotal | number:2}}</td>
               <td class="text-center">
-                <span class="badge" ng-class="getStatusBadgeClass(est.status)">{{getStatusLabel(est.status)}}</span>
+                <span class="badge" ng-class="getStatusBadgeClass(est.status)" style="padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase;">{{getStatusLabel(est.status)}}</span>
               </td>
-              <td class="text-center text-muted">{{formatDate(est.createdAt)}}</td>
-              <td class="text-center">
-                <button class="btn btn-primary btn-sm" ng-click="loadEstimate(est.id)">Load</button>
-                <button class="btn btn-danger btn-sm" ng-click="deleteEstimate(est.id)"
-                        ng-if="currentUser.role === 'MANAGER' && (!est.status || est.status === 'DRAFT')">Del</button>
+              <td class="text-center" style="color: #7f8c8d;">{{formatDate(est.createdAt)}}</td>
+              <td class="text-center" style="white-space: nowrap;">
+                <button ng-click="loadEstimate(est.id)" style="background: #2980b9; color: white; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer; margin-right: 4px;">Load</button>
+                <button ng-click="deleteEstimate(est.id)" ng-if="currentUser.role === 'MANAGER' && (!est.status || est.status === 'DRAFT')" style="background: #c0392b; color: white; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;">Delete</button>
               </td>
             </tr>
             <tr ng-if="savedEstimates.length === 0">
-              <td colspan="6" class="text-center text-muted" style="font-style:italic;padding:12px;">No saved estimates found.</td>
+              <td colspan="8" class="text-center" style="padding: 12px; color: #7f8c8d; font-style: italic;">No saved estimates found.</td>
             </tr>
           </tbody>
         </table>
@@ -866,6 +625,7 @@
           if (!AuthService.requireLogin()) return;
           $scope.currentUser = AuthService.getUser();
           $scope.currentEstimateStatus = 'DRAFT';
+          $scope.isLocalFile = window.location.protocol === 'file:';
 
           // Signature fields
           $scope.currentPreparedByName = null;
@@ -897,6 +657,22 @@
             var order = StatusService.getStatusOrder();
             if (order.indexOf(active) > order.indexOf(stepStatus)) return 'completed';
             return '';
+          };
+
+          $scope.getStepStyle = function (stepStatus) {
+            var active = $scope.currentEstimateStatus || 'DRAFT';
+            if (active === stepStatus) return { background: '#7a7a38', color: '#fff', border: '1px solid #7a7a38' };
+            var order = StatusService.getStatusOrder();
+            if (order.indexOf(active) > order.indexOf(stepStatus)) return { background: '#27ae60', color: '#fff', border: '1px solid #27ae60' };
+            return { background: '#e2e8f0', color: '#64748b', border: '1px solid #cbd5e1' };
+          };
+
+          $scope.getStepTextStyle = function (stepStatus) {
+            var active = $scope.currentEstimateStatus || 'DRAFT';
+            if (active === stepStatus) return { color: '#7a7a38' };
+            var order = StatusService.getStatusOrder();
+            if (order.indexOf(active) > order.indexOf(stepStatus)) return { color: '#27ae60' };
+            return { color: '#64748b' };
           };
 
           $scope.getStatusLabel = StatusService.getLabel;
@@ -1004,6 +780,37 @@
                   });
                 });
               }
+            } else if (role === 'DOP') {
+              var userCorp = null, userZone = null;
+              for (var i = 0; i < locs.length; i++) {
+                if (locs[i].zoneName) { userCorp = locs[i].corp; userZone = locs[i].zoneName; break; }
+              }
+              if (userZone) {
+                options.push({
+                  key: 'zone_all',
+                  label: 'All Wards in ' + userZone,
+                  corp: userCorp, zone: userZone, division: '',
+                  circle: '', ward: '', filterType: 'zone'
+                });
+                var divsInZone = getDivisionsForZone(userCorp, userZone);
+                divsInZone.forEach(function(div) {
+                  options.push({
+                    key: 'div_' + div,
+                    label: '  \u2514 Division ' + div,
+                    corp: userCorp, zone: userZone, division: div,
+                    circle: '', ward: '', filterType: 'division'
+                  });
+                  var circlesInDiv = getCirclesForDivision(userCorp, userZone, div);
+                  circlesInDiv.forEach(function(cir) {
+                    options.push({
+                      key: 'cir_' + div + '_' + cir,
+                      label: '    \u2514 ' + cir,
+                      corp: userCorp, zone: userZone, division: div,
+                      circle: cir, ward: '', filterType: 'circle'
+                    });
+                  });
+                });
+              }
             }
 
             $scope.locationOptions = options;
@@ -1036,6 +843,11 @@
             $scope.filterCircle = opt.circle || '';
             $scope.filterDivision = opt.division || '';
             $scope.filterZone = opt.zone || '';
+            localStorage.setItem('current_active_role', $scope.currentUser.role);
+            localStorage.setItem('current_active_location', JSON.stringify({
+              corp: opt.corp, zoneName: opt.zone, division: opt.division,
+              circleName: opt.circle, wardName: opt.ward
+            }));
             $scope.loadSavedEstimates();
           }
 
@@ -1054,8 +866,8 @@
           var searchTimers = {};
 
           /* ── Hierarchy ── */
-          $scope.hierarchyData = WARD_HIERARCHY;
-          $scope.corps = Object.keys($scope.hierarchyData);
+          $scope.hierarchyData = {};
+          $scope.corps = [];
           $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
           $scope.selectedCorp = ''; $scope.selectedZone = ''; $scope.selectedDivision = '';
           $scope.selectedCircle = ''; $scope.selectedWard = '';
@@ -1376,7 +1188,33 @@
           };
 
           /* ── Init ── */
-          buildLocationOptions();
+          $http.get(API_BASE + '/jurisdictions').then(function(response) {
+            var dbJurs = response.data;
+            var tree = {};
+            dbJurs.forEach(function(item) {
+              var corp = item.corp;
+              var zone = item.zoneName;
+              var div = item.division;
+              var circle = item.circleName;
+              var ward = item.wardName;
+              
+              if (corp && zone && div && circle && ward) {
+                if (!tree[corp]) tree[corp] = {};
+                if (!tree[corp][zone]) tree[corp][zone] = {};
+                if (!tree[corp][zone][div]) tree[corp][zone][div] = {};
+                if (!tree[corp][zone][div][circle]) tree[corp][zone][div][circle] = [];
+                if (tree[corp][zone][div][circle].indexOf(ward) === -1) {
+                  tree[corp][zone][div][circle].push(ward);
+                }
+              }
+            });
+            $scope.hierarchyData = tree;
+            window.WARD_HIERARCHY = tree;
+            $scope.corps = Object.keys(tree);
+            buildLocationOptions();
+          }, function() {
+            $scope.apiError = 'Could not load jurisdictions from database.';
+          });
 
           var savedState = localStorage.getItem(APP_CONFIG.ESTIMATE_KEY);
           if (savedState) {

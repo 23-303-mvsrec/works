@@ -1,0 +1,2102 @@
+﻿[
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "1 – Keesara",
+        "wardName":  "1 - Keesara"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "1 – Keesara",
+        "wardName":  "2 - Chandrapuri Colony"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "1 – Keesara",
+        "wardName":  "3 - Jawahar Nagar"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "1 – Keesara",
+        "wardName":  "4 - Dammaiguda"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "1 – Keesara",
+        "wardName":  "189 - Yapral"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "1 – Keesara",
+        "wardName":  "300 - Shamirpet"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "2 – Alwal",
+        "wardName":  "190 - Turkapally"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "2 – Alwal",
+        "wardName":  "191 - Macha Bollaram"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "2 – Alwal",
+        "wardName":  "192 - Temple Alwal"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "2 – Alwal",
+        "wardName":  "193 - Venkatapuram"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "2 – Alwal",
+        "wardName":  "194 - Bhudevi Nagar"
+    },
+    {
+        "division":  "1",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "2 – Alwal",
+        "wardName":  "195 - Kanajiguda"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "3 - Bowenpally",
+        "wardName":  "196 - Monda Market"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "3 - Bowenpally",
+        "wardName":  "260 - Fateh Nagar"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "3 - Bowenpally",
+        "wardName":  "261 - Prakash Nagar"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "3 - Bowenpally",
+        "wardName":  "262 - Old Bowenpally"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "3 - Bowenpally",
+        "wardName":  "264 - Hasmathpet"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "4 - Moula Ali",
+        "wardName":  "184 - Balram Nagar"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "4 - Moula Ali",
+        "wardName":  "185 - Vinayak Nagar"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "4 - Moula Ali",
+        "wardName":  "186 - Moula Ali"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "4 - Moula Ali",
+        "wardName":  "187 - Kakatiya Nagar"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "4 - Moula Ali",
+        "wardName":  "188 - Neredmet"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "5 - Malkajgiri",
+        "wardName":  "180 - East Anandbagh"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "5 - Malkajgiri",
+        "wardName":  "181 - Mirjalguda"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "5 - Malkajgiri",
+        "wardName":  "182 - Goutham Nagar"
+    },
+    {
+        "division":  "2",
+        "corp":  "MMC",
+        "zoneName":  "Malkajgiri",
+        "circleName":  "5 - Malkajgiri",
+        "wardName":  "183 - Malkajgiri"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "6 - Ghatkesar",
+        "wardName":  "5 - Nagaram"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "6 - Ghatkesar",
+        "wardName":  "6 - Ghatkesar"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "6 - Ghatkesar",
+        "wardName":  "7 - Edulabad"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "6 - Ghatkesar",
+        "wardName":  "8 - Pocharam"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "7 – Kapra",
+        "wardName":  "13 - Vampuguda"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "7 – Kapra",
+        "wardName":  "14 - Kapra"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "7 – Kapra",
+        "wardName":  "15 - Dr AS Rao Nagar"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "7 – Kapra",
+        "wardName":  "16 - Kushaiguda"
+    },
+    {
+        "division":  "3",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "7 – Kapra",
+        "wardName":  "17 - Cherlapally"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "8 - Nacharam",
+        "wardName":  "18 - Shakthi Sai Nagar"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "8 - Nacharam",
+        "wardName":  "19 - H.B. Colony"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "8 - Nacharam",
+        "wardName":  "20 - Mallapur"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "8 - Nacharam",
+        "wardName":  "21 - Nacharam"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "8 - Nacharam",
+        "wardName":  "22 - HMT Nagar"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "9 – Uppal",
+        "wardName":  "23 - Chilkanagar"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "9 – Uppal",
+        "wardName":  "24 - Beerappagadda"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "9 – Uppal",
+        "wardName":  "25 - Habsiguda"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "9 – Uppal",
+        "wardName":  "26 - Ramanthapur"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "9 – Uppal",
+        "wardName":  "27 - Venkat Reddy Nagar"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "9 – Uppal",
+        "wardName":  "28 - Uppal"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "10 - Boduppal",
+        "wardName":  "9 - Medipally"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "10 - Boduppal",
+        "wardName":  "10 - Peerzadiguda"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "10 - Boduppal",
+        "wardName":  "11 - Boduppal"
+    },
+    {
+        "division":  "4",
+        "corp":  "MMC",
+        "zoneName":  "Uppal",
+        "circleName":  "10 - Boduppal",
+        "wardName":  "12 - Chengicherla"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "11 – Nagole",
+        "wardName":  "29 - Nagole"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "11 – Nagole",
+        "wardName":  "45 - Mansoorabad"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "11 – Nagole",
+        "wardName":  "46 - GSI"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "11 – Nagole",
+        "wardName":  "47 - Lecturers Colony"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "11 – Nagole",
+        "wardName":  "51 - Kuntloor"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "11 – Nagole",
+        "wardName":  "52 - Pedda Amberpet"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "30 - Kothapet"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "31 - Chaitanyapuri"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "32 - Gaddiannaram"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "33 - Saroornagar"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "34 - Doctors Colony"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "35 - RK Puram"
+    },
+    {
+        "division":  "5",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "12 - Saroornagar",
+        "wardName":  "36 - NTR Nagar"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "13 - LB Nagar",
+        "wardName":  "37 - Lingojiguda"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "13 - LB Nagar",
+        "wardName":  "38 - Champapet"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "13 - LB Nagar",
+        "wardName":  "39 - Kharmanghat"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "13 - LB Nagar",
+        "wardName":  "40 - Bairamalguda"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "13 - LB Nagar",
+        "wardName":  "41 - Hastinapuram"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "14 - Hayathnagar",
+        "wardName":  "42 - BN Reddy Nagar"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "14 - Hayathnagar",
+        "wardName":  "43 - Vanasthalipuram"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "14 - Hayathnagar",
+        "wardName":  "44 - Chintalkunta"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "14 - Hayathnagar",
+        "wardName":  "48 - High Court Colony"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "14 - Hayathnagar",
+        "wardName":  "49 - Sahebnagar"
+    },
+    {
+        "division":  "6",
+        "corp":  "MMC",
+        "zoneName":  "LB Nagar",
+        "circleName":  "14 - Hayathnagar",
+        "wardName":  "50 - Hayathnagar"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "15 - Adibatla",
+        "wardName":  "53 - Thorrur"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "15 - Adibatla",
+        "wardName":  "54 - Kongara Kalan"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "15 - Adibatla",
+        "wardName":  "55 - Adibatla"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "15 - Adibatla",
+        "wardName":  "56 - Turkayamjal"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "16 - Badangpet",
+        "wardName":  "57 - Nadargul"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "16 - Badangpet",
+        "wardName":  "58 - Prashanthi Hills"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "16 - Badangpet",
+        "wardName":  "59 - Jillelaguda"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "16 - Badangpet",
+        "wardName":  "60 - Meerpet"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "16 - Badangpet",
+        "wardName":  "61 - Badangpet"
+    },
+    {
+        "division":  "7",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "16 - Badangpet",
+        "wardName":  "62 - Balapur"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "17 – Jalpally",
+        "wardName":  "63 - Shaheen Nagar"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "17 – Jalpally",
+        "wardName":  "64 - Pahadi Shareef"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "17 – Jalpally",
+        "wardName":  "65 - Jalpally"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "18 - Shamshabad",
+        "wardName":  "66 - Thukkuguda"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "18 - Shamshabad",
+        "wardName":  "67 - Mankhal"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "18 - Shamshabad",
+        "wardName":  "118 - Shamshabad"
+    },
+    {
+        "division":  "8",
+        "corp":  "HMC",
+        "zoneName":  "Shamshabad",
+        "circleName":  "18 - Shamshabad",
+        "wardName":  "119 - Kothwalguda"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "19 - Rajendra Nagar",
+        "wardName":  "120 - Rajendra Nagar"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "19 - Rajendra Nagar",
+        "wardName":  "121 - Bandlaguda Jagir"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "19 - Rajendra Nagar",
+        "wardName":  "122 - Kismatpur"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "19 - Rajendra Nagar",
+        "wardName":  "123 - Hydershahkote"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "20 – Attapur",
+        "wardName":  "112 - Attapur"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "20 – Attapur",
+        "wardName":  "113 - Hyderguda"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "20 – Attapur",
+        "wardName":  "114 - Suleman Nagar"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "20 – Attapur",
+        "wardName":  "115 - Shastripuram"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "20 – Attapur",
+        "wardName":  "116 - Katedan"
+    },
+    {
+        "division":  "9",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "20 – Attapur",
+        "wardName":  "117 - Mailardevpally"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "21 - Bahadurpura",
+        "wardName":  "103 - Doodh Bowli"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "21 - Bahadurpura",
+        "wardName":  "108 - Teegal Kunta"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "21 - Bahadurpura",
+        "wardName":  "109 - Chandu Lal Baradari"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "21 - Bahadurpura",
+        "wardName":  "110 - Ramnasthpura"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "21 - Bahadurpura",
+        "wardName":  "111 - Kishanbagh"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "22 - Falaknuma",
+        "wardName":  "104 - Shah Ali Banda"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "22 - Falaknuma",
+        "wardName":  "105 - Falaknuma"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "22 - Falaknuma",
+        "wardName":  "106 - Jahanuma"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "22 - Falaknuma",
+        "wardName":  "107 - Nawab Saheb Kunta"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "23 - Chandrayangutta",
+        "wardName":  "68 - Bandlaguda"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "23 - Chandrayangutta",
+        "wardName":  "69 - Noori Nagar"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "23 - Chandrayangutta",
+        "wardName":  "70 - Barkas"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "23 - Chandrayangutta",
+        "wardName":  "71 - Kanchanbagh"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "23 - Chandrayangutta",
+        "wardName":  "72 - Chandrayangutta"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "24 - Jangammet",
+        "wardName":  "73 - Riyasat Nagar"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "24 - Jangammet",
+        "wardName":  "74 - Lalitha Bagh"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "24 - Jangammet",
+        "wardName":  "75 - Jangammet"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "24 - Jangammet",
+        "wardName":  "76 - Phool Bagh"
+    },
+    {
+        "division":  "10",
+        "corp":  "HMC",
+        "zoneName":  "Rajendranagar",
+        "circleName":  "24 - Jangammet",
+        "wardName":  "77 - Quadri Chaman"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "26 - Yakutpura",
+        "wardName":  "78 - Gowlipura"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "26 - Yakutpura",
+        "wardName":  "79 - Talab Chanchalam"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "26 - Yakutpura",
+        "wardName":  "80 - Yakutpura"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "26 - Yakutpura",
+        "wardName":  "81 - Dabeerpura"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "26 - Yakutpura",
+        "wardName":  "82 - Rein Bazar"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "26 - Yakutpura",
+        "wardName":  "83 - Madannapet"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "28 - Charminar",
+        "wardName":  "97 - Purani Haveli"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "28 - Charminar",
+        "wardName":  "98 - Pathergatti"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "28 - Charminar",
+        "wardName":  "99 - Hari Bowli"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "28 - Charminar",
+        "wardName":  "100 - Qazipura"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "28 - Charminar",
+        "wardName":  "101 - Ghansi Bazar"
+    },
+    {
+        "division":  "11",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "28 - Charminar",
+        "wardName":  "102 - Purana Pul"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "25 - Santosh Nagar",
+        "wardName":  "84 - Bhanu Nagar"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "25 - Santosh Nagar",
+        "wardName":  "85 - Santosh Nagar"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "25 - Santosh Nagar",
+        "wardName":  "86 - IS SADAN"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "25 - Santosh Nagar",
+        "wardName":  "87 - Saraswati Nagar"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "27 - Malakpet",
+        "wardName":  "88 - Saidabad"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "27 - Malakpet",
+        "wardName":  "89 - Asmangadh"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "27 - Malakpet",
+        "wardName":  "93 - Akberbagh"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "27 - Malakpet",
+        "wardName":  "94 - Chawani"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "29 - Moosarambagh",
+        "wardName":  "90 - Moosarambagh"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "29 - Moosarambagh",
+        "wardName":  "91 - Old Malakpet"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "29 - Moosarambagh",
+        "wardName":  "92 - MCH Colony"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "29 - Moosarambagh",
+        "wardName":  "95 - Kala Dera"
+    },
+    {
+        "division":  "12",
+        "corp":  "HMC",
+        "zoneName":  "Charminar",
+        "circleName":  "29 - Moosarambagh",
+        "wardName":  "96 - Azampura"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "30 - Goshamahal",
+        "wardName":  "148 - Dattatreya Nagar"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "30 - Goshamahal",
+        "wardName":  "149 - Manghalhat"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "30 - Goshamahal",
+        "wardName":  "150 - Goshamahal"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "30 - Goshamahal",
+        "wardName":  "151 - Begum Bazar"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "30 - Goshamahal",
+        "wardName":  "152 - Jambagh"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "30 - Goshamahal",
+        "wardName":  "153 - Exhibition Grounds"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "31 – Karwan",
+        "wardName":  "134 - Langar Houz"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "31 – Karwan",
+        "wardName":  "135 - Gudimalkapur"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "31 – Karwan",
+        "wardName":  "136 - Karwan"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "31 – Karwan",
+        "wardName":  "137 - Tappachabutra"
+    },
+    {
+        "division":  "13",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "31 – Karwan",
+        "wardName":  "138 - Ziaguda"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "129 - Nizam Colony"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "130 - Nanalnagar"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "131 - Tolichowki"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "132 - Golconda"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "133 - Ibrahimbagh"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "223 - Shaikpet"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "32 - Golconda",
+        "wardName":  "224 - OU Colony"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "33 - Mehdipatnam",
+        "wardName":  "139 - Asif Nagar"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "33 - Mehdipatnam",
+        "wardName":  "140 - Padmanabha Nagar"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "33 - Mehdipatnam",
+        "wardName":  "141 - Mehdipatnam"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "33 - Mehdipatnam",
+        "wardName":  "142 - Syed Nagar"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "34 - Masab Tank",
+        "wardName":  "143 - Vijayanagar Colony"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "34 - Masab Tank",
+        "wardName":  "144 - Ahmed Nagar"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "34 - Masab Tank",
+        "wardName":  "145 - Shanti Nagar"
+    },
+    {
+        "division":  "14",
+        "corp":  "HMC",
+        "zoneName":  "Golconda",
+        "circleName":  "34 - Masab Tank",
+        "wardName":  "147 - Mallepally"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "35 - Khairatabad",
+        "wardName":  "146 - Red Hills"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "35 - Khairatabad",
+        "wardName":  "154 - Gunfoundry"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "35 - Khairatabad",
+        "wardName":  "217 - Irrum Manzil"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "35 - Khairatabad",
+        "wardName":  "218 - Somajiguda"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "35 - Khairatabad",
+        "wardName":  "219 - Khairatabad"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "35 - Khairatabad",
+        "wardName":  "220 - Himayathnagar"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "36 - Jubilee Hills",
+        "wardName":  "215 - Jubilee Hills"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "36 - Jubilee Hills",
+        "wardName":  "216 - Venkateshwara Colony"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "36 - Jubilee Hills",
+        "wardName":  "221 - Banjara Hills"
+    },
+    {
+        "division":  "15",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "36 - Jubilee Hills",
+        "wardName":  "222 - Film Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "37 - Borabanda",
+        "wardName":  "210 - Krishna Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "37 - Borabanda",
+        "wardName":  "211 - Rahamath Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "37 - Borabanda",
+        "wardName":  "212 - Karmika Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "37 - Borabanda",
+        "wardName":  "213 - Rajeev Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "37 - Borabanda",
+        "wardName":  "214 - Borabanda"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "38 - Yousufguda",
+        "wardName":  "205 - Erragadda"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "38 - Yousufguda",
+        "wardName":  "206 - Vengal Rao Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "38 - Yousufguda",
+        "wardName":  "207 - Srinagar Colony"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "38 - Yousufguda",
+        "wardName":  "208 - Yousufguda"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "38 - Yousufguda",
+        "wardName":  "209 - AG Colony"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "39 - Ameerpet",
+        "wardName":  "200 - Begumpet"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "39 - Ameerpet",
+        "wardName":  "201 - Ameerpet"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "39 - Ameerpet",
+        "wardName":  "202 - SR Nagar"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "39 - Ameerpet",
+        "wardName":  "203 - BK Guda"
+    },
+    {
+        "division":  "16",
+        "corp":  "HMC",
+        "zoneName":  "Khairatabad",
+        "circleName":  "39 - Ameerpet",
+        "wardName":  "204 - Sanathnagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "165 - Gandhi Nagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "166 - Kavadiguda"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "167 - Bakaram"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "168 - Bholakpur"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "197 - Padmarao Nagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "198 - Bansilalpet"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "40 - Kavadiguda",
+        "wardName":  "199 - Ramgopalpet"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "41 - Musheerabad",
+        "wardName":  "163 - Adikmet"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "41 - Musheerabad",
+        "wardName":  "164 - Bagh Lingampally"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "41 - Musheerabad",
+        "wardName":  "169 - Musheerabad"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "41 - Musheerabad",
+        "wardName":  "170 - Ramnagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "41 - Musheerabad",
+        "wardName":  "171 - Bapuji Nagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "155 - BARKATPURA"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "156 - Kachiguda"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "157 - Golnaka"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "158 - Patel Nagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "159 - Amberpet"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "160 - Bagh Amberpet"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "161 - Tilak Nagar"
+    },
+    {
+        "division":  "17",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "42 - Amberpet",
+        "wardName":  "162 - Nallakunta"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "43 - Tarnaka",
+        "wardName":  "172 - Boudha Nagar"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "43 - Tarnaka",
+        "wardName":  "173 - Tarnaka"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "43 - Tarnaka",
+        "wardName":  "174 - Seethaphalmandi"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "43 - Tarnaka",
+        "wardName":  "175 - Chilkalguda"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "44 - Mettuguda",
+        "wardName":  "176 - Mettuguda"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "44 - Mettuguda",
+        "wardName":  "177 - Lalapet"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "44 - Mettuguda",
+        "wardName":  "178 - North Lalaguda"
+    },
+    {
+        "division":  "18",
+        "corp":  "HMC",
+        "zoneName":  "Secunderabad",
+        "circleName":  "44 - Mettuguda",
+        "wardName":  "179 - Addagutta"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "46 - Patancheruvu",
+        "wardName":  "263 - Tellapur"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "46 - Patancheruvu",
+        "wardName":  "265 - Muthangi"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "46 - Patancheruvu",
+        "wardName":  "266 - Patancheruvu"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "46 - Patancheruvu",
+        "wardName":  "267 - JP Colony"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "47 - Ameenpur",
+        "wardName":  "268 - Ramachandrapuram (RC Puram)"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "47 - Ameenpur",
+        "wardName":  "269 - Bharathi Nagar"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "47 - Ameenpur",
+        "wardName":  "270 - Beeramguda"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "47 - Ameenpur",
+        "wardName":  "271 - Ameenpur"
+    },
+    {
+        "division":  "19",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "47 - Ameenpur",
+        "wardName":  "272 - Bollaram"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "45 - Narsingi",
+        "wardName":  "124 - Narsingi"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "45 - Narsingi",
+        "wardName":  "125 - Kokapet"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "45 - Narsingi",
+        "wardName":  "126 - Gandipet"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "45 - Narsingi",
+        "wardName":  "127 - Manikonda"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "45 - Narsingi",
+        "wardName":  "128 - Neknampur"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "48 - Miyapur",
+        "wardName":  "236 - Hafeezpet"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "48 - Miyapur",
+        "wardName":  "237 - Madeenaguda"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "48 - Miyapur",
+        "wardName":  "238 - Chanda Nagar"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "48 - Miyapur",
+        "wardName":  "239 - Deepthisri Nagar"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "48 - Miyapur",
+        "wardName":  "240 - Miyapur"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "48 - Miyapur",
+        "wardName":  "241 - Maktha Mahabubpet"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "49 - Serilingampally",
+        "wardName":  "225 - Gachibowli"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "49 - Serilingampally",
+        "wardName":  "226 - Nallagandla"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "49 - Serilingampally",
+        "wardName":  "227 - Serilingampally"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "49 - Serilingampally",
+        "wardName":  "228 - Masjid Banda"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "49 - Serilingampally",
+        "wardName":  "229 - Sri Ram Nagar"
+    },
+    {
+        "division":  "20",
+        "corp":  "CMC",
+        "zoneName":  "Serilingampally",
+        "circleName":  "49 - Serilingampally",
+        "wardName":  "234 - Kondapur"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "50 - Madhapur",
+        "wardName":  "230 - Anjaiah Nagar"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "50 - Madhapur",
+        "wardName":  "231 - HITEC City"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "50 - Madhapur",
+        "wardName":  "232 - Madhapur"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "50 - Madhapur",
+        "wardName":  "233 - Izzath Nagar"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "50 - Madhapur",
+        "wardName":  "235 - Matrusri Nagar"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "50 - Madhapur",
+        "wardName":  "242 - Mayuri Nagar"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "51 - Allwyn Colony",
+        "wardName":  "243 - Hyder Nagar"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "51 - Allwyn Colony",
+        "wardName":  "244 - Bhagya Nagar Colony"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "51 - Allwyn Colony",
+        "wardName":  "245 - Shamshiguda"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "51 - Allwyn Colony",
+        "wardName":  "246 - Allwyn Colony"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "51 - Allwyn Colony",
+        "wardName":  "247 - Vivekananda Nagar Colony"
+    },
+    {
+        "division":  "21",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "51 - Allwyn Colony",
+        "wardName":  "248 - Venkateshwara Nagar"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "52 - Kukatpally",
+        "wardName":  "249 - Kukatpally"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "52 - Kukatpally",
+        "wardName":  "250 - Balaji Nagar"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "52 - Kukatpally",
+        "wardName":  "251 - Vasanth Nagar"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "52 - Kukatpally",
+        "wardName":  "252 - KPHB Colony"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "52 - Kukatpally",
+        "wardName":  "253 - Kaithalapur"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "52 - Kukatpally",
+        "wardName":  "254 - Gayatri Nagar"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "53 - Moosapet",
+        "wardName":  "255 - Allapur"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "53 - Moosapet",
+        "wardName":  "256 - Moti Nagar"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "53 - Moosapet",
+        "wardName":  "257 - Moosapet"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "53 - Moosapet",
+        "wardName":  "258 - Prashanth Nagar"
+    },
+    {
+        "division":  "22",
+        "corp":  "CMC",
+        "zoneName":  "Kukatpally",
+        "circleName":  "53 - Moosapet",
+        "wardName":  "259 - Balanagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "54 – Chintal",
+        "wardName":  "279 - Rodamestri Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "54 – Chintal",
+        "wardName":  "280 - Jagathgiri Gutta"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "54 – Chintal",
+        "wardName":  "281 - Ranga Reddy Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "54 – Chintal",
+        "wardName":  "282 - Chintal"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "54 – Chintal",
+        "wardName":  "283 - Giri Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "55 - Jeedimetla",
+        "wardName":  "284 - Ganesh Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "55 - Jeedimetla",
+        "wardName":  "285 - Padma Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "55 - Jeedimetla",
+        "wardName":  "286 - Quthbullapur"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "55 - Jeedimetla",
+        "wardName":  "287 - Pet Basheerabad"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "56 - Kompally",
+        "wardName":  "288 - Kompally"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "56 - Kompally",
+        "wardName":  "289 - Doolapally"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "56 - Kompally",
+        "wardName":  "290 - Subhash Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "56 - Kompally",
+        "wardName":  "292 - Saibaba Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "57 - Gajularamaram",
+        "wardName":  "277 - Mahadevpuram"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "57 - Gajularamaram",
+        "wardName":  "278 - Gajularamaram"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "57 - Gajularamaram",
+        "wardName":  "291 - Shapur Nagar"
+    },
+    {
+        "division":  "23",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "57 - Gajularamaram",
+        "wardName":  "293 - Suraram"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "58 - Nizampet",
+        "wardName":  "273 - Nizampet"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "58 - Nizampet",
+        "wardName":  "274 - Bachupally"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "58 - Nizampet",
+        "wardName":  "275 - Bhandari Layout"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "58 - Nizampet",
+        "wardName":  "276 - Pragathi Nagar"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "59 - Dundigal",
+        "wardName":  "294 - Bahadurpally"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "59 - Dundigal",
+        "wardName":  "295 - Bowrampet"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "59 - Dundigal",
+        "wardName":  "296 - Dundigal"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "60 - Medchal",
+        "wardName":  "297 - Medchal"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "60 - Medchal",
+        "wardName":  "298 - Pudur-Kistapur"
+    },
+    {
+        "division":  "24",
+        "corp":  "CMC",
+        "zoneName":  "Quthbullapur",
+        "circleName":  "60 - Medchal",
+        "wardName":  "299 - Gundlapochampally"
+    }
+]

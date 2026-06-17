@@ -1,10 +1,16 @@
 package com.hmwssb.works.controller;
 
 import com.hmwssb.works.model.Estimate;
+import com.hmwssb.works.model.EstimateItem;
 import com.hmwssb.works.model.User;
 import com.hmwssb.works.model.UserLocation;
 import com.hmwssb.works.repository.EstimateRepository;
 import com.hmwssb.works.repository.UserRepository;
+import com.hmwssb.works.service.AuditService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +23,19 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class EstimateController {
 
+    private static final Logger log = LoggerFactory.getLogger(EstimateController.class);
+
     private final EstimateRepository estimateRepository;
     private final UserRepository userRepository;
+    private final AuditService auditService;
+    private final HttpServletRequest request;
 
-    public EstimateController(EstimateRepository estimateRepository, UserRepository userRepository) {
+    public EstimateController(EstimateRepository estimateRepository, UserRepository userRepository,
+                              AuditService auditService, HttpServletRequest request) {
         this.estimateRepository = estimateRepository;
         this.userRepository = userRepository;
+        this.auditService = auditService;
+        this.request = request;
     }
 
     @PostMapping
@@ -34,14 +47,21 @@ public class EstimateController {
 
         return userRepository.findById(phone.strip())
             .map(user -> {
+                String role = user.getRole();
                 if (estimate.getId() == null) {
-                    if (!hasRoleAtLocation(user, "MANAGER", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a MANAGER assigned to this ward can create this estimate.");
+                    if (!"MANAGER".equalsIgnoreCase(role)) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only MANAGER can create a new estimate.");
                     }
                     estimate.setStatus("DRAFT");
                     estimate.setPreparedByName(user.getName());
                     estimate.setPreparedByDesignation(user.getDesignation());
+                    recalculateGrandTotal(estimate);
                     Estimate saved = estimateRepository.save(estimate);
+                    log.info("Created estimate: id={}, officer={}, nameOfWork={}", saved.getId(), phone, saved.getNameOfWork());
+                    auditService.log("CREATE_ESTIMATE", "Estimate", String.valueOf(saved.getId()),
+                            phone, user.getName(), role,
+                            "Created estimate: " + saved.getNameOfWork(),
+                            null, "DRAFT", getClientIp());
                     return ResponseEntity.ok(saved);
                 } else {
                     return estimateRepository.findById(estimate.getId())
@@ -49,18 +69,18 @@ public class EstimateController {
                             String currentStatus = existing.getStatus();
                             if (currentStatus == null) currentStatus = "DRAFT";
 
-                            String requiredRole = null;
-                            if ("DRAFT".equalsIgnoreCase(currentStatus)) {
-                                requiredRole = "MANAGER";
-                            } else if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
-                                requiredRole = "DGM";
-                            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
-                                requiredRole = "GM";
-                            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
-                                requiredRole = "CGM";
+                            boolean allowed = false;
+                            if ("DRAFT".equalsIgnoreCase(currentStatus) && "MANAGER".equalsIgnoreCase(role)) {
+                                allowed = true;
+                            } else if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus) && "DGM".equalsIgnoreCase(role)) {
+                                allowed = true;
+                            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus) && "GM".equalsIgnoreCase(role)) {
+                                allowed = true;
+                            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus) && "CGM".equalsIgnoreCase(role)) {
+                                allowed = true;
                             }
 
-                            if (requiredRole == null || !hasRoleAtLocation(user, requiredRole, existing.getCorp(), existing.getZoneName(), existing.getDivision(), existing.getCircleName(), existing.getWardName())) {
+                            if (!allowed) {
                                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                                     .body("You do not have permission to edit this estimate at its current status: " + currentStatus);
                             }
@@ -68,7 +88,6 @@ public class EstimateController {
                             existing.setNameOfWork(estimate.getNameOfWork());
                             existing.setGstPercent(estimate.getGstPercent());
                             existing.setUnforeseenAmount(estimate.getUnforeseenAmount());
-                            existing.setGrandTotal(estimate.getGrandTotal());
                             existing.setCorp(estimate.getCorp());
                             existing.setZoneName(estimate.getZoneName());
                             existing.setDivision(estimate.getDivision());
@@ -77,10 +96,20 @@ public class EstimateController {
 
                             existing.getItems().clear();
                             if (estimate.getItems() != null) {
-                                existing.getItems().addAll(estimate.getItems());
+                                for (EstimateItem item : estimate.getItems()) {
+                                    item.setId(null);
+                                    item.setSno(item.getSno());
+                                    existing.getItems().add(item);
+                                }
                             }
 
+                            recalculateGrandTotal(existing);
                             Estimate saved = estimateRepository.save(existing);
+                            log.info("Updated estimate: id={}, officer={}, status={}", saved.getId(), phone, currentStatus);
+                            auditService.log("UPDATE_ESTIMATE", "Estimate", String.valueOf(saved.getId()),
+                                    phone, user.getName(), role,
+                                    "Updated estimate: " + saved.getNameOfWork(),
+                                    currentStatus, currentStatus, getClientIp());
                             return ResponseEntity.ok(saved);
                         })
                         .map(res -> (ResponseEntity<?>) res)
@@ -91,79 +120,214 @@ public class EstimateController {
     }
 
     @GetMapping
-    public ResponseEntity<?> list(
+    public ResponseEntity<List<Estimate>> list(
             @RequestParam(name = "officerPhone", required = false) String officerPhone,
-            @RequestParam(name = "role", required = false) String activeRole,
-            @RequestParam(name = "corp", required = false) String corp,
-            @RequestParam(name = "zoneName", required = false) String zoneName,
-            @RequestParam(name = "division", required = false) String division,
+            @RequestParam(name = "wardName", required = false) String wardName,
             @RequestParam(name = "circleName", required = false) String circleName,
-            @RequestParam(name = "wardName", required = false) String wardName) {
-
+            @RequestParam(name = "division", required = false) String division,
+            @RequestParam(name = "status", required = false) String status) {
         if (officerPhone == null || officerPhone.trim().isEmpty()) {
             return ResponseEntity.ok(estimateRepository.findAll());
         }
 
-        java.util.Optional<User> userOpt = userRepository.findById(officerPhone.strip());
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Officer account not found.");
+        return userRepository.findById(officerPhone.strip())
+                .map(user -> {
+                    List<Estimate> all = estimateRepository.findAll();
+                    String role = user.getRole();
+                    List<UserLocation> locs = user.getLocations();
+
+                    if ("ADMIN".equalsIgnoreCase(role)) {
+                        List<Estimate> filtered = all;
+                        if (status != null && !status.trim().isEmpty()) {
+                            filtered = filtered.stream()
+                                .filter(e -> status.equalsIgnoreCase(e.getStatus()))
+                                .toList();
+                        }
+                        return ResponseEntity.ok(filtered);
+                    }
+
+                    List<Estimate> filtered = all.stream().filter(est -> {
+                        return matchEstimateToRole(user, est, locs, wardName, circleName, division);
+                    }).toList();
+
+                    if (status != null && !status.trim().isEmpty()) {
+                        filtered = filtered.stream()
+                            .filter(e -> status.equalsIgnoreCase(e.getStatus()))
+                            .toList();
+                    }
+
+                    return ResponseEntity.ok(filtered);
+                })
+                .orElseGet(() -> ResponseEntity.ok(estimateRepository.findAll()));
+    }
+
+    private boolean matchEstimateToRole(User user, Estimate est, List<UserLocation> locs,
+                                         String wardFilter, String circleFilter, String divisionFilter) {
+        String role = user.getRole();
+        String estCorp = est.getCorp();
+        String estZone = est.getZoneName();
+        String estDivision = est.getDivision();
+        String estCircle = est.getCircleName();
+        String estWard = est.getWardName();
+
+        if ("DOP".equalsIgnoreCase(role)) {
+            boolean inScope = locs.stream().anyMatch(loc ->
+                safeEquals(loc.getCorp(), estCorp) &&
+                safeEquals(loc.getZoneName(), estZone)
+            );
+            if (!inScope) return false;
+            if (divisionFilter != null && !divisionFilter.trim().isEmpty()) {
+                return safeEquals(divisionFilter, estDivision);
+            }
+            if (circleFilter != null && !circleFilter.trim().isEmpty()) {
+                return safeEquals(circleFilter, estCircle);
+            }
+            if (wardFilter != null && !wardFilter.trim().isEmpty()) {
+                return safeEquals(wardFilter, estWard);
+            }
+            return true;
         }
-        User user = userOpt.get();
 
-        if (activeRole == null || activeRole.trim().isEmpty()) {
-            return ResponseEntity.ok(List.of());
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            return true;
         }
 
-        boolean hasAssignment = hasRoleAtLocation(user, activeRole, corp, zoneName, division, circleName, wardName);
-
-        if (!hasAssignment) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have access to this location/role scope.");
-        }
-
-        List<Estimate> all = estimateRepository.findAll();
-        List<Estimate> filtered = all.stream().filter(est -> {
-            if ("DOP".equalsIgnoreCase(activeRole)) {
+        if ("MANAGER".equalsIgnoreCase(role)) {
+            if (user.getPhoneNumber().equals(est.getOfficerPhone())) {
                 return true;
             }
-            if ("CGM".equalsIgnoreCase(activeRole)) {
-                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName());
-            }
-            if ("GM".equalsIgnoreCase(activeRole)) {
-                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName()) && safeEquals(division, est.getDivision());
-            }
-            if ("DGM".equalsIgnoreCase(activeRole)) {
-                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName()) && safeEquals(division, est.getDivision()) && safeEquals(circleName, est.getCircleName());
-            }
-            if ("MANAGER".equalsIgnoreCase(activeRole)) {
-                return safeEquals(corp, est.getCorp()) && safeEquals(zoneName, est.getZoneName()) && safeEquals(division, est.getDivision()) && safeEquals(circleName, est.getCircleName()) && safeEquals(wardName, est.getWardName());
+            if (wardFilter != null && !wardFilter.trim().isEmpty()) {
+                return locs.stream().anyMatch(loc ->
+                    safeEquals(loc.getCorp(), estCorp) &&
+                    safeEquals(loc.getZoneName(), estZone) &&
+                    safeEquals(loc.getDivision(), estDivision) &&
+                    safeEquals(loc.getCircleName(), estCircle) &&
+                    wardFilter.trim().equalsIgnoreCase(estWard)
+                );
             }
             return false;
-        }).toList();
+        }
 
-        return ResponseEntity.ok(filtered);
+        if ("DGM".equalsIgnoreCase(role)) {
+            String userCircle = locs.stream()
+                .map(UserLocation::getCircleName)
+                .filter(c -> c != null && !c.trim().isEmpty())
+                .findFirst()
+                .orElse(null);
+            if (userCircle != null) {
+                if (!safeEquals(userCircle, estCircle)) return false;
+            } else {
+                boolean inZone = locs.stream().anyMatch(loc ->
+                    safeEquals(loc.getCorp(), estCorp) &&
+                    safeEquals(loc.getZoneName(), estZone)
+                );
+                if (!inZone) return false;
+            }
+            if (wardFilter != null && !wardFilter.trim().isEmpty()) {
+                return safeEquals(wardFilter, estWard);
+            }
+            return true;
+        }
+
+        if ("GM".equalsIgnoreCase(role)) {
+            boolean inDivision = locs.stream().anyMatch(loc ->
+                safeEquals(loc.getCorp(), estCorp) &&
+                safeEquals(loc.getZoneName(), estZone) &&
+                safeEquals(loc.getDivision(), estDivision)
+            );
+            if (!inDivision) return false;
+            if (circleFilter != null && !circleFilter.trim().isEmpty()) {
+                return safeEquals(circleFilter, estCircle);
+            }
+            if (wardFilter != null && !wardFilter.trim().isEmpty()) {
+                return safeEquals(wardFilter, estWard);
+            }
+            return true;
+        }
+
+        if ("CGM".equalsIgnoreCase(role)) {
+            boolean inZone = locs.stream().anyMatch(loc ->
+                safeEquals(loc.getCorp(), estCorp) &&
+                safeEquals(loc.getZoneName(), estZone)
+            );
+            if (!inZone) return false;
+            if (divisionFilter != null && !divisionFilter.trim().isEmpty()) {
+                return safeEquals(divisionFilter, estDivision);
+            }
+            if (circleFilter != null && !circleFilter.trim().isEmpty()) {
+                return safeEquals(circleFilter, estCircle);
+            }
+            if (wardFilter != null && !wardFilter.trim().isEmpty()) {
+                return safeEquals(wardFilter, estWard);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Estimate> get(@PathVariable(name = "id") Integer id) {
+        log.info("Fetching estimate: id={}", id);
         return estimateRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(name = "id") Integer id) {
-        if (estimateRepository.existsById(id)) {
-            estimateRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+    public ResponseEntity<?> delete(
+            @PathVariable(name = "id") Integer id,
+            @RequestParam(name = "officerPhone", required = false) String officerPhone) {
+        if (!estimateRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        if (officerPhone == null || officerPhone.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("officerPhone is required.");
+        }
+
+        return userRepository.findById(officerPhone.strip())
+            .map(user -> {
+                String role = user.getRole();
+                if ("DOP".equalsIgnoreCase(role)) {
+                    estimateRepository.deleteById(id);
+                    log.info("Deleted estimate: id={} by DOP {}", id, officerPhone);
+                    auditService.log("DELETE_ESTIMATE", "Estimate", String.valueOf(id),
+                            officerPhone, user.getName(), role,
+                            "Deleted estimate (DOP)",
+                            null, null, getClientIp());
+                    return ResponseEntity.ok().<Void>build();
+                }
+
+                if ("MANAGER".equalsIgnoreCase(role)) {
+                    return estimateRepository.findById(id)
+                        .map(est -> {
+                            if (user.getPhoneNumber().equals(est.getOfficerPhone()) && "DRAFT".equalsIgnoreCase(est.getStatus())) {
+                                estimateRepository.deleteById(id);
+                                log.info("Deleted estimate: id={} by MANAGER {} (own draft)", id, officerPhone);
+                                auditService.log("DELETE_ESTIMATE", "Estimate", String.valueOf(id),
+                                        officerPhone, user.getName(), role,
+                                        "Deleted own draft estimate: " + est.getNameOfWork(),
+                                        "DRAFT", null, getClientIp());
+                                return ResponseEntity.ok().<Void>build();
+                            }
+                            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                .<Object>body("Only the creator can delete a DRAFT estimate.");
+                        })
+                        .orElse(ResponseEntity.notFound().build());
+                }
+
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .<Object>body("You do not have permission to delete this estimate.");
+            })
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Officer account not found."));
     }
 
     @PostMapping("/{id}/action")
     public ResponseEntity<?> performAction(
             @PathVariable(name = "id") Integer id,
             @RequestBody Map<String, String> payload) {
-        String action = payload.get("action"); // "FORWARD" or "RETURN"
+        String action = payload.get("action");
         String officerPhone = payload.get("officerPhone");
 
         if (action == null || officerPhone == null) {
@@ -185,110 +349,186 @@ public class EstimateController {
         String currentStatus = estimate.getStatus();
         if (currentStatus == null) currentStatus = "DRAFT";
 
+        String role = user.getRole();
+        String newStatus = null;
+
         if ("FORWARD".equalsIgnoreCase(action)) {
-            if ("DRAFT".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "MANAGER", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a MANAGER for this ward can forward this estimate.");
+            if ("MANAGER".equalsIgnoreCase(role) && "DRAFT".equalsIgnoreCase(currentStatus)) {
+                if (!user.getPhoneNumber().equals(estimate.getOfficerPhone())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Only the creator can forward this estimate.");
                 }
                 estimate.setStatus("SUBMITTED_TO_DGM");
                 estimate.setPreparedByName(user.getName());
                 estimate.setPreparedByDesignation(user.getDesignation());
-            } else if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "DGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DGM for this circle can verify this estimate.");
+                newStatus = "SUBMITTED_TO_DGM";
+            } else if ("DGM".equalsIgnoreCase(role) && "SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+                if (!isEstimateInScope(user, estimate)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("This estimate is not within your geographic scope.");
                 }
                 estimate.setStatus("SUBMITTED_TO_GM");
                 estimate.setVerifiedByName(user.getName());
                 estimate.setVerifiedByDesignation(user.getDesignation());
-            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "GM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a GM for this division can recommend this estimate.");
+                newStatus = "SUBMITTED_TO_GM";
+            } else if ("GM".equalsIgnoreCase(role) && "SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+                if (!isEstimateInScope(user, estimate)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("This estimate is not within your geographic scope.");
                 }
                 estimate.setStatus("SUBMITTED_TO_CGM");
                 estimate.setRecommendedByName(user.getName());
                 estimate.setRecommendedByDesignation(user.getDesignation());
-            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "CGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a CGM for this zone can forward this estimate.");
+                newStatus = "SUBMITTED_TO_CGM";
+            } else if ("CGM".equalsIgnoreCase(role) && "SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+                if (!isEstimateInScope(user, estimate)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("This estimate is not within your geographic scope.");
                 }
                 estimate.setStatus("SUBMITTED_TO_DOP");
                 estimate.setForwardedByName(user.getName());
                 estimate.setForwardedByDesignation(user.getDesignation());
-            } else if ("SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "DOP", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DOP can approve/sanction this estimate.");
-                }
+                newStatus = "SUBMITTED_TO_DOP";
+            } else if ("DOP".equalsIgnoreCase(role) && "SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
                 estimate.setStatus("APPROVED");
                 estimate.setSanctionedByName(user.getName());
                 estimate.setSanctionedByDesignation(user.getDesignation());
+                newStatus = "APPROVED";
             } else {
-                return ResponseEntity.badRequest().body("Invalid forward transition for status " + currentStatus);
+                return ResponseEntity.badRequest().body("Invalid transition for role " + role + " and status " + currentStatus);
             }
         } else if ("RETURN".equalsIgnoreCase(action)) {
-            if ("SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "DGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DGM for this circle can return this estimate.");
+            if ("DGM".equalsIgnoreCase(role) && "SUBMITTED_TO_DGM".equalsIgnoreCase(currentStatus)) {
+                if (!isEstimateInScope(user, estimate)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("This estimate is not within your geographic scope.");
                 }
                 estimate.setStatus("DRAFT");
                 estimate.setVerifiedByName(null);
                 estimate.setVerifiedByDesignation(null);
-            } else if ("SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "GM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a GM for this division can return this estimate.");
+                estimate.setRecommendedByName(null);
+                estimate.setRecommendedByDesignation(null);
+                estimate.setForwardedByName(null);
+                estimate.setForwardedByDesignation(null);
+                estimate.setSanctionedByName(null);
+                estimate.setSanctionedByDesignation(null);
+                newStatus = "DRAFT";
+            } else if ("GM".equalsIgnoreCase(role) && "SUBMITTED_TO_GM".equalsIgnoreCase(currentStatus)) {
+                if (!isEstimateInScope(user, estimate)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("This estimate is not within your geographic scope.");
                 }
                 estimate.setStatus("SUBMITTED_TO_DGM");
                 estimate.setRecommendedByName(null);
                 estimate.setRecommendedByDesignation(null);
-            } else if ("SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "CGM", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a CGM for this zone can return this estimate.");
+                estimate.setForwardedByName(null);
+                estimate.setForwardedByDesignation(null);
+                estimate.setSanctionedByName(null);
+                estimate.setSanctionedByDesignation(null);
+                newStatus = "SUBMITTED_TO_DGM";
+            } else if ("CGM".equalsIgnoreCase(role) && "SUBMITTED_TO_CGM".equalsIgnoreCase(currentStatus)) {
+                if (!isEstimateInScope(user, estimate)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("This estimate is not within your geographic scope.");
                 }
                 estimate.setStatus("SUBMITTED_TO_GM");
                 estimate.setForwardedByName(null);
                 estimate.setForwardedByDesignation(null);
-            } else if ("SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
-                if (!hasRoleAtLocation(user, "DOP", estimate.getCorp(), estimate.getZoneName(), estimate.getDivision(), estimate.getCircleName(), estimate.getWardName())) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only a DOP can return this estimate.");
-                }
+                estimate.setSanctionedByName(null);
+                estimate.setSanctionedByDesignation(null);
+                newStatus = "SUBMITTED_TO_GM";
+            } else if ("DOP".equalsIgnoreCase(role) && "SUBMITTED_TO_DOP".equalsIgnoreCase(currentStatus)) {
                 estimate.setStatus("SUBMITTED_TO_CGM");
                 estimate.setSanctionedByName(null);
                 estimate.setSanctionedByDesignation(null);
+                estimate.setForwardedByName(null);
+                estimate.setForwardedByDesignation(null);
+                newStatus = "SUBMITTED_TO_CGM";
             } else {
-                return ResponseEntity.badRequest().body("Invalid return transition for status " + currentStatus);
+                return ResponseEntity.badRequest().body("Invalid transition for role " + role + " and status " + currentStatus);
             }
         } else {
             return ResponseEntity.badRequest().body("Invalid action: " + action);
         }
 
         Estimate saved = estimateRepository.save(estimate);
+        log.info("Workflow action: {} on estimate {} by {} ({}) — {} → {}", action, id, user.getName(), role, currentStatus, newStatus);
+        auditService.log(action.toUpperCase(), "Estimate", String.valueOf(id),
+                officerPhone, user.getName(), role,
+                action + " estimate: " + estimate.getNameOfWork(),
+                currentStatus, newStatus, getClientIp());
         return ResponseEntity.ok(saved);
     }
 
-    private boolean hasRoleAtLocation(User user, String requiredRole, String corp, String zoneName, String division, String circleName, String wardName) {
-        return user.getLocations().stream().anyMatch(loc -> {
-            if (!safeEquals(loc.getRole(), requiredRole)) return false;
-            if ("DOP".equalsIgnoreCase(requiredRole)) {
-                return safeEquals(loc.getCorp(), "Corporate");
+    private boolean isEstimateInScope(User user, Estimate est) {
+        String role = user.getRole();
+        List<UserLocation> locs = user.getLocations();
+        String estCorp = est.getCorp();
+        String estZone = est.getZoneName();
+        String estDivision = est.getDivision();
+        String estCircle = est.getCircleName();
+
+        if ("DGM".equalsIgnoreCase(role)) {
+            String userCircle = locs.stream()
+                .map(UserLocation::getCircleName)
+                .filter(c -> c != null && !c.trim().isEmpty())
+                .findFirst()
+                .orElse(null);
+            if (userCircle != null) {
+                return safeEquals(userCircle, estCircle);
             }
-            if ("CGM".equalsIgnoreCase(requiredRole)) {
-                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName);
+            return locs.stream().anyMatch(loc ->
+                safeEquals(loc.getCorp(), estCorp) &&
+                safeEquals(loc.getZoneName(), estZone)
+            );
+        }
+        if ("GM".equalsIgnoreCase(role)) {
+            return locs.stream().anyMatch(loc ->
+                safeEquals(loc.getCorp(), estCorp) &&
+                safeEquals(loc.getZoneName(), estZone) &&
+                safeEquals(loc.getDivision(), estDivision)
+            );
+        }
+        if ("CGM".equalsIgnoreCase(role)) {
+            return locs.stream().anyMatch(loc ->
+                safeEquals(loc.getCorp(), estCorp) &&
+                safeEquals(loc.getZoneName(), estZone)
+            );
+        }
+        return true;
+    }
+
+    private void recalculateGrandTotal(Estimate estimate) {
+        double totalAmount = 0.0;
+        if (estimate.getItems() != null) {
+            for (EstimateItem item : estimate.getItems()) {
+                totalAmount += (item.getAmount() != null) ? item.getAmount() : 0.0;
             }
-            if ("GM".equalsIgnoreCase(requiredRole)) {
-                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName) && safeEquals(loc.getDivision(), division);
-            }
-            if ("DGM".equalsIgnoreCase(requiredRole)) {
-                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName) && safeEquals(loc.getDivision(), division) && safeEquals(loc.getCircleName(), circleName);
-            }
-            if ("MANAGER".equalsIgnoreCase(requiredRole)) {
-                return safeEquals(loc.getCorp(), corp) && safeEquals(loc.getZoneName(), zoneName) && safeEquals(loc.getDivision(), division) && safeEquals(loc.getCircleName(), circleName) && safeEquals(loc.getWardName(), wardName);
-            }
-            return false;
-        });
+        }
+        double gstPercent = (estimate.getGstPercent() != null) ? estimate.getGstPercent() : 0.0;
+        double gstAmount = totalAmount * gstPercent / 100.0;
+        double unforeseen = (estimate.getUnforeseenAmount() != null) ? estimate.getUnforeseenAmount() : 0.0;
+        estimate.setGrandTotal(totalAmount + gstAmount + unforeseen);
     }
 
     private boolean safeEquals(String s1, String s2) {
         if (s1 == null && s2 == null) return true;
         if (s1 == null || s2 == null) return false;
         return s1.trim().equalsIgnoreCase(s2.trim());
+    }
+
+    private String getClientIp() {
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isEmpty()) {
+            return xff.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<?> handleOptimisticLocking(ObjectOptimisticLockingFailureException ex) {
+        log.warn("Optimistic locking failure — estimate modified by another officer");
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body("This estimate was just modified by another officer. Please refresh and try again.");
     }
 }

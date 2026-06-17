@@ -60,23 +60,23 @@ The database persists estimates and their dynamic list of estimate items. The sy
 erDiagram
     estimates {
         INTEGER id PK "IDENTITY (AUTO_INCREMENT)"
-        VARCHAR(500) name_of_work "Description of the project"
+        VARCHAR name_of_work "Description of the project"
         DOUBLE gst_percent "GST percentage applied"
         DOUBLE grand_total "Grand total amount in Rs."
         TIMESTAMP created_at "Autopopulated creation timestamp"
         DOUBLE unforeseen_amount "Part-III LS unforeseen items amount"
-        VARCHAR(100) corp "Municipal Corporation name"
-        VARCHAR(200) zone_name "Zone name"
-        VARCHAR(100) division "Division name"
-        VARCHAR(200) circle_name "Circle number/name"
-        VARCHAR(200) ward_name "Ward number/name"
+        VARCHAR corp "Municipal Corporation name"
+        VARCHAR zone_name "Zone name"
+        VARCHAR division "Division name"
+        VARCHAR circle_name "Circle number/name"
+        VARCHAR ward_name "Ward number/name"
     }
     
     estimate_items {
         INTEGER id PK "IDENTITY (AUTO_INCREMENT)"
         INTEGER estimate_id FK "Cascade Delete on Parent Removal"
         INTEGER sno "Sequence number of row"
-        VARCHAR(10) is_material "Material toggle ('Yes'/'No')"
+        VARCHAR is_material "Material toggle ('Yes'/'No')"
         TEXT description "Item description text"
         DOUBLE num "Multiplier / count"
         DOUBLE length "Length measurement"
@@ -84,14 +84,14 @@ erDiagram
         DOUBLE depth "Depth/Height measurement"
         DOUBLE quantity "Calculated quantity"
         DOUBLE rate "Unit rate"
-        VARCHAR(100) unit "Unit of measurement"
+        VARCHAR unit "Unit of measurement"
         DOUBLE amount "Row amount (quantity * rate)"
     }
 
     itemlist {
         INTEGER slno PK "Serial number"
         TEXT item_description "Description of standard item"
-        VARCHAR(50) unit "Standard unit"
+        VARCHAR unit "Standard unit"
         NUMERIC rate "Standard rate"
     }
 
@@ -110,20 +110,20 @@ classDiagram
     }
 
     class HomeController {
-        +home() ResponseEntity~String~
+        +home() ResponseEntity_String
     }
 
     class ItemController {
         -itemRepository: ItemRepository
-        +search(q: String) ResponseEntity~List~Item~~
+        +search(q: String) ResponseEntity_List_Item
     }
 
     class EstimateController {
         -estimateRepository: EstimateRepository
-        +save(estimate: Estimate) ResponseEntity~Estimate~
-        +list() ResponseEntity~List~Estimate~~
-        +get(id: Integer) ResponseEntity~Estimate~
-        +delete(id: Integer) ResponseEntity~Void~
+        +save(estimate: Estimate) ResponseEntity_Estimate
+        +list() ResponseEntity_List_Estimate
+        +get(id: Integer) ResponseEntity_Estimate
+        +delete(id: Integer) ResponseEntity_Void
     }
 
     class Item {
@@ -146,7 +146,7 @@ classDiagram
         -division: String
         -circleName: String
         -wardName: String
-        -items: List~EstimateItem~
+        -items: List_EstimateItem
         #onCreate() void
         +getters_setters()
     }
@@ -169,7 +169,7 @@ classDiagram
 
     class ItemRepository {
         <<interface>>
-        +searchByDescription(query: String) List~Item~
+        +searchByDescription(query: String) List_Item
     }
 
     class EstimateRepository {
@@ -192,10 +192,10 @@ This diagram illustrates the lifecycle of generating and saving an estimate, sta
 sequenceDiagram
     autonumber
     actor User
-    participant UI as Browser UI (HTML)
-    participant Angular as AngularJS Controllers
-    participant API as Spring Boot REST Controller
-    participant DB as PostgreSQL Database
+    participant UI as "Browser UI (HTML)"
+    participant Angular as "AngularJS Controllers"
+    participant API as "Spring Boot REST Controller"
+    participant DB as "PostgreSQL Database"
 
     %% Step 1: Dropdown Selection
     User->>UI: Select CORP / Zone / Division / Circle / Ward
@@ -215,10 +215,10 @@ sequenceDiagram
     User->>UI: Select an item from dropdown
     UI->>Angular: selectItem(row, item)
     Angular->>Angular: Populate rate, unit, and computeRow()
-    Angular->>UI: Display computed quantities & amounts in row
+    Angular->>UI: Display computed quantities and amounts in row
 
     %% Step 4: Redirection and LocalStorage
-    User->>UI: Click "Generate Estimate" button
+    User->>UI: Click 'Generate Estimate' button
     UI->>Angular: saveEstimate()
     Angular->>Angular: Partition costs into Civil vs. Material
     Angular->>UI: Save 'current_estimate_data' to localStorage
@@ -226,12 +226,12 @@ sequenceDiagram
 
     %% Step 5: Abstract Load & Persistence
     UI->>Angular: Read 'current_estimate_data' from localStorage
-    Angular->>UI: Render Part-I, II, and III totals & Total in Words
-    User->>UI: Modify unforeseen items / round off, click "Save Estimate"
+    Angular->>UI: Render Part-I, II, and III totals and Total in Words
+    User->>UI: Modify unforeseen items / round off, click 'Save Estimate'
     UI->>Angular: saveEstimateToDb()
-    Angular->>API: POST /api/estimates (Payload with Estimate & items)
+    Angular->>API: POST /api/estimates (Payload with Estimate and items)
     API->>DB: save(Estimate) entity (cascade persist items)
     DB-->>API: Persisted entity with generated ID
     API-->>Angular: HTTP 200 OK (Saved Estimate JSON)
-    Angular->>UI: Update localStorage with saved ID & alert success
+    Angular->>UI: Update localStorage with saved ID and alert success
 ```

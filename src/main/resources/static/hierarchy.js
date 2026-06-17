@@ -1,4 +1,4 @@
-const WARD_HIERARCHY = {
+var WARD_HIERARCHY = {
   "MMC": {
     "Malkajgiri": {
       "1": {

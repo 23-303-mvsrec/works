@@ -88,20 +88,14 @@ if (-not (Test-Path -Path $MAVEN_M2_PATH)) {
     New-Item -Path $MAVEN_M2_PATH -ItemType Directory | Out-Null
 }
 
-$MAVEN_WRAPPER_DISTS = $null
-if ((Get-Item $MAVEN_M2_PATH).Target[0] -eq $null) {
-  $MAVEN_WRAPPER_DISTS = "$MAVEN_M2_PATH/wrapper/dists"
-} else {
-  $MAVEN_WRAPPER_DISTS = (Get-Item $MAVEN_M2_PATH).Target[0] + "/wrapper/dists"
-}
+$MAVEN_WRAPPER_DISTS = "$MAVEN_M2_PATH/wrapper/dists"
 
-$MAVEN_HOME_PARENT = "$MAVEN_WRAPPER_DISTS/$distributionUrlNameMain"
-$MAVEN_HOME_NAME = ([System.Security.Cryptography.SHA256]::Create().ComputeHash([byte[]][char[]]$distributionUrl) | ForEach-Object {$_.ToString("x2")}) -join ''
-$MAVEN_HOME = "$MAVEN_HOME_PARENT/$MAVEN_HOME_NAME"
+$MAVEN_HOME = "E:\works\.m2\wrapper\dists\apache-maven-3.9.15-bin\4rlcemksed9vjmkvgss0jpc4po\apache-maven-3.9.15"
 
 if (Test-Path -Path "$MAVEN_HOME" -PathType Container) {
   Write-Verbose "found existing MAVEN_HOME at $MAVEN_HOME"
-  Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+  $mvnCmdPath = "$MAVEN_HOME/bin/$MVN_CMD" -replace '/', '\'
+  Write-Output "MVN_CMD=$mvnCmdPath"
   exit $?
 }
 
@@ -186,4 +180,5 @@ try {
   catch { Write-Warning "Cannot remove $TMP_DOWNLOAD_DIR" }
 }
 
-Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+$mvnCmdPath = "$MAVEN_HOME/bin/$MVN_CMD" -replace '/', '\'
+Write-Output "MVN_CMD=$mvnCmdPath"

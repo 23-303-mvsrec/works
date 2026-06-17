@@ -12,454 +12,477 @@
   <script src="app.js"></script>
   <script src="hierarchy.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      background: #f0f0e8;
+      color: #222;
+      padding: 25px;
+    }
+
     .abstract-container {
       max-width: 900px;
       margin: 0 auto;
+      background: #f5f5e8;
+      border: 1px solid #c8c87a;
+      border-radius: 6px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
-    .doc-header {
-      background: var(--primary);
+    /* ── Header ── */
+    .title-header {
+      background: #7a7a38;
       color: #fff;
-      padding: 14px 20px;
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
-      text-align: center;
-    }
-
-    .doc-header-title {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 14px;
       text-transform: uppercase;
-    }
-
-    .doc-header-sub {
-      font-size: 11px;
-      opacity: 0.85;
-      margin-top: 3px;
-    }
-
-    /* ── User Bar ── */
-    .user-bar {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-top: none;
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .user-name {
-      font-weight: 700;
-      font-size: 13px;
-      color: #2c3e50;
-    }
-
-    .user-designation {
-      font-size: 11px;
-      color: var(--text-light);
+      letter-spacing: 0.5px;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid #7a7a38;
     }
 
     .name-of-work-box {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      background: #fffde7;
+      border: 1px solid #d4c97a;
       border-top: none;
-      padding: 12px 16px;
+      border-radius: 0 0 4px 4px;
+      padding: 10px 14px;
+      color: #222;
     }
 
-    .now-label {
+    .name-of-work-box span {
       font-weight: 700;
-      color: var(--error-text);
+      color: #b33;
     }
 
-    .now-label::before {
+    .name-of-work-box span::before {
       content: '* ';
     }
 
-    .now-value {
-      font-weight: 600;
-    }
-
-    .location-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed var(--border-light);
-      font-size: 11px;
-    }
-
-    @media (max-width: 768px) {
-      .location-grid { grid-template-columns: repeat(2, 1fr); }
-      .sig-grid { grid-template-columns: repeat(2, 1fr) !important; }
-    }
-
-    .location-grid span {
-      font-weight: 700;
-      color: var(--error-text);
-    }
-
-    /* ── Abstract Table ── */
-    .abstract-table {
+    /* ── Table Styling ── */
+    table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
     }
 
-    .abstract-table th, .abstract-table td {
-      border: 1px solid var(--table-border);
+    th, td {
+      border: 1px solid #c8daea;
       padding: 8px 10px;
+      color: #222;
       text-align: center;
       vertical-align: middle;
     }
 
-    .abstract-table th {
-      background: var(--table-header-bg);
-      color: var(--table-header-text);
+    th {
+      background: #a0c4de;
+      color: #1a3550;
       font-weight: 600;
       font-size: 12px;
       text-transform: uppercase;
+      border: 1px solid #7fa8c0;
     }
 
-    .abstract-table tbody td {
-      background: var(--table-row-odd);
-    }
+    /* Column Widths */
+    .col-sno { width: 8%; text-align: center; }
+    .col-desc { width: 62%; text-align: left; }
+    .col-rs { width: 8%; text-align: center; }
+    .col-amt { width: 22%; text-align: right; }
 
-    .abstract-table tbody tr:nth-child(even) td {
-      background: var(--table-row-even);
-    }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .font-bold { font-weight: 700; }
 
-    .part-header td {
+    tbody tr td { background: #e8f4fb; }
+    tbody tr:nth-child(even) td { background: #daeef8; }
+
+    /* Part Sections */
+    .part-header-row td {
       font-weight: 700;
-      background: var(--table-header-bg) !important;
-      color: var(--table-header-text);
+      background: #a0c4de !important;
+      color: #1a3550;
+      padding: 6px 10px;
       text-align: left;
+      border: 1px solid #7fa8c0;
     }
 
-    .part-total td {
-      background: var(--status-draft-bg) !important;
-      color: var(--status-draft-text);
+    .part-i-total td {
+      background: #dbeafe !important;
+      color: #1e3a8a;
       font-weight: 700;
     }
 
-    .grand-total td {
-      background: var(--primary) !important;
-      color: #fff !important;
-      font-weight: 700;
-    }
-
+    /* Input Field */
     .ls-input {
       width: 100%;
       border: 1px solid #bbb;
-      border-radius: var(--radius-sm);
+      border-radius: 3px;
       padding: 4px 6px;
       font-size: 12px;
       text-align: right;
       font-weight: 700;
       background: #fff;
-    }
-
-    .ls-input:focus {
-      border-color: var(--border-input-focus);
+      color: #222;
       outline: none;
     }
 
-    /* ── Total in Words ── */
+    .ls-input:focus {
+      border-color: #5a9fd4;
+    }
+
+    /* Grand Total */
+    .grand-total-row td {
+      background: #5a7a3a !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    /* Total in Words */
     .words-box {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-sm);
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 4px;
       padding: 10px 14px;
       font-weight: 700;
       text-align: center;
       font-size: 13px;
-      margin: 15px 0 20px;
-      color: var(--table-header-text);
+      margin-top: 15px;
+      margin-bottom: 25px;
+      color: #1a3550;
+    }
+
+    .error-banner {
+      background: #fde8e8;
+      border: 1px solid #e08080;
+      color: #b33;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-weight: 600;
     }
 
     /* ── Signature Block ── */
     .sig-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
-      margin: 25px 0;
+      gap: 15px;
+      border-top: 1px solid #c8c87a;
       padding-top: 15px;
-      border-top: 1px solid var(--border-light);
+      margin-bottom: 30px;
+      margin-top: 50px;
+      text-align: center;
     }
 
     .sig-card {
       padding: 10px;
       border: 1px dashed rgba(122, 122, 56, 0.3);
-      border-radius: var(--radius-sm);
+      border-radius: 4px;
       background: rgba(255, 255, 255, 0.4);
-      text-align: center;
     }
 
     .sig-role {
-      font-size: 9px;
-      color: var(--text-light);
+      font-size: 10px;
+      color: #7f8c8d;
       font-weight: 700;
       text-transform: uppercase;
       margin-bottom: 5px;
     }
 
-    .sig-name {
-      font-weight: 700;
-      color: #2c3e50;
-      font-size: 12px;
-    }
+    .sig-name { font-weight: 700; color: #2c3e50; font-size: 12px; }
+    .sig-designation { font-size: 10px; color: #555; margin-top: 2px; }
+    .sig-signed { font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px; }
+    .sig-pending { font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0; }
 
-    .sig-designation {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .sig-status {
-      font-size: 9px;
-      font-weight: 600;
-      margin-top: 3px;
-    }
-
-    .sig-signed {
-      color: var(--btn-success);
-    }
-
-    .sig-pending {
-      color: var(--text-light);
-      font-style: italic;
-    }
-
-    /* ── Action Bar ── */
-    .action-bar {
+    /* ── Action Buttons ── */
+    .actions-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px dashed var(--border-light);
-      padding-top: 16px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-      gap: 8px;
+      border-top: 1px dashed #c8c87a;
+      padding-top: 20px;
+      margin-top: 20px;
     }
 
-    .action-group {
-      display: flex;
+    .btn {
+      border: none;
+      border-radius: 3px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
       gap: 6px;
-      flex-wrap: wrap;
+      transition: all 0.15s ease-in-out;
     }
 
-    /* ── Print ── */
+    .btn-back { background: #7f8c8d; color: white; }
+    .btn-back:hover { background: #6c7a7d; }
+    .btn-save-db { background: #27ae60; color: white; }
+    .btn-save-db:hover { background: #219653; }
+    .btn-save-db[disabled] { background: #bdc3c7; cursor: not-allowed; }
+    .btn-print { background: #2980b9; color: white; }
+    .btn-print:hover { background: #1f618d; }
+    .btn-download { background: #1f7246; color: white; }
+    .btn-download:hover { background: #155231; }
+    .btn-forward { background: #3498db; color: white; }
+    .btn-forward:hover { background: #2980b9; }
+    .btn-return { background: #e67e22; color: white; }
+    .btn-return:hover { background: #d35400; }
+
+    .action-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .sig-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    .file-warning {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      background: #fff8e1; border: 1px solid #f0d060; color: #8a6d00;
+      border-radius: 8px; padding: 10px 20px; font-size: 12px; z-index: 99999;
+      text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px;
+    }
+    .file-warning strong { color: #b33; }
+
+    /* ── Print Styles ── */
     @media print {
       body { background: white; padding: 0; color: #000; }
-      .abstract-container { border: none; box-shadow: none; max-width: 100%; }
-      .doc-header { background: transparent; color: #000; border-bottom: 2px solid #000; }
-      .doc-header-title { font-size: 18px; }
-      .name-of-work-box { background: transparent; border: none; }
-      .words-box { background: transparent; border: none; color: #000; }
-      .abstract-table th, .abstract-table td { border: 1px solid #000; background: transparent !important; color: #000 !important; }
-      .part-header td, .grand-total td { background: transparent !important; color: #000 !important; border-bottom: 2px solid #000; }
-      .ls-input { border: none; background: transparent; color: #000; padding: 0; }
-      .action-bar { display: none; }
+      .abstract-container { border: none; box-shadow: none; padding: 0; max-width: 100%; background: white; }
+      .title-header { background: transparent; color: #000; border: none; border-bottom: 2px solid #000; padding: 0 0 8px 0; text-align: center; font-size: 20px; font-weight: 700; }
+      .name-of-work-box { background: transparent; border: none; padding: 10px 0; }
+      .name-of-work-box span { color: #000; }
+      .words-box { background: transparent; border: none; color: #000; padding: 10px 0; }
+      th, td { border: 1px solid #000; background: transparent !important; color: #000 !important; }
+      .actions-bar, .user-header-bar { display: none !important; }
+      .ls-input { border: none; background: transparent; color: #000; padding: 0; text-align: right; }
       .sig-card { border: 1px solid #000; }
+      .file-warning { display: none; }
     }
   </style>
 </head>
 
 <body ng-controller="AbstractCtrl">
 
+  <div class="file-warning" ng-if="isLocalFile">
+    <span>&#9888;</span>
+    Opened via file:// &mdash; API calls will fail. Use <strong>http://localhost:8080/abstract.html</strong>
+  </div>
+
   <div class="abstract-container">
 
     <!-- Error Banner -->
-    <div class="alert alert-error" ng-if="apiError">{{apiError}}</div>
-
-    <!-- Document Header -->
-    <div class="doc-header">
-      <div class="doc-header-title">General Abstract</div>
-      <div class="doc-header-sub">Hyderabad Metropolitan Water Supply and Sewerage Board</div>
+    <div class="error-banner" ng-if="apiError">
+      ⚠ {{apiError}}
     </div>
 
-    <!-- User Bar -->
-    <div class="user-bar" style="border-radius:0;border-top:none;">
-      <div class="user-info">
-        <div class="user-avatar">{{currentUser.name.charAt(0)}}</div>
+    <!-- User Profile Header Bar -->
+    <div class="user-header-bar" style="display: flex; justify-content: space-between; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 10px 14px; margin-bottom: 14px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px; color: #1e5c99;">👤</span>
         <div>
-          <div class="user-name">{{currentUser.name}}</div>
-          <div class="user-designation">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
+          <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">{{currentUser.name}}</div>
+          <div style="font-size: 11px; color: #7f8c8d; font-weight: 500;">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="badge" ng-class="getStatusBadgeClass(status)">{{getStatusLabel(status)}}</span>
-        <button class="btn btn-danger btn-sm" ng-click="logout()">Logout</button>
+      
+      <!-- Active location scope display -->
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
+        <span style="font-weight: 600; color: #b33;">Active Scope:</span>
+        <span style="font-weight: 500; color: #2c3e50;" ng-if="currentActiveLocation">
+          {{currentActiveLocation.corp}}
+          <span ng-if="currentActiveLocation.zoneName"> &bull; {{currentActiveLocation.zoneName}}</span>
+          <span ng-if="currentActiveLocation.division"> &bull; Div-{{currentActiveLocation.division}}</span>
+          <span ng-if="currentActiveLocation.circleName"> &bull; {{currentActiveLocation.circleName}}</span>
+          <span ng-if="currentActiveLocation.wardName"> &bull; {{currentActiveLocation.wardName}}</span>
+        </span>
+        <span style="font-weight: 500; color: #2c3e50;" ng-if="!currentActiveLocation">
+          All Locations
+        </span>
       </div>
+      
+      <button ng-click="goBack()" style="background: #7f8c8d; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
+        Back to Dashboard
+      </button>
     </div>
 
-    <!-- Name of Work Box -->
-    <div class="name-of-work-box">
-      <div><span class="now-label">Name of Work:</span> <span class="now-value">{{nameOfWork}}</span></div>
-      <div class="location-grid">
+    <!-- General Abstract Header -->
+    <div class="title-header">
+      General Abstract
+    </div>
+
+    <!-- Name of Work & Location Hierarchy Details -->
+    <div class="name-of-work-box" style="display: flex; flex-direction: column; gap: 8px;">
+      <div><span>Name of Work:</span> {{nameOfWork}}</div>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 6px; padding-top: 8px; border-top: 1px dashed #d4c97a; font-size: 12px; color: #222; text-align: left;">
         <div><span>CORP:</span> {{corp || 'N/A'}}</div>
-        <div><span>Zone:</span> {{zoneName || 'N/A'}}</div>
-        <div><span>Division:</span> {{division || 'N/A'}}</div>
-        <div><span>Circle:</span> {{circleName || 'N/A'}}</div>
-        <div><span>Ward:</span> {{wardName || 'N/A'}}</div>
+        <div><span>Zone Name:</span> {{zoneName || 'N/A'}}</div>
+        <div><span>DIVISION:</span> {{division || 'N/A'}}</div>
+        <div><span>Circle Name:</span> {{circleName || 'N/A'}}</div>
+        <div><span>Ward Name:</span> {{wardName || 'N/A'}}</div>
       </div>
     </div>
 
     <!-- Abstract Table -->
-    <table class="abstract-table">
+    <table>
       <thead>
         <tr>
-          <th style="width:8%">Sl.No</th>
-          <th style="width:58%">Description</th>
-          <th style="width:6%"></th>
-          <th style="width:28%">Amount Rs.</th>
+          <th class="col-sno">Sl.No</th>
+          <th class="col-desc">Description</th>
+          <th class="col-rs"></th>
+          <th class="col-amt">Amount Rs.</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Part I -->
-        <tr class="part-header"><td colspan="4">Part-I - Working Items</td></tr>
+        <!-- Part I Section -->
+        <tr class="part-header-row"><td colspan="4">Part-I - Working Items</td></tr>
         <tr>
-          <td>1</td>
-          <td class="text-left">Cost of Material</td>
-          <td></td>
+          <td class="text-center">1</td>
+          <td>Cost of Material</td>
+          <td class="text-center"></td>
           <td class="text-right">{{costOfMaterial | number:2}}</td>
         </tr>
         <tr>
-          <td>2</td>
-          <td class="text-left">Cost of Civil work</td>
-          <td></td>
+          <td class="text-center">2</td>
+          <td>Cost of Civil work</td>
+          <td class="text-center"></td>
           <td class="text-right">{{costOfCivilWork | number:2}}</td>
         </tr>
-        <tr class="part-total">
+        <tr class="part-i-total">
           <td></td>
-          <td class="text-right font-bold">Cost of Estimate : Part-I</td>
-          <td></td>
+          <td class="text-right">Cost of Estimate : Part-I</td>
+          <td class="text-center"></td>
           <td class="text-right">{{partITotal() | number:2}}</td>
         </tr>
 
-        <!-- Part II -->
-        <tr class="part-header"><td colspan="4">Part-II - Reimbursible Items</td></tr>
+        <!-- Part II Section -->
+        <tr class="part-header-row"><td colspan="4">Part-II - Reimbursible Items</td></tr>
         <tr>
-          <td>3</td>
-          <td class="text-left">GST @ {{gstPercent}}%</td>
-          <td>Rs.</td>
+          <td class="text-center">3</td>
+          <td>GST @ {{gstPercent}}%</td>
+          <td class="text-center">Rs.</td>
           <td class="text-right">{{gstAmount() | number:2}}</td>
         </tr>
 
-        <!-- Part III -->
-        <tr class="part-header"><td colspan="4">Part-III: LS provisions</td></tr>
+        <!-- Part III Section -->
+        <tr class="part-header-row"><td colspan="4">Part-III: LS provisions</td></tr>
         <tr>
-          <td>4</td>
-          <td class="text-left">LS unforeseen items and rounding off</td>
-          <td>Rs.</td>
-          <td class="text-right" style="padding:3px 5px;">
+          <td class="text-center">4</td>
+          <td>LS unforeseen items and rounding off</td>
+          <td class="text-center">Rs.</td>
+          <td class="text-right" style="padding: 3px 5px;">
             <input type="number" class="ls-input" ng-model="unforeseenAmount" ng-change="updateTotals()" min="0" step="0.01" />
           </td>
         </tr>
 
-        <!-- Grand Total -->
-        <tr class="grand-total">
-          <td>5</td>
-          <td class="text-right">GRAND TOTAL (Part I + II + III)</td>
-          <td>Rs.</td>
+        <!-- Grand Total Row -->
+        <tr class="grand-total-row">
+          <td class="text-center">5</td>
+          <td class="text-right" style="text-transform: uppercase;">Grand Total (Part I + II + III)</td>
+          <td class="text-center">Rs.</td>
           <td class="text-right">{{grandTotal() | number:2}}</td>
         </tr>
       </tbody>
     </table>
 
-    <!-- Total in Words -->
+    <!-- Total In Words -->
     <div class="words-box">{{totalInWords}}</div>
 
-    <!-- Signature Block -->
+    <!-- Multi-Signature Block -->
     <div class="sig-grid">
-      <div class="sig-card" ng-if="currentUser.role === 'MANAGER' || currentUser.role === 'DGM' || currentUser.role === 'GM' || currentUser.role === 'CGM' || currentUser.role === 'DOP'">
+      
+      <!-- Prepared by AE -->
+      <div class="sig-card">
         <div class="sig-role">Prepared by (AE)</div>
         <div ng-if="preparedByName">
           <div class="sig-name">{{preparedByName}}</div>
           <div class="sig-designation">{{preparedByDesignation}}</div>
-          <div class="sig-status sig-signed">&#10003; Signed</div>
+          <div class="sig-signed">✓ Signed</div>
         </div>
-        <div ng-if="!preparedByName" class="sig-status sig-pending">Pending Signature</div>
+        <div ng-if="!preparedByName" class="sig-pending">Pending Signature</div>
       </div>
-      <div class="sig-card" ng-if="currentUser.role === 'DGM' || currentUser.role === 'GM' || currentUser.role === 'CGM' || currentUser.role === 'DOP'">
+
+      <!-- Verified by DGM -->
+      <div class="sig-card">
         <div class="sig-role">Verified by (DGM)</div>
         <div ng-if="verifiedByName">
           <div class="sig-name">{{verifiedByName}}</div>
           <div class="sig-designation">{{verifiedByDesignation}}</div>
-          <div class="sig-status sig-signed">&#10003; Signed</div>
+          <div class="sig-signed">✓ Signed</div>
         </div>
-        <div ng-if="!verifiedByName" class="sig-status sig-pending">Pending Scrutiny</div>
+        <div ng-if="!verifiedByName" class="sig-pending">Pending Scrutiny</div>
       </div>
-      <div class="sig-card" ng-if="currentUser.role === 'GM' || currentUser.role === 'CGM' || currentUser.role === 'DOP'">
+
+      <!-- Recommended by GM -->
+      <div class="sig-card">
         <div class="sig-role">Recommended by (GM)</div>
         <div ng-if="recommendedByName">
           <div class="sig-name">{{recommendedByName}}</div>
           <div class="sig-designation">{{recommendedByDesignation}}</div>
-          <div class="sig-status sig-signed">&#10003; Signed</div>
+          <div class="sig-signed">✓ Signed</div>
         </div>
-        <div ng-if="!recommendedByName" class="sig-status sig-pending">Pending Recom.</div>
+        <div ng-if="!recommendedByName" class="sig-pending">Pending Recom.</div>
       </div>
-      <div class="sig-card" ng-if="currentUser.role === 'CGM' || currentUser.role === 'DOP'">
+
+      <!-- Reviewed by CGM -->
+      <div class="sig-card">
         <div class="sig-role">Reviewed by (CGM)</div>
         <div ng-if="forwardedByName">
           <div class="sig-name">{{forwardedByName}}</div>
           <div class="sig-designation">{{forwardedByDesignation}}</div>
-          <div class="sig-status sig-signed">&#10003; Signed</div>
+          <div class="sig-signed">✓ Signed</div>
         </div>
-        <div ng-if="!forwardedByName" class="sig-status sig-pending">Pending Review</div>
+        <div ng-if="!forwardedByName" class="sig-pending">Pending Review</div>
       </div>
-      <div class="sig-card" ng-if="currentUser.role === 'DOP'">
+
+      <!-- Sanctioned by DOP -->
+      <div class="sig-card">
         <div class="sig-role">Sanctioned by (DOP)</div>
         <div ng-if="sanctionedByName">
           <div class="sig-name">{{sanctionedByName}}</div>
           <div class="sig-designation">{{sanctionedByDesignation}}</div>
-          <div class="sig-status sig-signed">&#10003; Approved</div>
+          <div class="sig-signed">✓ Approved</div>
         </div>
-        <div ng-if="!sanctionedByName" class="sig-status sig-pending">Pending Sanction</div>
+        <div ng-if="!sanctionedByName" class="sig-pending">Pending Sanction</div>
       </div>
+
     </div>
 
-    <!-- Action Bar -->
-    <div class="action-bar">
-      <button class="btn btn-secondary" ng-click="goBack()">&#8592; Back</button>
+    <!-- Action Buttons Panel -->
+    <div class="actions-bar">
+      <button class="btn btn-back" ng-click="goBack()" style="margin-right: auto;">
+        ⬅ Back to Measurement Sheet
+      </button>
       <div class="action-group">
-        <button class="btn btn-success" ng-click="saveEstimateToDb()" ng-if="isEditable()" ng-disabled="saving">
-          <span ng-if="saving"><span class="spinner"></span> Saving...</span>
-          <span ng-if="!saving">Save Estimate</span>
+        <button class="btn btn-save-db" ng-click="saveEstimateToDb()" ng-if="isEditable()" ng-disabled="saving">
+          <span ng-if="saving">💾 Saving...</span>
+          <span ng-if="!saving">💾 Save Estimate</span>
         </button>
-        <button class="btn btn-info" ng-click="performWorkflowAction('FORWARD')" ng-if="canForward()" ng-disabled="saving || workflowActing">
-          <span ng-if="workflowActing"><span class="spinner"></span></span>
-          <span ng-if="!workflowActing">&#10132; {{getForwardActionLabel()}}</span>
+        <button class="btn btn-forward" ng-click="performWorkflowAction('FORWARD')" ng-if="canForward()" ng-disabled="saving || workflowActing">
+          <span ng-if="workflowActing">⌛ Processing...</span>
+          <span ng-if="!workflowActing">➔ {{getForwardActionLabel()}}</span>
         </button>
-        <button class="btn btn-warning" ng-click="performWorkflowAction('RETURN')" ng-if="canReturn()" ng-disabled="saving || workflowActing">
-          <span ng-if="workflowActing"><span class="spinner"></span></span>
-          <span ng-if="!workflowActing">&#8630; Return to {{getReturnActionLabel()}}</span>
+        <button class="btn btn-return" ng-click="performWorkflowAction('RETURN')" ng-if="canReturn()" ng-disabled="saving || workflowActing">
+          <span ng-if="workflowActing">⌛ Processing...</span>
+          <span ng-if="!workflowActing">↩ Return to {{getReturnActionLabel()}}</span>
         </button>
-        <button class="btn btn-primary" onclick="window.print()" ng-disabled="saving || workflowActing">Print</button>
-        <button class="btn" style="background:#1f7246;color:#fff;" ng-click="downloadExcel()" ng-disabled="saving || workflowActing">Download Excel</button>
+        <button class="btn btn-print" onclick="window.print()" ng-disabled="saving || workflowActing">
+          🖨 Print Abstract
+        </button>
+        <button class="btn btn-download" ng-click="downloadExcel()" ng-disabled="saving || workflowActing">
+          Download Sheet
+        </button>
       </div>
     </div>
 
@@ -472,6 +495,12 @@
 
           if (!AuthService.requireLogin()) return;
           $scope.currentUser = AuthService.getUser();
+          $scope.isLocalFile = window.location.protocol === 'file:';
+
+          var activeRoleStr = localStorage.getItem('current_active_role');
+          var activeLocStr = localStorage.getItem('current_active_location');
+          $scope.currentActiveRole = activeRoleStr || ($scope.currentUser && $scope.currentUser.role ? $scope.currentUser.role.toUpperCase() : '');
+          $scope.currentActiveLocation = activeLocStr ? JSON.parse(activeLocStr) : null;
 
           var API_BASE = APP_CONFIG.API_BASE;
 
@@ -526,12 +555,11 @@
 
           $scope.getStatusLabel = StatusService.getLabel;
           $scope.getStatusBadgeClass = StatusService.getBadgeClass;
-          $scope.isEditable = function () { return StatusService.isEditable($scope.status, $scope.currentUser.role); };
-          $scope.canForward = function () { return StatusService.canForward($scope.status, $scope.currentUser.role); };
-          $scope.canReturn = function () { return StatusService.canReturn($scope.status, $scope.currentUser.role); };
+          $scope.isEditable = function () { return StatusService.isEditable($scope.status, $scope.currentActiveRole); };
+          $scope.canForward = function () { return StatusService.canForward($scope.status, $scope.currentActiveRole); };
+          $scope.canReturn = function () { return StatusService.canReturn($scope.status, $scope.currentActiveRole); };
           $scope.getForwardActionLabel = function () { return StatusService.getForwardLabel($scope.status); };
           $scope.getReturnActionLabel = function () { return StatusService.getReturnLabel($scope.status); };
-          $scope.logout = function () { AuthService.logout(); };
 
           $scope.partITotal = function () { return $scope.costOfMaterial + $scope.costOfCivilWork; };
           $scope.gstAmount = function () { return $scope.partITotal() * $scope.gstPercent / 100; };
@@ -540,7 +568,7 @@
           $scope.updateTotals = function () {
             estimateData.unforeseenAmount = $scope.unforeseenAmount;
             localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
-            $scope.totalInWords = 'Rupees ' + Utils.numberToWords($scope.grandTotal());
+            $scope.totalInWords = Utils.numberToWords($scope.grandTotal());
           };
 
           $scope.updateTotals();
@@ -688,7 +716,7 @@
             absRows.push([makeCell(3,false,'center',true,null,'0'),makeCell('GST @ ' + $scope.gstPercent + '%',false,'left',true),makeCell('Rs.',false,'center',true),makeCell($scope.gstAmount(),false,'right',true)]);
             absRows.push([makeCell('Part-III: LS provisions',true,'left',true,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
             absRows.push([makeCell(4,false,'center',true,null,'0'),makeCell('LS unforeseen items and rounding off',false,'left',true),makeCell('Rs.',false,'center',true),makeCell($scope.unforeseenAmount||0,false,'right',true)]);
-            absRows.push([makeCell(5,true,'center',true,9,null,'0'),makeCell('Grand Total (Part I + II + III)',true,'right',true,9),makeCell('Rs.',true,'center',true,9),makeCell($scope.grandTotal(),true,'right',true,9)]);
+            absRows.push([makeCell(5,true,'center',true,null,'0'),makeCell('Grand Total (Part I + II + III)',true,'right',true,9),makeCell('Rs.',true,'center',true,9),makeCell($scope.grandTotal(),true,'right',true,9)]);
             absRows.push(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);}));
             absRows.push([makeCell($scope.totalInWords,true,'center',false,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'center',false);})));
             absRows.push(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);}));

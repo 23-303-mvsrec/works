@@ -1,0 +1,105 @@
+2026-06-17 04:45:04.593 [main] INFO  com.hmwssb.works.WorksApplication - Starting WorksApplication using Java 21.0.11 with PID 12384 (E:\works\target\classes started by hp in E:\works)
+2026-06-17 04:45:04.595 [main] INFO  com.hmwssb.works.WorksApplication - No active profile set, falling back to 1 default profile: "default"
+2026-06-17 04:45:06.226 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-06-17 04:45:06.243 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-17 04:45:06.245 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.54]
+2026-06-17 04:45:06.379 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-17 04:45:06.701 [main] INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-17 04:45:06.792 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.49.Final
+2026-06-17 04:45:06.841 [main] INFO  o.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-06-17 04:45:07.489 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-17 04:45:07.812 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5c8b10b4
+2026-06-17 04:45:07.814 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-17 04:45:07.871 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-17 04:45:07.897 [main] INFO  org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.13
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-17 04:45:09.544 [main] INFO  o.h.e.t.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-17 04:45:11.612 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-17 04:45:12.140 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-06-17 04:45:12.210 [main] INFO  com.hmwssb.works.WorksApplication - Started WorksApplication in 8.434 seconds (process running for 8.914)
+2026-06-17 04:45:12.516 [main] INFO  com.hmwssb.works.seeder.DatabaseSeeder - Users table already has 18 records with roles populated. Skipping seed.
+2026-06-17 04:45:25.475 [http-nio-8080-exec-1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-17 04:45:53.524 [http-nio-8080-exec-3] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9154297397, name=G.RAJITHA, role=MANAGER
+2026-06-17 11:22:29.679 [main] INFO  com.hmwssb.works.WorksApplication - Starting WorksApplication using Java 21.0.11 with PID 3228 (E:\works\target\classes started by hp in E:\works)
+2026-06-17 11:22:29.692 [main] INFO  com.hmwssb.works.WorksApplication - No active profile set, falling back to 1 default profile: "default"
+2026-06-17 11:22:31.804 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-06-17 11:22:31.816 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-17 11:22:31.817 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.54]
+2026-06-17 11:22:31.969 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-17 11:22:32.289 [main] INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-17 11:22:32.428 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.49.Final
+2026-06-17 11:22:32.521 [main] INFO  o.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-06-17 11:22:33.232 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-17 11:22:33.723 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@da34eb0
+2026-06-17 11:22:33.729 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-17 11:22:33.831 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-17 11:22:33.870 [main] INFO  org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.13
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-17 11:22:36.094 [main] INFO  o.h.e.t.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-17 11:22:39.890 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-17 11:22:40.700 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-06-17 11:22:40.761 [main] INFO  com.hmwssb.works.WorksApplication - Started WorksApplication in 12.085 seconds (process running for 12.716)
+2026-06-17 11:22:41.053 [main] INFO  com.hmwssb.works.seeder.DatabaseSeeder - Users table already has 18 records with roles populated. Skipping seed.
+2026-06-17 11:24:00.618 [http-nio-8080-exec-1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-17 11:24:43.707 [http-nio-8080-exec-7] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9154866671, name=P.BHAVYA, role=MANAGER
+2026-06-17 11:25:58.797 [http-nio-8080-exec-2] INFO  com.hmwssb.works.controller.EstimateController - Created estimate: id=12, officer=9154866671, nameOfWork=karmanghat ex1
+2026-06-17 11:26:04.942 [http-nio-8080-exec-5] INFO  com.hmwssb.works.controller.EstimateController - Workflow action: FORWARD on estimate 12 by P.BHAVYA (MANAGER) — DRAFT → SUBMITTED_TO_DGM
+2026-06-17 11:29:28.455 [http-nio-8080-exec-2] INFO  com.hmwssb.works.controller.EstimateController - Created estimate: id=13, officer=9154866671, nameOfWork=hastinapuram ex1
+2026-06-17 11:29:32.725 [http-nio-8080-exec-5] INFO  com.hmwssb.works.controller.EstimateController - Workflow action: FORWARD on estimate 13 by P.BHAVYA (MANAGER) — DRAFT → SUBMITTED_TO_DGM
+2026-06-17 11:30:05.934 [http-nio-8080-exec-6] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9989996103, name=SRINU RAVULA, role=DGM
+2026-06-17 11:30:22.503 [http-nio-8080-exec-2] INFO  com.hmwssb.works.controller.EstimateController - Fetching estimate: id=13
+2026-06-17 11:30:34.324 [http-nio-8080-exec-5] INFO  com.hmwssb.works.controller.EstimateController - Workflow action: FORWARD on estimate 13 by SRINU RAVULA (DGM) — SUBMITTED_TO_DGM → SUBMITTED_TO_GM
+2026-06-17 11:31:05.030 [http-nio-8080-exec-8] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9989994708, name=M.MAHENDER, role=GM
+2026-06-17 11:31:24.676 [http-nio-8080-exec-2] INFO  com.hmwssb.works.controller.EstimateController - Fetching estimate: id=13
+2026-06-17 11:31:35.687 [http-nio-8080-exec-4] INFO  com.hmwssb.works.controller.EstimateController - Workflow action: FORWARD on estimate 13 by M.MAHENDER (GM) — SUBMITTED_TO_GM → SUBMITTED_TO_CGM
+2026-06-17 11:31:55.822 [http-nio-8080-exec-8] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9989989507, name=P.NAGENDRA KUMAR, role=CGM
+2026-06-17 11:32:03.564 [http-nio-8080-exec-1] INFO  com.hmwssb.works.controller.EstimateController - Fetching estimate: id=13
+2026-06-17 11:32:10.367 [http-nio-8080-exec-3] INFO  com.hmwssb.works.controller.EstimateController - Workflow action: FORWARD on estimate 13 by P.NAGENDRA KUMAR (CGM) — SUBMITTED_TO_CGM → SUBMITTED_TO_DOP
+2026-06-17 11:32:31.239 [http-nio-8080-exec-7] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9989999753, name=Vasa SatyaNarayana, role=DOP
+2026-06-17 11:32:32.221 [http-nio-8080-exec-9] INFO  com.hmwssb.works.controller.UserController - Fetching all users
+2026-06-17 11:32:41.893 [http-nio-8080-exec-3] INFO  com.hmwssb.works.controller.UserController - Fetching all users
+2026-06-17 11:33:11.701 [http-nio-8080-exec-7] INFO  com.hmwssb.works.controller.EstimateController - Fetching estimate: id=13
+2026-06-17 11:33:19.173 [http-nio-8080-exec-6] INFO  com.hmwssb.works.controller.EstimateController - Workflow action: FORWARD on estimate 13 by Vasa SatyaNarayana (DOP) — SUBMITTED_TO_DOP → APPROVED
+2026-06-17 14:09:18.146 [main] INFO  com.hmwssb.works.WorksApplication - Starting WorksApplication using Java 21.0.11 with PID 16264 (E:\works\target\classes started by hp in E:\works)
+2026-06-17 14:09:18.151 [main] INFO  com.hmwssb.works.WorksApplication - No active profile set, falling back to 1 default profile: "default"
+2026-06-17 14:09:21.057 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-06-17 14:09:21.066 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-17 14:09:21.068 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.54]
+2026-06-17 14:09:21.220 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-06-17 14:09:21.574 [main] INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-17 14:09:21.697 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.49.Final
+2026-06-17 14:09:21.779 [main] INFO  o.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-06-17 14:09:22.358 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-17 14:09:22.768 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1410d645
+2026-06-17 14:09:22.771 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-17 14:09:22.876 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-17 14:09:22.916 [main] INFO  org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.13
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-17 14:09:24.774 [main] INFO  o.h.e.t.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-17 14:09:27.148 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-17 14:09:27.881 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-06-17 14:09:28.058 [main] INFO  com.hmwssb.works.WorksApplication - Started WorksApplication in 11.223 seconds (process running for 11.916)
+2026-06-17 14:09:28.224 [http-nio-8080-exec-1] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-17 14:09:28.471 [main] INFO  com.hmwssb.works.seeder.DatabaseSeeder - Users table already has 18 records with roles populated. Skipping seed.
+2026-06-17 14:10:47.262 [http-nio-8080-exec-10] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9989994708, name=M.MAHENDER, role=GM
+2026-06-17 14:10:52.879 [http-nio-8080-exec-3] INFO  com.hmwssb.works.controller.EstimateController - Fetching estimate: id=12
+2026-06-17 14:10:56.912 [http-nio-8080-exec-4] INFO  com.hmwssb.works.controller.EstimateController - Fetching estimate: id=12
+2026-06-17 14:34:23.947 [http-nio-8080-exec-4] INFO  com.hmwssb.works.controller.UserController - Login successful: phone=9154866671, name=P.BHAVYA, role=MANAGER
