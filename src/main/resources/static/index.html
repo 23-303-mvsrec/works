@@ -5,11 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HMWSSB – Measurement Sheet</title>
-  <link rel="stylesheet" href="styles/theme.css" />
+  <link rel="stylesheet" href="styles/theme.css?v=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
-  <script src="hierarchy.js"></script>
+  <script src="config.js?v=1"></script>
+  <script src="app.js?v=1"></script>
+  <script src="hierarchy.js?v=1"></script>
   <style>
     .sheet-wrapper {
       background: #f5f5e8;
@@ -337,6 +337,21 @@
     }
     .file-warning strong { color: #b33; }
   </style>
+
+  <script>
+    setTimeout(function () {
+      var body = document.body;
+      if (!body || body.getAttribute('data-hmwssb-booted')) return;
+      if (document.querySelector('[ng-app]')) {
+        var box = document.createElement('div');
+        box.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#fff8e1;border:1px solid #f0d060;color:#8a6d00;border-radius:8px;padding:12px 20px;font-size:13px;z-index:99999;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.1);max-width:560px;';
+        box.innerHTML = '<strong>Page failed to load properly.</strong> This is usually caused by an old browser cache. ' +
+          '<button onclick="if(window.__hmwssbClearSession){window.__hmwssbClearSession();}location.reload();" style="margin:4px;padding:6px 12px;background:#27ae60;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Clear Session &amp; Reload</button> ' +
+          '<button onclick="location.reload();" style="margin:4px;padding:6px 12px;background:#7f8c8d;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Hard Reload</button>';
+        document.body.appendChild(box);
+      }
+    }, 4000);
+  </script>
 </head>
 
 <body ng-controller="MeasurementCtrl" ng-click="closeAllSuggestions()">
@@ -353,22 +368,22 @@
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 16px; color: #1e5c99;">&#128100;</span>
         <div>
-          <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">{{currentUser.name}}</div>
+          <div style="font-weight: 700; font-size: 13px; color: #2c3e50; display: flex; align-items: center; gap: 6px;">
+            {{currentUser.name}}
+            <span style="background: #1e5c99; color: #fff; border-radius: 3px; padding: 1px 6px; font-size: 10px; font-weight: 600;" ng-if="currentActiveRole">
+              {{currentActiveRole}}
+            </span>
+          </div>
           <div style="font-size: 11px; color: #7f8c8d; font-weight: 500;">{{currentUser.designation}} &bull; {{currentUser.phoneNumber}}</div>
         </div>
       </div>
 
-      <div ng-if="locationOptions.length > 1" style="display: flex; align-items: center; gap: 8px;">
+      <div ng-if="locationOptions.length >= 1" style="display: flex; align-items: center; gap: 8px;">
         <label style="font-weight: 600; color: #b33; font-size: 12px;">Active Location Scope:</label>
         <select ng-model="selectedLocationKey" ng-change="onLocationChange()"
-                style="border: 1px solid #ccc; border-radius: 3px; padding: 3px 6px; font-size: 11px; height: 26px; outline: none; background: #fff; width: 450px;">
+                style="border: 1px solid #ccc; border-radius: 3px; padding: 3px 6px; font-size: 11px; height: 26px; outline: none; background: #fff; width: 420px; font-weight: 600; color: #1e5c99;">
           <option ng-repeat="opt in locationOptions" ng-value="opt.key">{{opt.label}}</option>
         </select>
-      </div>
-
-      <div ng-if="locationOptions.length === 1" style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
-        <span style="font-weight: 600; color: #b33;">Location Scope:</span>
-        <span style="font-weight: 500; color: #2c3e50;">{{locationOptions[0].label}}</span>
       </div>
 
       <a href="admin.html" ng-if="currentUser.role === 'ADMIN' || currentUser.role === 'DOP'"
@@ -466,6 +481,42 @@
           <option value="">-- Select --</option>
         </select>
       </div>
+    </div>
+
+    <!-- Active Estimate Version & Remarks Banner -->
+    <div ng-if="currentEstimateId" style="display: flex; justify-content: space-between; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 8px 14px; margin-bottom: 14px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="background: #7a7a38; color: white; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 700;">
+          Estimate #{{currentEstimateId}}
+        </span>
+        <span style="background: #1e5c99; color: white; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 700;">
+          {{getStatusLabel(currentEstimateStatus)}}
+        </span>
+        <span style="font-size: 11px; color: #555;">
+          Revision: v{{estimateRevisions.length > 0 ? estimateRevisions[0].revisionNumber : 1}}.0
+        </span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" ng-click="openVersionHistoryModal()" style="background: #fff; border: 1px solid #c8c87a; color: #7a7a38; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          🕒 Version History ({{estimateRevisions.length || 1}})
+        </button>
+        <button type="button" ng-click="openRemarksModal()" style="background: #fff; border: 1px solid #c8c87a; color: #7a7a38; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          💬 Scrutiny Remarks ({{estimateRemarks.length || 0}})
+        </button>
+      </div>
+    </div>
+
+    <!-- Returned Estimate Alert Banner -->
+    <div class="remarks-banner" ng-if="currentLastRemarks" style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 10px 14px; border-radius: 4px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px;">⚠️</span>
+        <div>
+          <strong>Latest Scrutiny / Return Observation:</strong> {{currentLastRemarks}}
+        </div>
+      </div>
+      <button type="button" ng-click="openRemarksModal()" style="background: #e67e22; color: #fff; border: none; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        View Remarks Trail
+      </button>
     </div>
 
     <!-- Measurement Table -->
@@ -615,6 +666,77 @@
       </div>
     </div>
 
+
+    <!-- ── Version History Modal ── -->
+    <div class="modal-overlay" ng-if="versionHistoryModalVisible" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px;">
+      <div style="background: #f5f5e8; border: 1px solid #c8c87a; border-radius: 6px; width: 100%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <div style="background: #7a7a38; color: white; padding: 12px 18px; border-top-left-radius: 5px; border-top-right-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px;">
+          <span>🕒 Estimate #{{currentEstimateId}} – Version History</span>
+          <span style="cursor: pointer;" ng-click="versionHistoryModalVisible = false">✕</span>
+        </div>
+        <div style="padding: 18px; overflow-y: auto; flex: 1;">
+          <div ng-if="estimateRevisions.length === 0" style="text-align: center; color: #666; padding: 20px;">
+            No revision snapshots recorded.
+          </div>
+          <div ng-repeat="rev in estimateRevisions" style="background: #fff; border: 1px solid #e2ddb0; border-left: 4px solid #7a7a38; border-radius: 4px; padding: 10px 12px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="background: #7a7a38; color: white; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 3px;">Rev {{rev.revisionNumber}}.0</span>
+                <strong style="font-size: 12px; color: #2c3e50;">{{rev.officerName}}</strong>
+                <span style="font-size: 10px; color: #666;">({{rev.officerDesignation || rev.officerRole}})</span>
+                <span style="background: #1e5c99; color: white; font-size: 10px; padding: 1px 6px; border-radius: 3px;">{{getStatusLabel(rev.statusAtRevision)}}</span>
+              </div>
+              <span style="font-size: 10px; color: #7f8c8d;">{{formatDate(rev.createdAt)}}</span>
+            </div>
+            <div style="font-size: 12px; color: #1e5c99; font-weight: 600; margin-bottom: 4px;">{{rev.changeSummary}}</div>
+            <div style="font-size: 11px; color: #555;" ng-if="rev.remarks"><em>"{{rev.remarks}}"</em></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #e2ddb0; padding-top: 6px;">
+              <div style="font-size: 12px; font-weight: 700; color: #2c3e50;">Total: ₹{{rev.grandTotal | number:2}}</div>
+              <button style="background: #27ae60; color: #fff; border: none; border-radius: 3px; padding: 2px 8px; font-size: 11px; cursor: pointer;"
+                      ng-if="isEditable() && rev.revisionNumber !== estimateRevisions[0].revisionNumber"
+                      ng-click="restoreRevision(rev)">
+                ↺ Restore to Rev {{rev.revisionNumber}}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style="border-top: 1px solid #d4c97a; padding: 12px 18px; background: #fffde7; display: flex; justify-content: flex-end;">
+          <button style="background: #7f8c8d; color: #fff; border: none; border-radius: 3px; padding: 6px 14px; font-size: 12px; cursor: pointer;" ng-click="versionHistoryModalVisible = false">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Remarks Trail Modal ── -->
+    <div class="modal-overlay" ng-if="remarksModalVisible" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px;">
+      <div style="background: #f5f5e8; border: 1px solid #c8c87a; border-radius: 6px; width: 100%; max-width: 700px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <div style="background: #7a7a38; color: white; padding: 12px 18px; border-top-left-radius: 5px; border-top-right-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px;">
+          <span>💬 Scrutiny Remarks Trail – Estimate #{{currentEstimateId}}</span>
+          <span style="cursor: pointer;" ng-click="remarksModalVisible = false">✕</span>
+        </div>
+        <div style="padding: 18px; overflow-y: auto; flex: 1;">
+          <div ng-if="estimateRemarks.length === 0" style="text-align: center; color: #666; padding: 20px;">
+            No remarks logged for this estimate yet.
+          </div>
+          <div ng-repeat="rem in estimateRemarks" style="background: #fff; border: 1px solid #e2ddb0; border-radius: 4px; padding: 10px 12px; margin-bottom: 8px;"
+               ng-style="{'border-left': rem.action === 'RETURN' ? '4px solid #c0392b' : (rem.action === 'FORWARD' ? '4px solid #1e5c99' : '4px solid #27ae60')}">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <strong style="font-size: 12px; color: #2c3e50;">{{rem.officerName}}</strong>
+                <span style="font-size: 10px; color: #666;">({{rem.officerDesignation || rem.officerRole}})</span>
+                <span style="background: #c0392b; color: white; font-size: 9px; padding: 1px 5px; border-radius: 3px;" ng-if="rem.action === 'RETURN'">RETURNED</span>
+                <span style="background: #1e5c99; color: white; font-size: 9px; padding: 1px 5px; border-radius: 3px;" ng-if="rem.action === 'FORWARD'">FORWARDED</span>
+                <span style="background: #27ae60; color: white; font-size: 9px; padding: 1px 5px; border-radius: 3px;" ng-if="rem.action === 'CREATE'">CREATED</span>
+              </div>
+              <span style="font-size: 10px; color: #7f8c8d;">{{formatDate(rem.createdAt)}}</span>
+            </div>
+            <div style="font-size: 12px; color: #333; line-height: 1.4;">{{rem.remarks}}</div>
+          </div>
+        </div>
+        <div style="border-top: 1px solid #d4c97a; padding: 12px 18px; background: #fffde7; display: flex; justify-content: flex-end;">
+          <button style="background: #7f8c8d; color: #fff; border: none; border-radius: 3px; padding: 6px 14px; font-size: 12px; cursor: pointer;" ng-click="remarksModalVisible = false">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -624,6 +746,7 @@
 
           if (!AuthService.requireLogin()) return;
           $scope.currentUser = AuthService.getUser();
+          window.__hmwssbMarkBooted && window.__hmwssbMarkBooted();
           $scope.currentEstimateStatus = 'DRAFT';
           $scope.isLocalFile = window.location.protocol === 'file:';
 
@@ -638,9 +761,10 @@
           $scope.currentForwardedByDesignation = null;
           $scope.currentSanctionedByName = null;
           $scope.currentSanctionedByDesignation = null;
+          $scope.currentLastRemarks = null;
 
           $scope.isEditable = function () {
-            return StatusService.isEditable($scope.currentEstimateStatus, $scope.currentUser.role);
+            return StatusService.isEditable($scope.currentEstimateStatus, $scope.currentUser);
           };
 
           $scope.getStepClass = function (stepStatus) {
@@ -685,169 +809,194 @@
           $scope.selectedLocationKey = '';
 
           function buildLocationOptions() {
-            var role = $scope.currentUser.role;
+            var primaryRole = ($scope.currentUser.role || 'OFFICER').toUpperCase();
             var locs = $scope.currentUser.locations || [];
             var options = [];
 
-            if (role === 'MANAGER') {
-              locs.forEach(function(loc, i) {
-                if (loc.wardName) {
+            if (primaryRole === 'ADMIN') {
+              options.push({
+                key: 'admin_all',
+                role: 'ADMIN',
+                label: 'ADMIN — All Estimates (System Access)',
+                corp: '', zone: '', division: '', circle: '', ward: '', filterType: 'all'
+              });
+              $scope.locationOptions = options;
+              $scope.selectedLocationKey = options[0].key;
+              onLocationSelect(options[0]);
+              return;
+            }
+
+            // Find all distinct roles for this user
+            var rolesMap = {};
+            rolesMap[primaryRole] = true;
+            locs.forEach(function(l) {
+              if (l.role) rolesMap[l.role.toUpperCase()] = true;
+            });
+            var userRoles = Object.keys(rolesMap);
+
+            userRoles.forEach(function(r) {
+              var roleLocs = locs.filter(function(l) {
+                var lRole = (l.role || primaryRole).toUpperCase();
+                return lRole === r;
+              });
+
+              if (r === 'DOP') {
+                options.push({
+                  key: 'loc_dop_all',
+                  role: 'DOP',
+                  label: 'DOP — Corporate Level (All Zones & Sanctions)',
+                  corp: 'MMC', zone: '', division: '', circle: '', ward: '', filterType: 'all'
+                });
+              } else if (r === 'CGM') {
+                if (roleLocs.length > 1) {
                   options.push({
-                    key: 'ward_' + i,
-                    label: loc.circleName + ' \u2014 ' + loc.wardName,
-                    corp: loc.corp, zone: loc.zoneName, division: loc.division,
-                    circle: loc.circleName, ward: loc.wardName, filterType: 'ward'
+                    key: 'loc_cgm_all',
+                    role: 'CGM',
+                    label: 'CGM — All Assigned Zones',
+                    corp: roleLocs[0].corp || 'MMC', zone: '', division: '', circle: '', ward: '', filterType: 'zone'
                   });
                 }
+                roleLocs.forEach(function(loc, idx) {
+                  var zName = loc.zoneName || 'Assigned Zone';
+                  options.push({
+                    key: 'loc_cgm_' + idx,
+                    role: 'CGM',
+                    label: 'CGM — ' + zName + (loc.corp ? ' (' + loc.corp + ')' : ''),
+                    corp: loc.corp || 'MMC', zone: loc.zoneName || '', division: '', circle: '', ward: '', filterType: 'zone'
+                  });
+                });
+                if (roleLocs.length === 0) {
+                  options.push({
+                    key: 'loc_cgm_default',
+                    role: 'CGM',
+                    label: 'CGM — Default Jurisdiction',
+                    corp: 'MMC', zone: '', division: '', circle: '', ward: '', filterType: 'zone'
+                  });
+                }
+              } else if (r === 'GM') {
+                if (roleLocs.length > 1) {
+                  var divNames = roleLocs.map(function(l) { return l.division ? 'Div ' + l.division : 'All Divs'; }).join(', ');
+                  options.push({
+                    key: 'loc_gm_all',
+                    role: 'GM',
+                    label: 'GM — All Assigned Divisions (' + divNames + ')',
+                    corp: roleLocs[0].corp || 'MMC', zone: roleLocs[0].zoneName || '', division: '', circle: '', ward: '', filterType: 'division'
+                  });
+                }
+                roleLocs.forEach(function(loc, idx) {
+                  var divStr = loc.division ? 'Division ' + loc.division : 'Assigned Division';
+                  var zStr = loc.zoneName ? ' (' + loc.zoneName + ')' : '';
+                  options.push({
+                    key: 'loc_gm_' + idx,
+                    role: 'GM',
+                    label: 'GM — ' + divStr + zStr,
+                    corp: loc.corp || 'MMC', zone: loc.zoneName || '', division: loc.division || '', circle: '', ward: '', filterType: 'division'
+                  });
+                });
+                if (roleLocs.length === 0) {
+                  options.push({
+                    key: 'loc_gm_default',
+                    role: 'GM',
+                    label: 'GM — Default Jurisdiction',
+                    corp: 'MMC', zone: '', division: '', circle: '', ward: '', filterType: 'division'
+                  });
+                }
+              } else if (r === 'DGM') {
+                if (roleLocs.length > 1) {
+                  var cirNames = roleLocs.map(function(l) { return l.circleName || 'Circle'; }).join(', ');
+                  options.push({
+                    key: 'loc_dgm_all',
+                    role: 'DGM',
+                    label: 'DGM — All Assigned Circles (' + cirNames + ')',
+                    corp: roleLocs[0].corp || 'MMC', zone: roleLocs[0].zoneName || '', division: roleLocs[0].division || '', circle: '', ward: '', filterType: 'circle'
+                  });
+                }
+                roleLocs.forEach(function(loc, idx) {
+                  var cirStr = loc.circleName ? loc.circleName : 'Assigned Circle';
+                  var divStr = loc.division ? ' (Div ' + loc.division + ')' : '';
+                  options.push({
+                    key: 'loc_dgm_' + idx,
+                    role: 'DGM',
+                    label: 'DGM — ' + cirStr + divStr,
+                    corp: loc.corp || 'MMC', zone: loc.zoneName || '', division: loc.division || '', circle: loc.circleName || '', ward: '', filterType: 'circle'
+                  });
+                });
+                if (roleLocs.length === 0) {
+                  options.push({
+                    key: 'loc_dgm_default',
+                    role: 'DGM',
+                    label: 'DGM — Default Jurisdiction',
+                    corp: 'MMC', zone: '', division: '', circle: '', ward: '', filterType: 'circle'
+                  });
+                }
+              } else if (r === 'MANAGER') {
+                if (roleLocs.length > 1) {
+                  var wNames = roleLocs.map(function(l) { return l.wardName ? l.wardName.split(' - ')[0] : 'Ward'; }).join(', ');
+                  options.push({
+                    key: 'loc_mgr_all',
+                    role: 'MANAGER',
+                    label: 'MANAGER — All Assigned Wards (Wards ' + wNames + ')',
+                    corp: roleLocs[0].corp || 'MMC', zone: roleLocs[0].zoneName || '', division: roleLocs[0].division || '', circle: roleLocs[0].circleName || '', ward: '', filterType: 'ward'
+                  });
+                }
+                roleLocs.forEach(function(loc, idx) {
+                  var wStr = loc.wardName || 'Assigned Ward';
+                  var cirStr = loc.circleName ? ' (' + loc.circleName + ')' : '';
+                  options.push({
+                    key: 'loc_mgr_' + idx,
+                    role: 'MANAGER',
+                    label: 'MANAGER — ' + wStr + cirStr,
+                    corp: loc.corp || 'MMC', zone: loc.zoneName || '', division: loc.division || '', circle: loc.circleName || '', ward: loc.wardName || '', filterType: 'ward'
+                  });
+                });
+                if (roleLocs.length === 0) {
+                  options.push({
+                    key: 'loc_mgr_default',
+                    role: 'MANAGER',
+                    label: 'MANAGER — Default Jurisdiction',
+                    corp: 'MMC', zone: '', division: '', circle: '', ward: '', filterType: 'ward'
+                  });
+                }
+              }
+            });
+
+            if (options.length === 0) {
+              options.push({
+                key: 'loc_primary',
+                role: primaryRole,
+                label: primaryRole + ' — Default Jurisdiction',
+                corp: '', zone: '', division: '', circle: '', ward: '', filterType: 'all'
               });
-              if (options.length === 0) {
-                locs.forEach(function(loc, i) {
-                  options.push({
-                    key: 'loc_' + i,
-                    label: (loc.circleName || 'Unknown') + (loc.wardName ? ' \u2014 ' + loc.wardName : ''),
-                    corp: loc.corp, zone: loc.zoneName, division: loc.division,
-                    circle: loc.circleName, ward: loc.wardName || '', filterType: 'circle'
-                  });
-                });
-              }
-            } else if (role === 'DGM') {
-              var userCircle = null, userCorp = null, userZone = null, userDiv = null;
-              for (var i = 0; i < locs.length; i++) {
-                if (locs[i].circleName) { userCircle = locs[i].circleName; userCorp = locs[i].corp; userZone = locs[i].zoneName; userDiv = locs[i].division; break; }
-              }
-              if (userCircle) {
-                options.push({
-                  key: 'circle_all',
-                  label: 'All Wards in ' + userCircle,
-                  corp: userCorp, zone: userZone, division: userDiv,
-                  circle: userCircle, ward: '', filterType: 'circle'
-                });
-                var wardsInCircle = getWardsForCircle(userCorp, userZone, userDiv, userCircle);
-                wardsInCircle.forEach(function(ward) {
-                  options.push({
-                    key: 'ward_' + ward,
-                    label: '  \u2514 ' + ward,
-                    corp: userCorp, zone: userZone, division: userDiv,
-                    circle: userCircle, ward: ward, filterType: 'ward'
-                  });
-                });
-              }
-            } else if (role === 'GM') {
-              var divisions = [];
-              locs.forEach(function(loc) {
-                if (loc.division && divisions.indexOf(loc.division) === -1) divisions.push(loc.division);
-              });
-              var userCorp = null, userZone = null;
-              for (var i = 0; i < locs.length; i++) {
-                if (locs[i].corp) { userCorp = locs[i].corp; userZone = locs[i].zoneName; break; }
-              }
-              divisions.forEach(function(div) {
-                options.push({
-                  key: 'div_' + div,
-                  label: 'All Wards in Division ' + div,
-                  corp: userCorp, zone: userZone, division: div,
-                  circle: '', ward: '', filterType: 'division'
-                });
-                var circlesInDiv = getCirclesForDivision(userCorp, userZone, div);
-                circlesInDiv.forEach(function(cir) {
-                  options.push({
-                    key: 'cir_' + div + '_' + cir,
-                    label: '  \u2514 ' + cir,
-                    corp: userCorp, zone: userZone, division: div,
-                    circle: cir, ward: '', filterType: 'circle'
-                  });
-                });
-              });
-            } else if (role === 'CGM') {
-              var userCorp = null, userZone = null;
-              for (var i = 0; i < locs.length; i++) {
-                if (locs[i].zoneName) { userCorp = locs[i].corp; userZone = locs[i].zoneName; break; }
-              }
-              if (userZone) {
-                options.push({
-                  key: 'zone_all',
-                  label: 'All Wards in ' + userZone,
-                  corp: userCorp, zone: userZone, division: '',
-                  circle: '', ward: '', filterType: 'zone'
-                });
-                var divsInZone = getDivisionsForZone(userCorp, userZone);
-                divsInZone.forEach(function(div) {
-                  options.push({
-                    key: 'div_' + div,
-                    label: '  \u2514 Division ' + div,
-                    corp: userCorp, zone: userZone, division: div,
-                    circle: '', ward: '', filterType: 'division'
-                  });
-                });
-              }
-            } else if (role === 'DOP') {
-              var userCorp = null, userZone = null;
-              for (var i = 0; i < locs.length; i++) {
-                if (locs[i].zoneName) { userCorp = locs[i].corp; userZone = locs[i].zoneName; break; }
-              }
-              if (userZone) {
-                options.push({
-                  key: 'zone_all',
-                  label: 'All Wards in ' + userZone,
-                  corp: userCorp, zone: userZone, division: '',
-                  circle: '', ward: '', filterType: 'zone'
-                });
-                var divsInZone = getDivisionsForZone(userCorp, userZone);
-                divsInZone.forEach(function(div) {
-                  options.push({
-                    key: 'div_' + div,
-                    label: '  \u2514 Division ' + div,
-                    corp: userCorp, zone: userZone, division: div,
-                    circle: '', ward: '', filterType: 'division'
-                  });
-                  var circlesInDiv = getCirclesForDivision(userCorp, userZone, div);
-                  circlesInDiv.forEach(function(cir) {
-                    options.push({
-                      key: 'cir_' + div + '_' + cir,
-                      label: '    \u2514 ' + cir,
-                      corp: userCorp, zone: userZone, division: div,
-                      circle: cir, ward: '', filterType: 'circle'
-                    });
-                  });
-                });
-              }
             }
 
             $scope.locationOptions = options;
-            if (options.length > 0) {
-              $scope.selectedLocationKey = options[0].key;
-              onLocationSelect(options[0]);
-            }
-          }
+            var storedLocKey = localStorage.getItem('current_active_location_key');
+            var foundOpt = options.find(function(o) { return o.key === storedLocKey; });
+            var selectOpt = foundOpt || options[0];
 
-          function getWardsForCircle(corp, zone, div, circle) {
-            if (!WARD_HIERARCHY[corp] || !WARD_HIERARCHY[corp][zone]) return [];
-            if (!WARD_HIERARCHY[corp][zone][div]) return [];
-            return WARD_HIERARCHY[corp][zone][div][circle] || [];
-          }
-
-          function getCirclesForDivision(corp, zone, div) {
-            if (!WARD_HIERARCHY[corp] || !WARD_HIERARCHY[corp][zone]) return [];
-            if (!WARD_HIERARCHY[corp][zone][div]) return [];
-            return Object.keys(WARD_HIERARCHY[corp][zone][div]);
-          }
-
-          function getDivisionsForZone(corp, zone) {
-            if (!WARD_HIERARCHY[corp] || !WARD_HIERARCHY[corp][zone]) return [];
-            return Object.keys(WARD_HIERARCHY[corp][zone]);
+            $scope.selectedLocationKey = selectOpt.key;
+            onLocationSelect(selectOpt);
           }
 
           function onLocationSelect(opt) {
-            populateHierarchy(opt.corp, opt.zone, opt.division, opt.circle, opt.ward);
+            if (!opt) return;
+            $scope.currentActiveRole = opt.role || $scope.currentUser.role;
+            localStorage.setItem('current_active_location_key', opt.key);
+            localStorage.setItem('current_active_role', $scope.currentActiveRole);
+            localStorage.setItem('current_active_location', JSON.stringify({
+              corp: opt.corp, zoneName: opt.zone, division: opt.division,
+              circleName: opt.circle, wardName: opt.ward, role: opt.role
+            }));
+
+            // If drafting a new estimate, synchronize hierarchy dropdowns to the active location
+            if (!$scope.currentEstimateId) {
+              populateHierarchy(opt.corp, opt.zone, opt.division, opt.circle, opt.ward);
+            }
+
             $scope.filterWard = opt.ward || '';
             $scope.filterCircle = opt.circle || '';
             $scope.filterDivision = opt.division || '';
             $scope.filterZone = opt.zone || '';
-            localStorage.setItem('current_active_role', $scope.currentUser.role);
-            localStorage.setItem('current_active_location', JSON.stringify({
-              corp: opt.corp, zoneName: opt.zone, division: opt.division,
-              circleName: opt.circle, wardName: opt.ward
-            }));
             $scope.loadSavedEstimates();
           }
 
@@ -866,8 +1015,8 @@
           var searchTimers = {};
 
           /* ── Hierarchy ── */
-          $scope.hierarchyData = {};
-          $scope.corps = [];
+          $scope.hierarchyData = window.WARD_HIERARCHY || {};
+          $scope.corps = Object.keys($scope.hierarchyData);
           $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
           $scope.selectedCorp = ''; $scope.selectedZone = ''; $scope.selectedDivision = '';
           $scope.selectedCircle = ''; $scope.selectedWard = '';
@@ -906,25 +1055,47 @@
           };
 
           function populateHierarchy(corp, zone, div, circle, ward) {
-            $scope.selectedCorp = corp || '';
-            if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
-              $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
-              $scope.selectedZone = zone || '';
-              if ($scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
-                $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
-                $scope.selectedDivision = div || '';
-                if ($scope.selectedDivision && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
-                  $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
-                  $scope.selectedCircle = circle || '';
-                  if ($scope.selectedCircle && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
-                    $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
-                    $scope.selectedWard = ward || '';
+            corp = Utils.cleanString(corp);
+            zone = Utils.cleanString(zone);
+            div = Utils.cleanString(div);
+            circle = Utils.cleanString(circle);
+            ward = Utils.cleanString(ward);
+
+            if ($scope.hierarchyData && Object.keys($scope.hierarchyData).length > 0) {
+              $scope.corps = Object.keys($scope.hierarchyData);
+              $scope.selectedCorp = corp || ($scope.corps.length > 0 ? $scope.corps[0] : '');
+
+              if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
+                $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
+                $scope.selectedZone = zone || ($scope.zones.length === 1 ? $scope.zones[0] : '');
+
+                if ($scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
+                  $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
+                  $scope.selectedDivision = div || ($scope.divisions.length === 1 ? $scope.divisions[0] : '');
+
+                  if ($scope.selectedDivision && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
+                    $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
+                    $scope.selectedCircle = circle || ($scope.circles.length === 1 ? $scope.circles[0] : '');
+
+                    if ($scope.selectedCircle && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
+                      $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
+                      $scope.selectedWard = ward || ($scope.wards.length === 1 ? $scope.wards[0] : '');
+                    } else {
+                      $scope.wards = [];
+                      $scope.selectedWard = '';
+                    }
+                  } else {
+                    $scope.circles = []; $scope.wards = [];
+                    $scope.selectedCircle = ''; $scope.selectedWard = '';
                   }
+                } else {
+                  $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+                  $scope.selectedDivision = ''; $scope.selectedCircle = ''; $scope.selectedWard = '';
                 }
+              } else {
+                $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
+                $scope.selectedZone = ''; $scope.selectedDivision = ''; $scope.selectedCircle = ''; $scope.selectedWard = '';
               }
-            } else {
-              $scope.selectedZone = ''; $scope.selectedDivision = ''; $scope.selectedCircle = ''; $scope.selectedWard = '';
-              $scope.zones = []; $scope.divisions = []; $scope.circles = []; $scope.wards = [];
             }
           }
 
@@ -1022,18 +1193,51 @@
           };
 
           /* ── Calculations ── */
-          function computeAmount(row) { row.amount = (row.quantity || 0) * (row.rate || 0); }
+          function computeAmount(row) {
+            row.amount = Math.round(((row.quantity || 0) * (row.rate || 0)) * 100) / 100;
+          }
 
           $scope.computeRow = function (row) {
-            var l = row.length, b = row.breadth, d = row.depth, num = row.num || 1;
-            if (l === null && b === null && d === null) { row.quantity = num; }
-            else { row.quantity = num * (l || 1) * (b || 1) * (d || 1); }
+            var l = (row.length !== null && row.length !== undefined && row.length !== '') ? parseFloat(row.length) : null;
+            var b = (row.breadth !== null && row.breadth !== undefined && row.breadth !== '') ? parseFloat(row.breadth) : null;
+            var d = (row.depth !== null && row.depth !== undefined && row.depth !== '') ? parseFloat(row.depth) : null;
+            var num = (row.num !== null && row.num !== undefined && row.num !== '') ? parseFloat(row.num) : 1;
+            if (isNaN(num) || num <= 0) num = 1;
+
+            var qty = num;
+            var hasDim = false;
+            if (l !== null && !isNaN(l) && l > 0) {
+              qty *= l;
+              hasDim = true;
+            }
+            if (b !== null && !isNaN(b) && b > 0) {
+              qty *= b;
+              hasDim = true;
+            }
+            if (d !== null && !isNaN(d) && d > 0) {
+              qty *= d;
+              hasDim = true;
+            }
+            if (!hasDim && row.quantity && row.quantity > 0 && (!row.num || row.num === 1)) {
+              qty = row.quantity;
+            }
+
+            row.quantity = Math.round(qty * 1000) / 1000;
             computeAmount(row);
           };
 
-          $scope.rowTotal = function () { return $scope.rows.reduce(function (s, r) { return s + (r.amount || 0); }, 0); };
-          $scope.gstAmount = function () { return $scope.rowTotal() * (parseFloat($scope.gstPercent) || 0) / 100; };
-          $scope.grandTotal = function () { return $scope.rowTotal() + $scope.gstAmount(); };
+          $scope.rowTotal = function () {
+            var sum = $scope.rows.reduce(function (s, r) { return s + (r.amount || 0); }, 0);
+            return Math.round(sum * 100) / 100;
+          };
+          $scope.gstAmount = function () {
+            var gst = $scope.rowTotal() * (parseFloat($scope.gstPercent) || 0) / 100;
+            return Math.round(gst * 100) / 100;
+          };
+          $scope.grandTotal = function () {
+            var gt = $scope.rowTotal() + $scope.gstAmount();
+            return Math.round(gt * 100) / 100;
+          };
           $scope.computeTotals = function () {};
 
           $scope.addRow = function () { $scope.rows.push(newRow()); };
@@ -1046,9 +1250,12 @@
 
           $scope.loadSavedEstimates = function () {
             var params = { officerPhone: $scope.currentUser.phoneNumber };
+            if ($scope.currentActiveRole) params.role = $scope.currentActiveRole;
             if ($scope.filterWard) params.wardName = $scope.filterWard;
             if ($scope.filterCircle) params.circleName = $scope.filterCircle;
             if ($scope.filterDivision) params.division = $scope.filterDivision;
+            if ($scope.filterZone) params.zoneName = $scope.filterZone;
+            if ($scope.selectedCorp) params.corp = $scope.selectedCorp;
             if ($scope.filterStatus) params.status = $scope.filterStatus;
             $http.get(API_BASE + '/estimates', { params: params })
               .then(function (r) { $scope.savedEstimates = r.data; buildSummary(); },
@@ -1107,9 +1314,39 @@
             $scope.drilldownEstimates = [];
           };
 
+          $scope.currentOfficerPhone = null;
+
           $scope.saveEstimate = function () {
             if (!$scope.nameOfWork || $scope.nameOfWork.trim() === '') {
               ModalService.alert('Required', 'Please enter a Name of Work before saving.');
+              return;
+            }
+
+            // Autofill any missing dropdown values from active location or single choices
+            var activeLoc = $scope.locationOptions.find(function(o) { return o.key === $scope.selectedLocationKey; }) || ($scope.locationOptions.length > 0 ? $scope.locationOptions[0] : null);
+            if (!$scope.selectedCorp) $scope.selectedCorp = (activeLoc && activeLoc.corp) ? activeLoc.corp : ($scope.corps.length === 1 ? $scope.corps[0] : '');
+            if ($scope.selectedCorp && $scope.hierarchyData[$scope.selectedCorp]) {
+              $scope.zones = Object.keys($scope.hierarchyData[$scope.selectedCorp]);
+              if (!$scope.selectedZone) $scope.selectedZone = (activeLoc && activeLoc.zone) ? activeLoc.zone : ($scope.zones.length === 1 ? $scope.zones[0] : '');
+              
+              if ($scope.selectedZone && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]) {
+                $scope.divisions = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone]);
+                if (!$scope.selectedDivision) $scope.selectedDivision = (activeLoc && activeLoc.division) ? activeLoc.division : ($scope.divisions.length === 1 ? $scope.divisions[0] : '');
+                
+                if ($scope.selectedDivision && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]) {
+                  $scope.circles = Object.keys($scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision]);
+                  if (!$scope.selectedCircle) $scope.selectedCircle = (activeLoc && activeLoc.circle) ? activeLoc.circle : ($scope.circles.length === 1 ? $scope.circles[0] : '');
+                  
+                  if ($scope.selectedCircle && $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle]) {
+                    $scope.wards = $scope.hierarchyData[$scope.selectedCorp][$scope.selectedZone][$scope.selectedDivision][$scope.selectedCircle];
+                    if (!$scope.selectedWard) $scope.selectedWard = (activeLoc && activeLoc.ward) ? activeLoc.ward : ($scope.wards.length === 1 ? $scope.wards[0] : '');
+                  }
+                }
+              }
+            }
+
+            if (!$scope.selectedCorp || !$scope.selectedZone || !$scope.selectedDivision || !$scope.selectedCircle || !$scope.selectedWard) {
+              ModalService.alert('Required', 'Please select complete jurisdiction details (CORP, Zone, Division, Circle, Ward).');
               return;
             }
             var itemsMapped = $scope.rows.map(function (row, idx) {
@@ -1119,18 +1356,62 @@
             });
             var estimateData = {
               id: $scope.currentEstimateId, status: $scope.currentEstimateStatus || 'DRAFT',
-              nameOfWork: $scope.nameOfWork, gstPercent: parseFloat($scope.gstPercent) || 0,
-              items: itemsMapped, corp: $scope.selectedCorp, zoneName: $scope.selectedZone,
-              division: $scope.selectedDivision, circleName: $scope.selectedCircle, wardName: $scope.selectedWard,
-              officerPhone: $scope.currentUser.phoneNumber,
+              version: $scope.currentVersion || 0, createdAt: $scope.currentCreatedAt || '',
+              nameOfWork: ($scope.nameOfWork || '').trim(), gstPercent: parseFloat($scope.gstPercent) || 0,
+              items: itemsMapped,
+              corp: Utils.cleanString($scope.selectedCorp),
+              zoneName: Utils.cleanString($scope.selectedZone),
+              division: Utils.cleanString($scope.selectedDivision),
+              circleName: Utils.cleanString($scope.selectedCircle),
+              wardName: Utils.cleanString($scope.selectedWard),
+              officerPhone: $scope.currentOfficerPhone || $scope.currentUser.phoneNumber,
               preparedByName: $scope.currentPreparedByName, preparedByDesignation: $scope.currentPreparedByDesignation,
               verifiedByName: $scope.currentVerifiedByName, verifiedByDesignation: $scope.currentVerifiedByDesignation,
               recommendedByName: $scope.currentRecommendedByName, recommendedByDesignation: $scope.currentRecommendedByDesignation,
               forwardedByName: $scope.currentForwardedByName, forwardedByDesignation: $scope.currentForwardedByDesignation,
-              sanctionedByName: $scope.currentSanctionedByName, sanctionedByDesignation: $scope.currentSanctionedByDesignation
+              sanctionedByName: $scope.currentSanctionedByName, sanctionedByDesignation: $scope.currentSanctionedByDesignation,
+              lastRemarks: $scope.currentLastRemarks || ''
             };
             localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
+            if ($scope.currentActiveRole) {
+              localStorage.setItem('current_active_role', $scope.currentActiveRole);
+            }
             window.location.href = 'abstract.html';
+          };
+
+          $scope.estimateRevisions = [];
+          $scope.estimateRemarks = [];
+          $scope.versionHistoryModalVisible = false;
+          $scope.remarksModalVisible = false;
+
+          $scope.openVersionHistoryModal = function() {
+            if (!$scope.currentEstimateId) return;
+            $http.get(API_BASE + '/estimates/' + $scope.currentEstimateId + '/revisions').then(function(r) {
+              $scope.estimateRevisions = r.data || [];
+              $scope.versionHistoryModalVisible = true;
+            });
+          };
+
+          $scope.openRemarksModal = function() {
+            if (!$scope.currentEstimateId) return;
+            $http.get(API_BASE + '/estimates/' + $scope.currentEstimateId + '/remarks').then(function(r) {
+              $scope.estimateRemarks = r.data || [];
+              $scope.remarksModalVisible = true;
+            });
+          };
+
+          $scope.restoreRevision = function(rev) {
+            ModalService.confirm('Restore Version', 'Are you sure you want to restore estimate measurements to Revision ' + rev.revisionNumber + '.0?', function() {
+              $http.post(API_BASE + '/estimates/' + $scope.currentEstimateId + '/revisions/' + rev.revisionNumber + '/restore', null, {
+                params: { officerPhone: $scope.currentUser.phoneNumber }
+              }).then(function(r) {
+                $scope.loadEstimate($scope.currentEstimateId);
+                $scope.versionHistoryModalVisible = false;
+                ModalService.alert('Restored', 'Estimate measurements restored to Revision ' + rev.revisionNumber + '.0');
+              }, function(err) {
+                ModalService.alert('Error', 'Failed to restore: ' + (err.data || 'Unauthorized'));
+              });
+            });
           };
 
           $scope.loadEstimate = function (id) {
@@ -1139,6 +1420,9 @@
               var est = r.data;
               $scope.currentEstimateId = est.id;
               $scope.currentEstimateStatus = est.status || 'DRAFT';
+              $scope.currentVersion = est.version || 0;
+              $scope.currentCreatedAt = est.createdAt || '';
+              $scope.currentOfficerPhone = est.officerPhone;
               $scope.currentPreparedByName = est.preparedByName;
               $scope.currentPreparedByDesignation = est.preparedByDesignation;
               $scope.currentVerifiedByName = est.verifiedByName;
@@ -1149,16 +1433,38 @@
               $scope.currentForwardedByDesignation = est.forwardedByDesignation;
               $scope.currentSanctionedByName = est.sanctionedByName;
               $scope.currentSanctionedByDesignation = est.sanctionedByDesignation;
+              $scope.currentLastRemarks = est.lastRemarks;
               $scope.nameOfWork = est.nameOfWork;
               $scope.gstPercent = String(est.gstPercent);
               populateHierarchy(est.corp, est.zoneName, est.division, est.circleName, est.wardName);
               $scope.rows = est.items.map(function (item) {
-                return { isMaterial: item.isMaterial || 'Yes', description: item.description || '',
-                         num: item.num || 1, length: item.length || 0, breadth: item.breadth || 0,
-                         depth: item.depth || 0, quantity: item.quantity || 0, rate: item.rate || 0,
-                         unit: item.unit || '', amount: item.amount || 0, suggestions: [], showSuggestions: false, searching: false, itemId: item.id };
+                return {
+                  isMaterial: item.isMaterial || 'Yes',
+                  description: item.description || '',
+                  num: (item.num !== null && item.num !== undefined) ? item.num : 1,
+                  length: (item.length !== null && item.length > 0) ? item.length : null,
+                  breadth: (item.breadth !== null && item.breadth > 0) ? item.breadth : null,
+                  depth: (item.depth !== null && item.depth > 0) ? item.depth : null,
+                  quantity: item.quantity || 0,
+                  rate: item.rate || 0,
+                  unit: item.unit || '',
+                  amount: item.amount || 0,
+                  suggestions: [],
+                  showSuggestions: false,
+                  searching: false,
+                  itemId: item.id
+                };
               });
               if ($scope.rows.length === 0) $scope.rows = [newRow()];
+
+              // Also load revisions and remarks
+              $http.get(API_BASE + '/estimates/' + id + '/revisions').then(function(res) {
+                $scope.estimateRevisions = res.data || [];
+              });
+              $http.get(API_BASE + '/estimates/' + id + '/remarks').then(function(res) {
+                $scope.estimateRemarks = res.data || [];
+              });
+
             }, function () { $scope.apiError = 'Could not load the estimate.'; });
           };
 
@@ -1175,28 +1481,39 @@
 
           $scope.resetForm = function () {
             $scope.currentEstimateId = null;
+            $scope.currentOfficerPhone = null;
             $scope.currentEstimateStatus = 'DRAFT';
             $scope.currentPreparedByName = null; $scope.currentPreparedByDesignation = null;
             $scope.currentVerifiedByName = null; $scope.currentVerifiedByDesignation = null;
             $scope.currentRecommendedByName = null; $scope.currentRecommendedByDesignation = null;
             $scope.currentForwardedByName = null; $scope.currentForwardedByDesignation = null;
             $scope.currentSanctionedByName = null; $scope.currentSanctionedByDesignation = null;
+            $scope.currentLastRemarks = null;
             $scope.nameOfWork = ''; $scope.gstPercent = '0';
             $scope.rows = [newRow()];
-            populateHierarchy('', '', '', '', '');
+            var activeLoc = $scope.locationOptions.find(function(o) { return o.key === $scope.selectedLocationKey; });
+            if (activeLoc) {
+              populateHierarchy(activeLoc.corp, activeLoc.zone, activeLoc.division, activeLoc.circle, activeLoc.ward);
+            } else {
+              populateHierarchy('', '', '', '', '');
+            }
             localStorage.removeItem(APP_CONFIG.ESTIMATE_KEY);
           };
 
           /* ── Init ── */
+          $scope.hierarchyData = window.WARD_HIERARCHY || {};
+          $scope.corps = Object.keys($scope.hierarchyData);
+          buildLocationOptions();
+
           $http.get(API_BASE + '/jurisdictions').then(function(response) {
             var dbJurs = response.data;
             var tree = {};
             dbJurs.forEach(function(item) {
-              var corp = item.corp;
-              var zone = item.zoneName;
-              var div = item.division;
-              var circle = item.circleName;
-              var ward = item.wardName;
+              var corp = Utils.cleanString(item.corp);
+              var zone = Utils.cleanString(item.zoneName);
+              var div = Utils.cleanString(item.division);
+              var circle = Utils.cleanString(item.circleName);
+              var ward = Utils.cleanString(item.wardName);
               
               if (corp && zone && div && circle && ward) {
                 if (!tree[corp]) tree[corp] = {};
@@ -1208,12 +1525,21 @@
                 }
               }
             });
-            $scope.hierarchyData = tree;
-            window.WARD_HIERARCHY = tree;
-            $scope.corps = Object.keys(tree);
-            buildLocationOptions();
+            if (Object.keys(tree).length > 0) {
+              $scope.hierarchyData = tree;
+              window.WARD_HIERARCHY = tree;
+              $scope.corps = Object.keys(tree);
+              buildLocationOptions();
+
+              var activeLoc = $scope.locationOptions.find(function(o) { return o.key === $scope.selectedLocationKey; });
+              if (activeLoc) {
+                populateHierarchy(activeLoc.corp, activeLoc.zone, activeLoc.division, activeLoc.circle, activeLoc.ward);
+              }
+            }
           }, function() {
-            $scope.apiError = 'Could not load jurisdictions from database.';
+            if (!$scope.corps || $scope.corps.length === 0) {
+              $scope.apiError = 'Could not load jurisdictions from database.';
+            }
           });
 
           var savedState = localStorage.getItem(APP_CONFIG.ESTIMATE_KEY);
@@ -1232,18 +1558,36 @@
               $scope.currentForwardedByDesignation = est.forwardedByDesignation;
               $scope.currentSanctionedByName = est.sanctionedByName;
               $scope.currentSanctionedByDesignation = est.sanctionedByDesignation;
+              $scope.currentLastRemarks = est.lastRemarks;
               $scope.nameOfWork = est.nameOfWork;
               $scope.gstPercent = String(est.gstPercent);
               populateHierarchy(est.corp, est.zoneName, est.division, est.circleName, est.wardName);
               if (est.items && est.items.length > 0) {
                 $scope.rows = est.items.map(function (item) {
-                  return { isMaterial: item.isMaterial || 'Yes', description: item.description || '',
-                           num: item.num || 1, length: item.length || 0, breadth: item.breadth || 0,
-                           depth: item.depth || 0, quantity: item.quantity || 0, rate: item.rate || 0,
-                           unit: item.unit || '', amount: item.amount || 0, suggestions: [], showSuggestions: false, searching: false, itemId: item.id };
+                  return {
+                    isMaterial: item.isMaterial || 'Yes',
+                    description: item.description || '',
+                    num: (item.num !== null && item.num !== undefined) ? item.num : 1,
+                    length: (item.length !== null && item.length > 0) ? item.length : null,
+                    breadth: (item.breadth !== null && item.breadth > 0) ? item.breadth : null,
+                    depth: (item.depth !== null && item.depth > 0) ? item.depth : null,
+                    quantity: item.quantity || 0,
+                    rate: item.rate || 0,
+                    unit: item.unit || '',
+                    amount: item.amount || 0,
+                    suggestions: [],
+                    showSuggestions: false,
+                    searching: false,
+                    itemId: item.id
+                  };
                 });
               }
             } catch (e) { console.error('Error parsing saved state', e); }
+          } else {
+            var activeLoc = $scope.locationOptions.find(function(o) { return o.key === $scope.selectedLocationKey; });
+            if (activeLoc) {
+              populateHierarchy(activeLoc.corp, activeLoc.zone, activeLoc.division, activeLoc.circle, activeLoc.ward);
+            }
           }
         }
       ]);

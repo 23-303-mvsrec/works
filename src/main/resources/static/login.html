@@ -5,10 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HMWSSB – Officer Portal Login</title>
-  <link rel="stylesheet" href="styles/theme.css" />
+  <link rel="stylesheet" href="styles/theme.css?v=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="config.js?v=1"></script>
+  <script src="app.js?v=1"></script>
   <style>
     body {
       display: flex;
@@ -212,6 +212,25 @@
       color: #b33;
     }
   </style>
+
+  <script>
+    setTimeout(function () {
+      var body = document.body;
+      if (!body || body.getAttribute('data-hmwssb-booted')) return;
+      var hasEl = document.getElementById('login-form');
+      if (!hasEl) return;
+      if (hasEl.getAttribute('data-rendered')) return;
+      var card = document.querySelector('.login-card');
+      if (card) {
+        var box = document.createElement('div');
+        box.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#fff8e1;border:1px solid #f0d060;color:#8a6d00;border-radius:8px;padding:12px 20px;font-size:13px;z-index:99999;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.1);max-width:560px;';
+        box.innerHTML = '<strong>Page failed to load properly.</strong> This is usually caused by an old browser cache. ' +
+          '<button onclick="if(window.__hmwssbClearSession){window.__hmwssbClearSession();}location.reload();" style="margin:4px;padding:6px 12px;background:#27ae60;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Clear Session &amp; Reload</button> ' +
+          '<button onclick="location.reload();" style="margin:4px;padding:6px 12px;background:#7f8c8d;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Hard Reload</button>';
+        document.body.appendChild(box);
+      }
+    }, 4000);
+  </script>
 </head>
 
 <body ng-controller="LoginCtrl">
@@ -234,6 +253,17 @@
     </div>
 
     <div class="login-body">
+      <!-- Active Session Notice (if logged in) -->
+      <div ng-if="loggedInUser" style="background: #e8f4fd; border: 1px solid #b8daff; border-radius: 8px; padding: 10px 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 12px; color: #004085;">
+          Currently active: <strong>{{loggedInUser.name}}</strong> ({{loggedInUser.role}})
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <a ng-href="{{(loggedInUser.role === 'ADMIN' || loggedInUser.role === 'DOP') ? 'admin.html' : 'index.html'}}" style="background: #27ae60; color: #fff; padding: 3px 8px; font-size: 11px; border-radius: 4px; text-decoration: none; font-weight: 600;">Go to Portal &rarr;</a>
+          <button type="button" ng-click="logoutCurrent()" style="background: #e74c3c; color: #fff; border: none; padding: 3px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: 600;">Switch</button>
+        </div>
+      </div>
+
       <!-- Error Alert -->
       <div class="alert alert-error" ng-if="errorMessage" ng-class="{'alert-shake': shakeError}">
         <span>&#9888;</span> {{errorMessage}}
@@ -245,27 +275,28 @@
       </div>
 
       <!-- Login Form -->
-      <form ng-submit="executeLogin()" novalidate>
+      <form id="login-form" data-rendered ng-submit="executeLogin()" novalidate ng-if="!loggedInUser">
         <div class="form-group">
-          <label class="form-label required" for="phone_input">Officer Phone Number</label>
+          <label class="form-label required" for="phone_input">Officer Phone Number / Username</label>
           <div class="input-wrapper">
-            <input type="tel" id="phone_input" class="form-control" ng-model="credentials.phoneNumber"
-                   placeholder="e.g. 9876543210" required maxlength="10" pattern="[0-9]{10}"
+            <input type="text" id="phone_input" class="form-control" ng-model="credentials.phoneNumber"
+                   placeholder="e.g. 9154866717 or admin" required
                    autocomplete="username" />
           </div>
-          <div class="phone-hint">Enter your 10-digit registered mobile number</div>
+          <div class="phone-hint">Enter your 10-digit mobile number or 'admin'</div>
         </div>
 
         <div class="form-group">
           <label class="form-label required" for="password_input">Password</label>
           <div class="input-wrapper">
             <input ng-attr-type="{{showPassword ? 'text' : 'password'}}" id="password_input" class="form-control"
-                   ng-model="credentials.password" placeholder="Enter your password" required
+                   ng-model="credentials.password" placeholder="Enter your password (default: 1234)" required
                    autocomplete="current-password" style="padding-right: 36px;" />
             <button type="button" class="toggle-password" ng-click="showPassword = !showPassword"
                     ng-bind="showPassword ? '&#128065;' : '&#128064;'" title="Toggle password visibility">
             </button>
           </div>
+          <div class="phone-hint">Default password for officers: <strong>1234</strong> | Admin: <strong>admin</strong></div>
         </div>
 
         <button type="submit" class="login-btn" ng-disabled="submitting">
@@ -274,6 +305,45 @@
           <span ng-if="!submitting">Login to Account</span>
         </button>
       </form>
+
+      <!-- Quick Role Selection / Presets -->
+      <div ng-if="!loggedInUser" style="margin-top: 20px; border-top: 1px dashed var(--border-card); padding-top: 14px;">
+        <div style="font-size: 11px; font-weight: 700; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+          ⚡ Quick Test Profiles (Click to fill &amp; login)
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+          <button type="button" ng-click="quickLogin('9154866717', '1234')"
+                  style="text-align: left; padding: 6px 8px; font-size: 11px; border: 1px solid #c8c87a; background: #fffde7; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+            <div style="font-weight: 700; color: #27ae60;">MANAGER</div>
+            <div style="color: #666; font-size: 10px;">9154866717 (Sirivennela)</div>
+          </button>
+          <button type="button" ng-click="quickLogin('9989994369', '1234')"
+                  style="text-align: left; padding: 6px 8px; font-size: 11px; border: 1px solid #c8c87a; background: #fffde7; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+            <div style="font-weight: 700; color: #2980b9;">DGM</div>
+            <div style="color: #666; font-size: 10px;">9989994369 (Nagar Raju)</div>
+          </button>
+          <button type="button" ng-click="quickLogin('9989994708', '1234')"
+                  style="text-align: left; padding: 6px 8px; font-size: 11px; border: 1px solid #c8c87a; background: #fffde7; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+            <div style="font-weight: 700; color: #8e44ad;">GM</div>
+            <div style="color: #666; font-size: 10px;">9989994708 (Mahender)</div>
+          </button>
+          <button type="button" ng-click="quickLogin('9989989507', '1234')"
+                  style="text-align: left; padding: 6px 8px; font-size: 11px; border: 1px solid #c8c87a; background: #fffde7; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+            <div style="font-weight: 700; color: #d35400;">CGM</div>
+            <div style="color: #666; font-size: 10px;">9989989507 (Nagendra Kumar)</div>
+          </button>
+          <button type="button" ng-click="quickLogin('9989999753', '1234')"
+                  style="text-align: left; padding: 6px 8px; font-size: 11px; border: 1px solid #c8c87a; background: #fffde7; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+            <div style="font-weight: 700; color: #c0392b;">DOP</div>
+            <div style="color: #666; font-size: 10px;">9989999753 (SatyaNarayana)</div>
+          </button>
+          <button type="button" ng-click="quickLogin('admin', 'admin')"
+                  style="text-align: left; padding: 6px 8px; font-size: 11px; border: 1px solid #c8c87a; background: #fffde7; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+            <div style="font-weight: 700; color: #2c3e50;">ADMIN</div>
+            <div style="color: #666; font-size: 10px;">admin / admin</div>
+          </button>
+        </div>
+      </div>
 
       <div class="login-footer">
         Government of Telangana<br/>
@@ -287,17 +357,20 @@
       .controller('LoginCtrl', ['$scope', '$http', 'AuthService',
         function ($scope, $http, AuthService) {
 
-          // If already logged in, redirect to correct page
-          if (AuthService.isLoggedIn()) {
-            var loggedInUser = AuthService.getUser();
-            if (loggedInUser && (loggedInUser.role === 'ADMIN' || loggedInUser.role === 'DOP')) {
-              window.location.href = 'admin.html';
-            } else {
-              window.location.href = 'index.html';
-            }
-            return;
+          // Check if reset/logout parameter passed
+          if (window.location.search.indexOf('logout=true') !== -1 || window.location.search.indexOf('reset=true') !== -1) {
+            AuthService.clearSession();
           }
 
+          $scope.loggedInUser = AuthService.getUser();
+          $scope.logoutCurrent = function() {
+            AuthService.clearSession();
+            $scope.loggedInUser = null;
+            $scope.credentials = { phoneNumber: '', password: '' };
+            $scope.successMessage = 'Session cleared. Please choose an account to log in.';
+          };
+
+          window.__hmwssbMarkBooted && window.__hmwssbMarkBooted();
           $scope.credentials = { phoneNumber: '', password: '' };
           $scope.errorMessage = null;
           $scope.successMessage = null;
@@ -306,13 +379,19 @@
           $scope.shakeError = false;
           $scope.isLocalFile = window.location.protocol === 'file:';
 
+          $scope.quickLogin = function(phone, pwd) {
+            $scope.credentials.phoneNumber = phone;
+            $scope.credentials.password = pwd;
+            $scope.executeLogin();
+          };
+
           $scope.executeLogin = function () {
             $scope.errorMessage = null;
             $scope.successMessage = null;
             $scope.shakeError = false;
 
             if (!$scope.credentials.phoneNumber || !$scope.credentials.phoneNumber.trim()) {
-              $scope.errorMessage = 'Please enter your phone number.';
+              $scope.errorMessage = 'Please enter your phone number or username.';
               $scope.shakeError = true;
               return;
             }
@@ -338,14 +417,14 @@
                 } else {
                   window.location.href = 'index.html';
                 }
-              }, 500);
+              }, 400);
             }, function (error) {
               $scope.submitting = false;
               $scope.shakeError = true;
               if (error.status === 401 || error.status === 400 || error.status === 404) {
-                $scope.errorMessage = error.data || 'Invalid phone number or password. Please try again.';
+                $scope.errorMessage = error.data || 'Invalid phone number or password. Default password for officers is 1234.';
               } else {
-                $scope.errorMessage = 'Could not reach the server. Please make sure the application is running.';
+                $scope.errorMessage = 'Could not reach the server at ' + APP_CONFIG.API_BASE + '. Please make sure the backend is running.';
               }
             });
           };

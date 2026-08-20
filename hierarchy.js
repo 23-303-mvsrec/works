@@ -1,4 +1,4 @@
-const WARD_HIERARCHY = {
+var WARD_HIERARCHY = {
   "MMC": {
     "Malkajgiri": {
       "1": {
@@ -498,3 +498,6 @@ const WARD_HIERARCHY = {
     }
   }
 };
+if (typeof window !== 'undefined') {
+  window.WARD_HIERARCHY = WARD_HIERARCHY;
+}

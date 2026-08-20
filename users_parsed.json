@@ -1,4 +1,4 @@
-﻿[
+[
     {
         "phoneNumber":  "7995010510",
         "locations":  [
@@ -8,7 +8,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "MANAGER",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           },
                           {
                               "wardName":  "52 - Pedda Amberpet",
@@ -16,7 +16,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "MANAGER",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           }
                       ],
         "role":  "MANAGER",
@@ -52,8 +52,8 @@
         "locations":  [
                           {
                               "wardName":  null,
-                              "corp":  "Corporate",
-                              "zoneName":  null,
+                              "corp":  "MMC",
+                              "zoneName":  "LB Nagar",
                               "role":  "DOP",
                               "division":  null,
                               "circleName":  null
@@ -160,7 +160,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "DGM",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           },
                           {
                               "wardName":  "29 - Nagole",
@@ -168,7 +168,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "MANAGER",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           }
                       ],
         "role":  "DGM",
@@ -184,7 +184,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "MANAGER",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           },
                           {
                               "wardName":  "47 - Lecturers Colony",
@@ -192,7 +192,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "MANAGER",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           }
                       ],
         "role":  "MANAGER",
@@ -256,7 +256,7 @@
                               "zoneName":  "LB Nagar",
                               "role":  "MANAGER",
                               "division":  "5",
-                              "circleName":  "11 â€“ Nagole"
+                              "circleName":  "11 - Nagole"
                           }
                       ],
         "role":  "MANAGER",

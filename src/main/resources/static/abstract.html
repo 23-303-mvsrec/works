@@ -4,30 +4,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HMWSSB – General Abstract</title>
+  <title>HMWSSB – General Abstract &amp; Version History</title>
   <link rel="stylesheet" href="styles/theme.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
-  <script src="hierarchy.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
+      background: #eef2e6;
       font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 13px;
-      background: #f0f0e8;
-      color: #222;
-      padding: 25px;
+      padding: 20px;
+      color: #333;
     }
 
     .abstract-container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       background: #f5f5e8;
       border: 1px solid #c8c87a;
@@ -36,120 +28,90 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
-    /* ── Header ── */
     .title-header {
       background: #7a7a38;
-      color: #fff;
-      font-weight: 600;
-      font-size: 15px;
-      padding: 10px 14px;
-      text-transform: uppercase;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 700;
       letter-spacing: 0.5px;
-      border-radius: 4px 4px 0 0;
-      border: 1px solid #7a7a38;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
     }
 
     .name-of-work-box {
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 20px;
       background: #fffde7;
       border: 1px solid #d4c97a;
-      border-top: none;
-      border-radius: 0 0 4px 4px;
+      border-radius: 4px;
       padding: 10px 14px;
-      color: #222;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 15px;
+      color: #2c3e50;
     }
 
     .name-of-work-box span {
+      color: #7a7a38;
       font-weight: 700;
-      color: #b33;
+      margin-right: 5px;
     }
 
-    .name-of-work-box span::before {
-      content: '* ';
-    }
-
-    /* ── Table Styling ── */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-size: 13px;
     }
 
     th, td {
-      border: 1px solid #c8daea;
-      padding: 8px 10px;
-      color: #222;
-      text-align: center;
-      vertical-align: middle;
+      border: 1px solid #c8c87a;
+      padding: 7px 10px;
     }
 
     th {
-      background: #a0c4de;
-      color: #1a3550;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      border: 1px solid #7fa8c0;
+      background: #7a7a38;
+      color: white;
+      font-weight: 700;
+      text-align: center;
     }
 
-    /* Column Widths */
-    .col-sno { width: 8%; text-align: center; }
-    .col-desc { width: 62%; text-align: left; }
-    .col-rs { width: 8%; text-align: center; }
-    .col-amt { width: 22%; text-align: right; }
+    .col-sno { width: 60px; }
+    .col-desc { width: auto; }
+    .col-rs { width: 50px; }
+    .col-amt { width: 140px; }
 
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-    .font-bold { font-weight: 700; }
-
-    tbody tr td { background: #e8f4fb; }
-    tbody tr:nth-child(even) td { background: #daeef8; }
-
-    /* Part Sections */
     .part-header-row td {
+      background: #e6e6c8;
       font-weight: 700;
-      background: #a0c4de !important;
-      color: #1a3550;
-      padding: 6px 10px;
-      text-align: left;
-      border: 1px solid #7fa8c0;
+      color: #4a4a20;
     }
 
     .part-i-total td {
-      background: #dbeafe !important;
-      color: #1e3a8a;
+      background: #fffde7;
       font-weight: 700;
     }
 
-    /* Input Field */
-    .ls-input {
-      width: 100%;
-      border: 1px solid #bbb;
-      border-radius: 3px;
-      padding: 4px 6px;
-      font-size: 12px;
-      text-align: right;
-      font-weight: 700;
-      background: #fff;
-      color: #222;
-      outline: none;
-    }
-
-    .ls-input:focus {
-      border-color: #5a9fd4;
-    }
-
-    /* Grand Total */
     .grand-total-row td {
-      background: #5a7a3a !important;
-      color: #fff !important;
+      background: #7a7a38;
+      color: white;
       font-weight: 700;
+      font-size: 14px;
     }
 
-    /* Total in Words */
+    .ls-input {
+      width: 110px;
+      text-align: right;
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-weight: 600;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+
     .words-box {
       background: #fffde7;
       border: 1px solid #d4c97a;
@@ -159,7 +121,7 @@
       text-align: center;
       font-size: 13px;
       margin-top: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       color: #1a3550;
     }
 
@@ -177,11 +139,11 @@
     .sig-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 15px;
+      gap: 12px;
       border-top: 1px solid #c8c87a;
       padding-top: 15px;
-      margin-bottom: 30px;
-      margin-top: 50px;
+      margin-bottom: 25px;
+      margin-top: 30px;
       text-align: center;
     }
 
@@ -189,7 +151,7 @@
       padding: 10px;
       border: 1px dashed rgba(122, 122, 56, 0.3);
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.5);
     }
 
     .sig-role {
@@ -197,13 +159,13 @@
       color: #7f8c8d;
       font-weight: 700;
       text-transform: uppercase;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
-    .sig-name { font-weight: 700; color: #2c3e50; font-size: 12px; }
+    .sig-name { font-weight: 700; color: #2c3e50; font-size: 11px; }
     .sig-designation { font-size: 10px; color: #555; margin-top: 2px; }
     .sig-signed { font-size: 9px; color: #27ae60; font-weight: 600; margin-top: 2px; }
-    .sig-pending { font-style: italic; color: #95a5a6; font-size: 11px; padding: 5px 0; }
+    .sig-pending { font-style: italic; color: #95a5a6; font-size: 10px; padding: 4px 0; }
 
     /* ── Action Buttons ── */
     .actions-bar {
@@ -211,21 +173,24 @@
       justify-content: space-between;
       align-items: center;
       border-top: 1px dashed #c8c87a;
-      padding-top: 20px;
+      padding-top: 18px;
       margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .btn {
       border: none;
-      border-radius: 3px;
+      border-radius: 4px;
       padding: 6px 14px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.15s ease-in-out;
+      text-decoration: none;
     }
 
     .btn-back { background: #7f8c8d; color: white; }
@@ -237,48 +202,145 @@
     .btn-print:hover { background: #1f618d; }
     .btn-download { background: #1f7246; color: white; }
     .btn-download:hover { background: #155231; }
-    .btn-forward { background: #3498db; color: white; }
-    .btn-forward:hover { background: #2980b9; }
-    .btn-return { background: #e67e22; color: white; }
-    .btn-return:hover { background: #d35400; }
+    .btn-forward { background: #1e5c99; color: white; }
+    .btn-forward:hover { background: #164675; }
+    .btn-return { background: #c0392b; color: white; }
+    .btn-return:hover { background: #a93226; }
+    .btn-tool { background: #fffde7; color: #7a7a38; border: 1px solid #c8c87a; }
+    .btn-tool:hover { background: #fdfae1; }
 
-    .action-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .action-group { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    @media (max-width: 768px) {
-      .sig-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    /* ── Remarks Trail Panel ── */
+    .remarks-trail-panel {
+      background: #fffde7;
+      border: 1px solid #d4c97a;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 24px;
+      margin-bottom: 20px;
     }
 
-    .file-warning {
-      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-      background: #fff8e1; border: 1px solid #f0d060; color: #8a6d00;
-      border-radius: 8px; padding: 10px 20px; font-size: 12px; z-index: 99999;
-      text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px;
+    .remarks-trail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0d88b;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
     }
-    .file-warning strong { color: #b33; }
 
-    /* ── Print Styles ── */
+    .remark-item {
+      background: #ffffff;
+      border: 1px solid #e2ddb0;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .remark-item.return-item {
+      border-left: 4px solid #c0392b;
+      background: #fffaf9;
+    }
+    .remark-item.forward-item {
+      border-left: 4px solid #1e5c99;
+      background: #fcfdfe;
+    }
+    .remark-item.create-item {
+      border-left: 4px solid #27ae60;
+      background: #f9fdfa;
+    }
+    .remark-item.revision-item {
+      border-left: 4px solid #f39c12;
+      background: #fffdf9;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 3px;
+      background: #ece8c5;
+      color: #666025;
+      margin-right: 4px;
+    }
+
+    /* ── Themed Modals ── */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #f5f5e8;
+      border: 1px solid #c8c87a;
+      border-radius: 6px;
+      width: 100%;
+      max-width: 850px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      background: #7a7a38;
+      color: white;
+      padding: 12px 18px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .modal-body {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #d4c97a;
+      padding: 12px 18px;
+      background: #fffde7;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Diff Styling */
+    .diff-added { background: #e6ffed !important; color: #22863a; }
+    .diff-removed { background: #ffeef0 !important; color: #cb2431; text-decoration: line-through; }
+    .diff-modified { background: #fffbdd !important; color: #b08800; font-weight: 600; }
+
     @media print {
       body { background: white; padding: 0; color: #000; }
       .abstract-container { border: none; box-shadow: none; padding: 0; max-width: 100%; background: white; }
       .title-header { background: transparent; color: #000; border: none; border-bottom: 2px solid #000; padding: 0 0 8px 0; text-align: center; font-size: 20px; font-weight: 700; }
       .name-of-work-box { background: transparent; border: none; padding: 10px 0; }
-      .name-of-work-box span { color: #000; }
       .words-box { background: transparent; border: none; color: #000; padding: 10px 0; }
       th, td { border: 1px solid #000; background: transparent !important; color: #000 !important; }
-      .actions-bar, .user-header-bar { display: none !important; }
+      .actions-bar, .user-header-bar, .modal-overlay, .remarks-trail-panel, .top-tools-bar { display: none !important; }
       .ls-input { border: none; background: transparent; color: #000; padding: 0; text-align: right; }
       .sig-card { border: 1px solid #000; }
-      .file-warning { display: none; }
     }
   </style>
 </head>
 
 <body ng-controller="AbstractCtrl">
-
-  <div class="file-warning" ng-if="isLocalFile">
-    <span>&#9888;</span>
-    Opened via file:// &mdash; API calls will fail. Use <strong>http://localhost:8080/abstract.html</strong>
-  </div>
 
   <div class="abstract-container">
 
@@ -315,6 +377,62 @@
       <button ng-click="goBack()" style="background: #7f8c8d; color: white; border: none; border-radius: 3px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
         Back to Dashboard
       </button>
+    </div>
+
+        <!-- Version & Toolbar Row -->
+    <div class="top-tools-bar" style="display: flex; justify-content: space-between; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 8px 14px; margin-bottom: 14px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="background: #7a7a38; color: white; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 700;">
+          Revision: v{{revisions.length > 0 ? revisions[0].revisionNumber : (version || 1)}}.0
+        </span>
+        <span style="background: #1e5c99; color: white; border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 700;">
+          Status: {{getStatusLabel(status)}}
+        </span>
+        <span style="color: #666; font-size: 11px;" ng-if="estimateId">
+          ID: #{{estimateId}}
+        </span>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-tool" ng-click="openVersionHistoryModal()">
+          🕒 Version History ({{revisions.length || 1}})
+        </button>
+        <button class="btn btn-tool" ng-click="openDiffModal()" ng-if="revisions.length > 1">
+          ⚖️ Compare Versions
+        </button>
+        <button class="btn btn-tool" ng-click="scrollToRemarks()">
+          💬 Scrutiny Remarks ({{remarksList.length || 0}})
+        </button>
+      </div>
+    </div>
+
+    <!-- Workflow Ownership & Action Guide Card -->
+    <div style="background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 20px;">{{getWorkflowStatusIcon()}}</span>
+        <div>
+          <div style="font-weight: 700; font-size: 13px; color: #2c3e50; display: flex; align-items: center; gap: 8px;">
+            Stage: {{getStatusLabel(status)}}
+            <span class="tag-badge" style="background: #27ae60; color: white;" ng-if="canForward() || canReturn() || isEditable()">
+              ⚡ Action Pending By You
+            </span>
+            <span class="tag-badge" style="background: #7f8c8d; color: white;" ng-if="!canForward() && !canReturn() && !isEditable()">
+              👁️ View-Only Mode
+            </span>
+          </div>
+          <div style="font-size: 12px; color: #555; margin-top: 3px;">
+            {{getWorkflowOwnershipMessage()}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Latest Remarks Banner -->
+    <div class="remarks-banner" ng-if="lastRemarks" style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 10px 14px; border-radius: 4px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 16px;">💬</span>
+      <div>
+        <strong>Latest Scrutiny / Return Remarks:</strong> {{lastRemarks}}
+      </div>
     </div>
 
     <!-- General Abstract Header -->
@@ -401,7 +519,6 @@
 
     <!-- Multi-Signature Block -->
     <div class="sig-grid">
-      
       <!-- Prepared by AE -->
       <div class="sig-card">
         <div class="sig-role">Prepared by (AE)</div>
@@ -456,12 +573,69 @@
         </div>
         <div ng-if="!sanctionedByName" class="sig-pending">Pending Sanction</div>
       </div>
+    </div>
 
+    <!-- Scrutiny Remarks Trail Section -->
+    <div class="remarks-trail-panel" id="remarks-section">
+      <div class="remarks-trail-header">
+        <div style="font-weight: 700; font-size: 13px; color: #4a4a20; display: flex; align-items: center; gap: 6px;">
+          <span>💬</span> Scrutiny Observations &amp; Remarks Trail ({{remarksList.length}})
+        </div>
+        <button class="btn btn-tool" style="font-size: 11px; padding: 3px 8px;" ng-click="showAddRemarkForm = !showAddRemarkForm">
+          {{showAddRemarkForm ? '− Cancel Note' : '+ Add Scrutiny Observation'}}
+        </button>
+      </div>
+
+      <!-- Add Observation Form -->
+      <div ng-if="showAddRemarkForm" style="background: #fff; border: 1px solid #d4c97a; border-radius: 4px; padding: 12px; margin-bottom: 14px;">
+        <div style="font-weight: 600; font-size: 12px; margin-bottom: 6px; color: #2c3e50;">Select Scrutiny Tags:</div>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;">
+          <button type="button" ng-repeat="tag in scrutinyTags" ng-click="toggleTag(tag)"
+                  ng-class="{'btn-save-db': selectedTags.indexOf(tag) !== -1, 'btn-tool': selectedTags.indexOf(tag) === -1}"
+                  class="btn" style="font-size: 10px; padding: 2px 6px;">
+            {{tag}}
+          </button>
+        </div>
+        <textarea ng-model="newRemarkText" rows="2" placeholder="Type official scrutiny remark / observation..."
+                  style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 6px; font-size: 12px; box-sizing: border-box;"></textarea>
+        <div style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px;">
+          <button class="btn btn-save-db" ng-click="submitNewRemark()" ng-disabled="!newRemarkText.trim() || submittingRemark">
+            {{submittingRemark ? 'Posting...' : 'Post Observation'}}
+          </button>
+        </div>
+      </div>
+
+      <!-- Remarks List -->
+      <div ng-if="remarksList.length === 0" style="color: #7f8c8d; font-size: 12px; font-style: italic; padding: 10px 0; text-align: center;">
+        No scrutiny remarks recorded yet for this estimate.
+      </div>
+      <div ng-repeat="rem in remarksList" class="remark-item"
+           ng-class="{'return-item': rem.action === 'RETURN', 'forward-item': rem.action === 'FORWARD', 'create-item': rem.action === 'CREATE', 'revision-item': rem.action === 'REVISION'}">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <strong style="font-size: 12px; color: #2c3e50;">{{rem.officerName}}</strong>
+            <span style="font-size: 10px; color: #666;">({{rem.officerDesignation || rem.officerRole}})</span>
+            <span class="tag-badge" style="background: #1e5c99; color: white;" ng-if="rem.action === 'FORWARD'">➔ FORWARDED</span>
+            <span class="tag-badge" style="background: #c0392b; color: white;" ng-if="rem.action === 'RETURN'">↩ RETURNED</span>
+            <span class="tag-badge" style="background: #27ae60; color: white;" ng-if="rem.action === 'CREATE'">★ CREATED</span>
+            <span class="tag-badge" style="background: #f39c12; color: white;" ng-if="rem.action === 'REVISION'">✎ REVISION</span>
+            <span class="tag-badge" style="background: #7a7a38; color: white;" ng-if="rem.action === 'SCRUTINY_NOTE'">OBSERVATION</span>
+            <span class="tag-badge" ng-if="rem.revisionNumber">Rev {{rem.revisionNumber}}</span>
+          </div>
+          <span style="font-size: 10px; color: #7f8c8d;">{{formatDate(rem.createdAt)}}</span>
+        </div>
+        <div style="font-size: 12px; color: #333; line-height: 1.4; margin-top: 4px;">
+          {{rem.remarks}}
+        </div>
+        <div ng-if="rem.tags" style="margin-top: 6px;">
+          <span class="tag-badge" ng-repeat="t in rem.tags.split(',')">{{t.trim()}}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Action Buttons Panel -->
     <div class="actions-bar">
-      <button class="btn btn-back" ng-click="goBack()" style="margin-right: auto;">
+      <button class="btn btn-back" ng-click="goBack()">
         ⬅ Back to Measurement Sheet
       </button>
       <div class="action-group">
@@ -469,11 +643,11 @@
           <span ng-if="saving">💾 Saving...</span>
           <span ng-if="!saving">💾 Save Estimate</span>
         </button>
-        <button class="btn btn-forward" ng-click="performWorkflowAction('FORWARD')" ng-if="canForward()" ng-disabled="saving || workflowActing">
+        <button class="btn btn-forward" ng-click="openActionModal('FORWARD')" ng-if="canForward()" ng-disabled="saving || workflowActing">
           <span ng-if="workflowActing">⌛ Processing...</span>
           <span ng-if="!workflowActing">➔ {{getForwardActionLabel()}}</span>
         </button>
-        <button class="btn btn-return" ng-click="performWorkflowAction('RETURN')" ng-if="canReturn()" ng-disabled="saving || workflowActing">
+        <button class="btn btn-return" ng-click="openActionModal('RETURN')" ng-if="canReturn()" ng-disabled="saving || workflowActing">
           <span ng-if="workflowActing">⌛ Processing...</span>
           <span ng-if="!workflowActing">↩ Return to {{getReturnActionLabel()}}</span>
         </button>
@@ -488,19 +662,199 @@
 
   </div>
 
+  <!-- ── 1. Themed Workflow Action Modal (Forward / Return with Tags) ── -->
+  <div class="modal-overlay" ng-if="actionModalVisible">
+    <div class="modal-card" style="max-width: 550px;">
+      <div class="modal-header" ng-style="{'background': currentActionType === 'RETURN' ? '#c0392b' : '#1e5c99'}">
+        <span>{{currentActionType === 'RETURN' ? '↩ Return Estimate for Corrections' : '➔ Forward Estimate for Scrutiny / Approval'}}</span>
+        <span style="cursor: pointer;" ng-click="closeActionModal()">✕</span>
+      </div>
+      <div class="modal-body">
+        <div style="font-weight: 600; font-size: 13px; color: #2c3e50; margin-bottom: 8px;">
+          {{currentActionType === 'RETURN' ? 'Please specify reasons for return / corrections required:' : 'Add official scrutiny observations / notes (optional):'}}
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <div style="font-size: 11px; font-weight: 700; color: #666; margin-bottom: 4px;">Quick Observation Tags:</div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" ng-repeat="tag in scrutinyTags" ng-click="toggleTag(tag)"
+                    ng-class="{'btn-save-db': selectedTags.indexOf(tag) !== -1, 'btn-tool': selectedTags.indexOf(tag) === -1}"
+                    class="btn" style="font-size: 10px; padding: 2px 6px;">
+              {{tag}}
+            </button>
+          </div>
+        </div>
+
+        <textarea ng-model="actionRemarks" rows="4"
+                  placeholder="{{currentActionType === 'RETURN' ? 'Enter clear instructions for the revising officer...' : 'Enter scrutiny notes or leave blank for default...'}}"
+                  style="width: 100%; border: 1px solid #c8c87a; border-radius: 4px; padding: 8px; font-size: 12px; box-sizing: border-box;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-back" ng-click="closeActionModal()">Cancel</button>
+        <button class="btn" ng-style="{'background': currentActionType === 'RETURN' ? '#c0392b' : '#1e5c99', 'color': '#fff'}"
+                ng-click="executeActionModal()" ng-disabled="workflowActing">
+          {{workflowActing ? 'Processing...' : (currentActionType === 'RETURN' ? 'Confirm Return' : 'Confirm & Forward')}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. Themed Version History Timeline Modal ── -->
+  <div class="modal-overlay" ng-if="versionHistoryModalVisible">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span>🕒 Estimate Version History &amp; Revision Snapshots</span>
+        <span style="cursor: pointer;" ng-click="closeVersionHistoryModal()">✕</span>
+      </div>
+      <div class="modal-body">
+        <div ng-if="revisions.length === 0" style="text-align: center; color: #666; padding: 20px;">
+          No previous revisions recorded.
+        </div>
+        <div ng-repeat="rev in revisions" class="remark-item" style="border-left: 4px solid #7a7a38; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #7a7a38; color: white; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 3px;">
+                Revision {{rev.revisionNumber}}.0
+              </span>
+              <strong style="font-size: 13px; color: #2c3e50;">{{rev.officerName}}</strong>
+              <span style="font-size: 11px; color: #666;">({{rev.officerDesignation || rev.officerRole}})</span>
+              <span class="tag-badge" style="background: #1e5c99; color: white;">{{getStatusLabel(rev.statusAtRevision)}}</span>
+            </div>
+            <span style="font-size: 11px; color: #7f8c8d;">{{formatDate(rev.createdAt)}}</span>
+          </div>
+
+          <div style="font-size: 12px; color: #1e5c99; font-weight: 600; margin-bottom: 4px;">
+            {{rev.changeSummary}}
+          </div>
+          <div style="font-size: 12px; color: #555;" ng-if="rev.remarks">
+            <em>"{{rev.remarks}}"</em>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #e2ddb0; padding-top: 6px;">
+            <div style="font-size: 12px; font-weight: 700; color: #2c3e50;">
+              Grand Total: ₹{{rev.grandTotal | number:2}}
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-tool" style="font-size: 11px; padding: 2px 8px;" ng-click="viewRevisionSnapshot(rev)">
+                🔍 View Items ({{getSnapshotItemCount(rev)}})
+              </button>
+              <button class="btn btn-tool" style="font-size: 11px; padding: 2px 8px;" ng-if="$index > 0" ng-click="compareWithRevision(rev.revisionNumber)">
+                ⚖️ Compare with Current
+              </button>
+              <button class="btn btn-save-db" style="font-size: 11px; padding: 2px 8px;"
+                      ng-if="isEditable() && rev.revisionNumber !== (revisions[0].revisionNumber)"
+                      ng-click="restoreToRevision(rev)">
+                ↺ Restore to Rev {{rev.revisionNumber}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-back" ng-click="closeVersionHistoryModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. Themed Visual Diff Comparison Modal ── -->
+  <div class="modal-overlay" ng-if="diffModalVisible">
+    <div class="modal-card" style="max-width: 950px;">
+      <div class="modal-header">
+        <span>⚖️ Visual Version Diff &amp; Variance Comparison</span>
+        <span style="cursor: pointer;" ng-click="closeDiffModal()">✕</span>
+      </div>
+      <div class="modal-body">
+        <!-- Revision Selectors -->
+        <div style="display: flex; gap: 15px; align-items: center; background: #fffde7; border: 1px solid #d4c97a; border-radius: 4px; padding: 10px; margin-bottom: 14px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label style="font-weight: 700; font-size: 12px;">Base Revision (A):</label>
+            <select ng-model="diffV1" ng-change="loadDiff()" style="padding: 4px; font-size: 12px; border: 1px solid #ccc; border-radius: 3px;">
+              <option ng-repeat="r in revisions" ng-value="r.revisionNumber">Rev {{r.revisionNumber}}.0 (₹{{r.grandTotal | number:2}})</option>
+            </select>
+          </div>
+          <span style="font-weight: 700; color: #7a7a38;">➔ VS ➔</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label style="font-weight: 700; font-size: 12px;">Compared Revision (B):</label>
+            <select ng-model="diffV2" ng-change="loadDiff()" style="padding: 4px; font-size: 12px; border: 1px solid #ccc; border-radius: 3px;">
+              <option ng-repeat="r in revisions" ng-value="r.revisionNumber">Rev {{r.revisionNumber}}.0 (₹{{r.grandTotal | number:2}})</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Financial Delta Card -->
+        <div ng-if="diffData.financialDelta" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; text-align: center;">
+          <div style="background: #fff; border: 1px solid #d4c97a; padding: 8px; border-radius: 4px;">
+            <div style="font-size: 11px; color: #666;">Rev {{diffV1}} Total</div>
+            <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">₹{{diffData.financialDelta.totalA | number:2}}</div>
+          </div>
+          <div style="background: #fff; border: 1px solid #d4c97a; padding: 8px; border-radius: 4px;">
+            <div style="font-size: 11px; color: #666;">Rev {{diffV2}} Total</div>
+            <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">₹{{diffData.financialDelta.totalB | number:2}}</div>
+          </div>
+          <div style="background: #fff; border: 1px solid #d4c97a; padding: 8px; border-radius: 4px;"
+               ng-class="{'diff-added': diffData.financialDelta.difference > 0, 'diff-removed': diffData.financialDelta.difference < 0}">
+            <div style="font-size: 11px;">Cost Variance</div>
+            <div style="font-weight: 700; font-size: 13px;">
+              {{diffData.financialDelta.difference > 0 ? '+₹' : '-₹'}}{{absVal(diffData.financialDelta.difference) | number:2}}
+            </div>
+          </div>
+          <div style="background: #fff; border: 1px solid #d4c97a; padding: 8px; border-radius: 4px;">
+            <div style="font-size: 11px; color: #666;">Percentage Delta</div>
+            <div style="font-weight: 700; font-size: 13px; color: #2c3e50;">{{diffData.financialDelta.percentChange}}%</div>
+          </div>
+        </div>
+
+        <!-- Item Diff Table -->
+        <table style="font-size: 11px;">
+          <thead>
+            <tr>
+              <th style="width: 70px;">Change</th>
+              <th style="width: 40px;">S.No</th>
+              <th>Description</th>
+              <th style="width: 80px;">Rev {{diffV1}} Qty</th>
+              <th style="width: 80px;">Rev {{diffV2}} Qty</th>
+              <th style="width: 80px;">Rev {{diffV1}} Rate</th>
+              <th style="width: 80px;">Rev {{diffV2}} Rate</th>
+              <th style="width: 100px;">Amount Delta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="it in diffData.itemDiffs"
+                ng-class="{'diff-added': it.changeType === 'ADDED', 'diff-removed': it.changeType === 'REMOVED', 'diff-modified': it.changeType === 'MODIFIED'}">
+              <td class="text-center">
+                <span class="tag-badge" ng-if="it.changeType === 'ADDED'" style="background: #27ae60; color: white;">+ ADDED</span>
+                <span class="tag-badge" ng-if="it.changeType === 'REMOVED'" style="background: #c0392b; color: white;">- REMOVED</span>
+                <span class="tag-badge" ng-if="it.changeType === 'MODIFIED'" style="background: #f39c12; color: white;">~ MODIFIED</span>
+                <span class="tag-badge" ng-if="it.changeType === 'UNCHANGED'">SAME</span>
+              </td>
+              <td class="text-center">{{it.sno}}</td>
+              <td>{{it.description}}</td>
+              <td class="text-right">{{it.oldQuantity !== null ? (it.oldQuantity | number:2) : '—'}}</td>
+              <td class="text-right">{{it.newQuantity !== null ? (it.newQuantity | number:2) : '—'}}</td>
+              <td class="text-right">{{it.oldRate !== null ? (it.oldRate | number:2) : '—'}}</td>
+              <td class="text-right">{{it.newRate !== null ? (it.newRate | number:2) : '—'}}</td>
+              <td class="text-right" style="font-weight: 700;">
+                {{it.amountDelta > 0 ? '+₹' : '-₹'}}{{absVal(it.amountDelta) | number:2}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-back" ng-click="closeDiffModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     angular.module('hmwssbAbstractApp', ['hmwssbShared'])
-      .controller('AbstractCtrl', ['$scope', '$http', 'AuthService', 'StatusService', 'ModalService', 'Utils',
-        function ($scope, $http, AuthService, StatusService, ModalService, Utils) {
+      .controller('AbstractCtrl', ['$scope', '$http', '$timeout', 'AuthService', 'StatusService', 'ModalService', 'Utils',
+        function ($scope, $http, $timeout, AuthService, StatusService, ModalService, Utils) {
 
           if (!AuthService.requireLogin()) return;
           $scope.currentUser = AuthService.getUser();
+          window.__hmwssbMarkBooted && window.__hmwssbMarkBooted();
           $scope.isLocalFile = window.location.protocol === 'file:';
-
-          var activeRoleStr = localStorage.getItem('current_active_role');
-          var activeLocStr = localStorage.getItem('current_active_location');
-          $scope.currentActiveRole = activeRoleStr || ($scope.currentUser && $scope.currentUser.role ? $scope.currentUser.role.toUpperCase() : '');
-          $scope.currentActiveLocation = activeLocStr ? JSON.parse(activeLocStr) : null;
 
           var API_BASE = APP_CONFIG.API_BASE;
 
@@ -515,8 +869,6 @@
           var estimateData = JSON.parse(savedState);
           $scope.estimateId = estimateData.id;
           $scope.nameOfWork = estimateData.nameOfWork;
-          $scope.costOfMaterial = estimateData.costOfMaterial || 0;
-          $scope.costOfCivilWork = estimateData.costOfCivilWork || 0;
           $scope.gstPercent = estimateData.gstPercent || 0;
           $scope.unforeseenAmount = estimateData.unforeseenAmount || 0;
           $scope.items = estimateData.items || [];
@@ -526,6 +878,9 @@
           $scope.circleName = estimateData.circleName || '';
           $scope.wardName = estimateData.wardName || '';
           $scope.status = estimateData.status || 'DRAFT';
+          $scope.version = estimateData.version || 0;
+          $scope.createdAt = estimateData.createdAt || '';
+          $scope.lastRemarks = estimateData.lastRemarks || '';
           $scope.preparedByName = estimateData.preparedByName;
           $scope.preparedByDesignation = estimateData.preparedByDesignation;
           $scope.verifiedByName = estimateData.verifiedByName;
@@ -542,104 +897,457 @@
           $scope.apiError = null;
           $scope.totalInWords = '';
 
-          // Compute cost of material and civil work from items
-          $scope.costOfMaterial = 0;
-          $scope.costOfCivilWork = 0;
-          $scope.items.forEach(function (item) {
-            if (Utils.isMaterialYes(item.isMaterial)) {
-              $scope.costOfMaterial += item.amount || 0;
-            } else {
-              $scope.costOfCivilWork += item.amount || 0;
+          // Version Control & Remarks State
+          $scope.revisions = [];
+          $scope.remarksList = [];
+          $scope.actionModalVisible = false;
+          $scope.versionHistoryModalVisible = false;
+          $scope.diffModalVisible = false;
+          $scope.currentActionType = 'FORWARD';
+          $scope.actionRemarks = '';
+          $scope.selectedTags = [];
+          $scope.scrutinyTags = ['Measurement Correction', 'Rate Adjustment', 'Scope Modification', 'Specification Query', 'Budget Check', 'Verified & Recommended'];
+          $scope.showAddRemarkForm = false;
+          $scope.newRemarkText = '';
+          $scope.submittingRemark = false;
+          $scope.diffV1 = 1;
+          $scope.diffV2 = 1;
+          $scope.diffData = {};
+
+          $scope.formatDate = Utils.formatDate;
+          $scope.absVal = Math.abs;
+
+          function calculateItemAmounts() {
+            $scope.costOfMaterial = 0;
+            $scope.costOfCivilWork = 0;
+            $scope.items.forEach(function (item) {
+              if (Utils.isMaterialYes(item.isMaterial)) {
+                $scope.costOfMaterial += item.amount || 0;
+              } else {
+                $scope.costOfCivilWork += item.amount || 0;
+              }
+            });
+            $scope.costOfMaterial = Math.round($scope.costOfMaterial * 100) / 100;
+            $scope.costOfCivilWork = Math.round($scope.costOfCivilWork * 100) / 100;
+          }
+          calculateItemAmounts();
+
+          function resolveEffectiveRole() {
+            if (!$scope.currentUser) return '';
+            var pRole = ($scope.currentUser.role || '').toUpperCase();
+            if (pRole === 'ADMIN' || pRole === 'DOP') return pRole;
+
+            var activeRole = localStorage.getItem('current_active_role');
+            if (activeRole) return activeRole.toUpperCase();
+
+            var locs = $scope.currentUser.locations || [];
+            for (var i = 0; i < locs.length; i++) {
+              var loc = locs[i];
+              var r = (loc.role || pRole).toUpperCase();
+              if (r === 'MANAGER' && loc.wardName && Utils.safeEquals(loc.wardName, $scope.wardName)) return 'MANAGER';
+              if (r === 'DGM' && loc.circleName && Utils.safeEquals(loc.circleName, $scope.circleName)) return 'DGM';
+              if (r === 'GM' && loc.division && Utils.safeEquals(loc.division, $scope.division)) return 'GM';
+              if (r === 'CGM' && loc.zoneName && Utils.safeEquals(loc.zoneName, $scope.zoneName)) return 'CGM';
             }
-          });
+            return pRole;
+          }
+
+          var activeLocStr = localStorage.getItem('current_active_location');
+          $scope.currentActiveLocation = activeLocStr ? JSON.parse(activeLocStr) : null;
+          $scope.currentActiveRole = resolveEffectiveRole();
 
           $scope.getStatusLabel = StatusService.getLabel;
           $scope.getStatusBadgeClass = StatusService.getBadgeClass;
-          $scope.isEditable = function () { return StatusService.isEditable($scope.status, $scope.currentActiveRole); };
-          $scope.canForward = function () { return StatusService.canForward($scope.status, $scope.currentActiveRole); };
-          $scope.canReturn = function () { return StatusService.canReturn($scope.status, $scope.currentActiveRole); };
           $scope.getForwardActionLabel = function () { return StatusService.getForwardLabel($scope.status); };
           $scope.getReturnActionLabel = function () { return StatusService.getReturnLabel($scope.status); };
 
-          $scope.partITotal = function () { return $scope.costOfMaterial + $scope.costOfCivilWork; };
-          $scope.gstAmount = function () { return $scope.partITotal() * $scope.gstPercent / 100; };
-          $scope.grandTotal = function () { return $scope.partITotal() + $scope.gstAmount() + ($scope.unforeseenAmount || 0); };
+          // ── Workflow Role & Ownership Helpers ──
+          function hasLocationRole(targetRole) {
+            if (!$scope.currentUser) return false;
+            var pRole = ($scope.currentUser.role || '').toUpperCase();
+            if (pRole === 'ADMIN' || pRole === 'DOP') return true;
+
+            var locs = $scope.currentUser.locations || [];
+            if (pRole === targetRole) {
+              if (locs.length === 0) return true;
+              for (var i = 0; i < locs.length; i++) {
+                if (isLocMatch(locs[i], targetRole)) return true;
+              }
+            }
+            for (var j = 0; j < locs.length; j++) {
+              var r = (locs[j].role || pRole).toUpperCase();
+              if (r === targetRole && isLocMatch(locs[j], targetRole)) return true;
+            }
+            return false;
+          }
+
+          function isLocMatch(loc, role) {
+            if (!loc) return false;
+            var r = role.toUpperCase();
+            if (r === 'CGM') {
+              return !loc.zoneName || Utils.safeEquals(loc.zoneName, $scope.zoneName);
+            }
+            if (r === 'GM') {
+              return !loc.division || Utils.safeEquals(loc.division, $scope.division);
+            }
+            if (r === 'DGM') {
+              return !loc.circleName || Utils.safeEquals(loc.circleName, $scope.circleName);
+            }
+            if (r === 'MANAGER') {
+              return !loc.wardName || Utils.safeEquals(loc.wardName, $scope.wardName);
+            }
+            return true;
+          }
+
+          $scope.isEditable = function () {
+            var st = ($scope.status || 'DRAFT').toUpperCase();
+            if (st === 'DRAFT') {
+              if (!$scope.currentUser) return false;
+              if ($scope.currentUser.role === 'ADMIN' || $scope.currentUser.role === 'DOP') return true;
+              if ($scope.currentUser.phoneNumber === $scope.officerPhone) return true;
+              return hasLocationRole('MANAGER');
+            }
+            if (st === 'SUBMITTED_TO_DGM') return hasLocationRole('DGM');
+            if (st === 'SUBMITTED_TO_GM') return hasLocationRole('GM');
+            if (st === 'SUBMITTED_TO_CGM') return hasLocationRole('CGM');
+            return false;
+          };
+
+          $scope.canForward = function () {
+            var st = ($scope.status || 'DRAFT').toUpperCase();
+            if (st === 'DRAFT') {
+              return $scope.isEditable();
+            }
+            if (st === 'SUBMITTED_TO_DGM') return hasLocationRole('DGM');
+            if (st === 'SUBMITTED_TO_GM') return hasLocationRole('GM');
+            if (st === 'SUBMITTED_TO_CGM') return hasLocationRole('CGM');
+            if (st === 'SUBMITTED_TO_DOP') return $scope.currentUser.role === 'DOP' || $scope.currentUser.role === 'ADMIN';
+            return false;
+          };
+
+          $scope.canReturn = function () {
+            var st = ($scope.status || 'DRAFT').toUpperCase();
+            if (st === 'SUBMITTED_TO_DGM') return hasLocationRole('DGM');
+            if (st === 'SUBMITTED_TO_GM') return hasLocationRole('GM');
+            if (st === 'SUBMITTED_TO_CGM') return hasLocationRole('CGM');
+            if (st === 'SUBMITTED_TO_DOP') return $scope.currentUser.role === 'DOP' || $scope.currentUser.role === 'ADMIN';
+            return false;
+          };
+
+          $scope.getWorkflowStatusIcon = function() {
+            var st = ($scope.status || 'DRAFT').toUpperCase();
+            switch (st) {
+              case 'DRAFT': return '📝';
+              case 'SUBMITTED_TO_DGM': return '🔍';
+              case 'SUBMITTED_TO_GM': return '📋';
+              case 'SUBMITTED_TO_CGM': return '📑';
+              case 'SUBMITTED_TO_DOP': return '⚖️';
+              case 'APPROVED': return '✅';
+              default: return '📄';
+            }
+          };
+
+          $scope.getWorkflowOwnershipMessage = function() {
+            var st = ($scope.status || 'DRAFT').toUpperCase();
+            var prepName = $scope.preparedByName || $scope.officerPhone || 'Preparing Officer';
+            if (st === 'DRAFT') {
+              if ($scope.isEditable()) {
+                return '✏️ You are drafting this estimate. You can update items, save revisions, or forward to DGM for verification.';
+              }
+              return '⏳ In draft mode with ' + prepName + '. Awaiting drafting completion and submission to DGM.';
+            }
+            if (st === 'SUBMITTED_TO_DGM') {
+              if (hasLocationRole('DGM')) {
+                return '🔍 Pending your DGM Scrutiny. Review measurements and click "Forward to GM" or "Return to Manager" if modifications are needed.';
+              }
+              return '⏳ Pending DGM Scrutiny (Assigned to DGM for Circle ' + ($scope.circleName || 'N/A') + ').';
+            }
+            if (st === 'SUBMITTED_TO_GM') {
+              if (hasLocationRole('GM')) {
+                return '🔍 Pending your GM Recommendation. Click "Forward to CGM" or "Return to DGM".';
+              }
+              return '⏳ Pending GM Recommendation (Division ' + ($scope.division || 'N/A') + ').';
+            }
+            if (st === 'SUBMITTED_TO_CGM') {
+              if (hasLocationRole('CGM')) {
+                return '🔍 Pending your CGM Administrative Review. Click "Forward to DOP" or "Return to GM".';
+              }
+              return '⏳ Pending CGM Review (Zone ' + ($scope.zoneName || 'N/A') + ').';
+            }
+            if (st === 'SUBMITTED_TO_DOP') {
+              if ($scope.currentUser.role === 'DOP' || $scope.currentUser.role === 'ADMIN') {
+                return '🔍 Pending Final Technical Sanction. Click "Sanction / Approve" or "Return to CGM".';
+              }
+              return '⏳ Pending Final Technical Sanction by Director of Projects (DOP).';
+            }
+            if (st === 'APPROVED') {
+              return '✅ Technically Sanctioned and Approved by ' + ($scope.sanctionedByName || 'Director of Projects') + '.';
+            }
+            return 'Current Status: ' + st;
+          };
+
+
+          $scope.partITotal = function () { return Math.round(($scope.costOfMaterial + $scope.costOfCivilWork) * 100) / 100; };
+          $scope.gstAmount = function () { return Math.round(($scope.partITotal() * $scope.gstPercent / 100) * 100) / 100; };
+          $scope.grandTotal = function () { return Math.round(($scope.partITotal() + $scope.gstAmount() + ($scope.unforeseenAmount || 0)) * 100) / 100; };
 
           $scope.updateTotals = function () {
             estimateData.unforeseenAmount = $scope.unforeseenAmount;
             localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
             $scope.totalInWords = Utils.numberToWords($scope.grandTotal());
           };
-
           $scope.updateTotals();
 
           $scope.goBack = function () { window.location.href = 'index.html'; };
 
-          $scope.performWorkflowAction = function (actionType) {
+          // ── Revisions & Remarks Loading ──
+          $scope.loadRevisionsAndRemarks = function() {
+            if (!$scope.estimateId) return;
+            $http.get(API_BASE + '/estimates/' + $scope.estimateId + '/revisions').then(function(r) {
+              $scope.revisions = r.data || [];
+              if ($scope.revisions.length >= 2) {
+                $scope.diffV1 = $scope.revisions[1].revisionNumber;
+                $scope.diffV2 = $scope.revisions[0].revisionNumber;
+              } else if ($scope.revisions.length === 1) {
+                $scope.diffV1 = $scope.revisions[0].revisionNumber;
+                $scope.diffV2 = $scope.revisions[0].revisionNumber;
+              }
+            });
+
+            $http.get(API_BASE + '/estimates/' + $scope.estimateId + '/remarks').then(function(r) {
+              $scope.remarksList = r.data || [];
+            });
+          };
+
+          if ($scope.estimateId) {
+            $scope.loadRevisionsAndRemarks();
+          }
+
+          // ── Remarks Form Handlers ──
+          $scope.toggleTag = function(tag) {
+            var idx = $scope.selectedTags.indexOf(tag);
+            if (idx === -1) $scope.selectedTags.push(tag);
+            else $scope.selectedTags.splice(idx, 1);
+          };
+
+          $scope.submitNewRemark = function() {
+            if (!$scope.newRemarkText.trim() || !$scope.estimateId) return;
+            $scope.submittingRemark = true;
+            $http.post(API_BASE + '/estimates/' + $scope.estimateId + '/remarks', {
+              officerPhone: $scope.currentUser.phoneNumber,
+              remarks: $scope.newRemarkText.trim(),
+              tags: $scope.selectedTags.join(',')
+            }).then(function(r) {
+              $scope.submittingRemark = false;
+              $scope.newRemarkText = '';
+              $scope.selectedTags = [];
+              $scope.showAddRemarkForm = false;
+              $scope.loadRevisionsAndRemarks();
+              ModalService.alert('Observation Saved', 'Scrutiny observation logged to the remarks trail.');
+            }, function() {
+              $scope.submittingRemark = false;
+              ModalService.alert('Error', 'Could not post observation.');
+            });
+          };
+
+          $scope.scrollToRemarks = function() {
+            var el = document.getElementById('remarks-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          };
+
+          // ── Workflow Action Modal ──
+          $scope.openActionModal = function(actionType) {
             if (!$scope.estimateId) {
-              ModalService.alert('Required', 'Please save the estimate first.');
+              $scope.saveEstimateToDb(function(saved) {
+                if (saved && saved.id) {
+                  $scope.openActionModal(actionType);
+                }
+              });
               return;
             }
-            var actionLabel = actionType === 'FORWARD' ? 'forward/approve' : 'return';
-            ModalService.confirm('Confirm Action', 'Are you sure you want to ' + actionLabel + ' this estimate?', function () {
-              $scope.workflowActing = true;
-              $scope.apiError = null;
-              $http.post(API_BASE + '/estimates/' + $scope.estimateId + '/action', {
-                action: actionType, officerPhone: $scope.currentUser.phoneNumber
-              }).then(function (response) {
-                $scope.workflowActing = false;
-                var updated = response.data;
-                $scope.status = updated.status;
-                $scope.preparedByName = updated.preparedByName;
-                $scope.preparedByDesignation = updated.preparedByDesignation;
-                $scope.verifiedByName = updated.verifiedByName;
-                $scope.verifiedByDesignation = updated.verifiedByDesignation;
-                $scope.recommendedByName = updated.recommendedByName;
-                $scope.recommendedByDesignation = updated.recommendedByDesignation;
-                $scope.forwardedByName = updated.forwardedByName;
-                $scope.forwardedByDesignation = updated.forwardedByDesignation;
-                $scope.sanctionedByName = updated.sanctionedByName;
-                $scope.sanctionedByDesignation = updated.sanctionedByDesignation;
-                estimateData.id = updated.id;
-                estimateData.status = updated.status;
-                estimateData.preparedByName = updated.preparedByName;
-                estimateData.preparedByDesignation = updated.preparedByDesignation;
-                estimateData.verifiedByName = updated.verifiedByName;
-                estimateData.verifiedByDesignation = updated.verifiedByDesignation;
-                estimateData.recommendedByName = updated.recommendedByName;
-                estimateData.recommendedByDesignation = updated.recommendedByDesignation;
-                estimateData.forwardedByName = updated.forwardedByName;
-                estimateData.forwardedByDesignation = updated.forwardedByDesignation;
-                estimateData.sanctionedByName = updated.sanctionedByName;
-                estimateData.sanctionedByDesignation = updated.sanctionedByDesignation;
+            $scope.currentActionType = actionType;
+            $scope.actionRemarks = '';
+            $scope.selectedTags = actionType === 'RETURN' ? ['Measurement Correction'] : [];
+            $scope.actionModalVisible = true;
+          };
+
+          $scope.closeActionModal = function() {
+            $scope.actionModalVisible = false;
+          };
+
+          $scope.executeActionModal = function() {
+            var remarks = ($scope.actionRemarks || '').trim();
+            if ($scope.currentActionType === 'RETURN' && !remarks) {
+              remarks = 'Returned for revision / corrections';
+            }
+            $scope.workflowActing = true;
+            $scope.apiError = null;
+
+            $http.post(API_BASE + '/estimates/' + $scope.estimateId + '/action', {
+              action: $scope.currentActionType,
+              officerPhone: $scope.currentUser.phoneNumber,
+              remarks: remarks,
+              tags: $scope.selectedTags.join(',')
+            }).then(function (response) {
+              $scope.workflowActing = false;
+              $scope.actionModalVisible = false;
+              var updated = response.data;
+              $scope.status = updated.status;
+              $scope.lastRemarks = updated.lastRemarks;
+              $scope.preparedByName = updated.preparedByName;
+              $scope.preparedByDesignation = updated.preparedByDesignation;
+              $scope.verifiedByName = updated.verifiedByName;
+              $scope.verifiedByDesignation = updated.verifiedByDesignation;
+              $scope.recommendedByName = updated.recommendedByName;
+              $scope.recommendedByDesignation = updated.recommendedByDesignation;
+              $scope.forwardedByName = updated.forwardedByName;
+              $scope.forwardedByDesignation = updated.forwardedByDesignation;
+              $scope.sanctionedByName = updated.sanctionedByName;
+              $scope.sanctionedByDesignation = updated.sanctionedByDesignation;
+
+              estimateData.status = updated.status;
+              estimateData.version = updated.version;
+              estimateData.lastRemarks = updated.lastRemarks;
+              estimateData.preparedByName = updated.preparedByName;
+              estimateData.preparedByDesignation = updated.preparedByDesignation;
+              estimateData.verifiedByName = updated.verifiedByName;
+              estimateData.verifiedByDesignation = updated.verifiedByDesignation;
+              estimateData.recommendedByName = updated.recommendedByName;
+              estimateData.recommendedByDesignation = updated.recommendedByDesignation;
+              estimateData.forwardedByName = updated.forwardedByName;
+              estimateData.forwardedByDesignation = updated.forwardedByDesignation;
+              estimateData.sanctionedByName = updated.sanctionedByName;
+              estimateData.sanctionedByDesignation = updated.sanctionedByDesignation;
+              localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
+
+              $scope.loadRevisionsAndRemarks();
+              ModalService.alert('Success', 'Workflow action completed successfully! Status updated to ' + StatusService.getLabel($scope.status));
+            }, function(error) {
+              $scope.workflowActing = false;
+              var errMsg = error.data && typeof error.data === 'string' ? error.data : 'Action failed.';
+              $scope.apiError = errMsg;
+              ModalService.alert('Error', errMsg);
+            });
+          };
+
+          // ── Version History & Diff Modals ──
+          $scope.openVersionHistoryModal = function() {
+            $scope.loadRevisionsAndRemarks();
+            $scope.versionHistoryModalVisible = true;
+          };
+
+          $scope.closeVersionHistoryModal = function() {
+            $scope.versionHistoryModalVisible = false;
+          };
+
+          $scope.getSnapshotItemCount = function(rev) {
+            try {
+              var snap = JSON.parse(rev.snapshotJson);
+              return snap.items ? snap.items.length : 0;
+            } catch(e) { return 0; }
+          };
+
+          $scope.viewRevisionSnapshot = function(rev) {
+            try {
+              var snap = JSON.parse(rev.snapshotJson);
+              ModalService.alert('Revision ' + rev.revisionNumber + '.0 Snapshot',
+                'Name of Work: ' + (snap.nameOfWork || 'N/A') + '\n' +
+                'Items: ' + (snap.items ? snap.items.length : 0) + ' items\n' +
+                'Grand Total: ₹' + (snap.grandTotal ? snap.grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2}) : '0.00') + '\n' +
+                'Officer: ' + (rev.officerName || 'N/A') + ' (' + (rev.officerDesignation || rev.officerRole) + ')\n' +
+                'Timestamp: ' + Utils.formatDate(rev.createdAt) + '\n' +
+                'Change Note: ' + (rev.changeSummary || 'N/A'));
+            } catch(e) {
+              ModalService.alert('Error', 'Could not parse snapshot JSON');
+            }
+          };
+
+          $scope.restoreToRevision = function(rev) {
+            ModalService.confirm('Restore Version', 'Are you sure you want to restore estimate measurements to Revision ' + rev.revisionNumber + '.0? This will overwrite the current draft items with that version.', function() {
+              $http.post(API_BASE + '/estimates/' + $scope.estimateId + '/revisions/' + rev.revisionNumber + '/restore', null, {
+                params: { officerPhone: $scope.currentUser.phoneNumber }
+              }).then(function(r) {
+                var restored = r.data;
+                $scope.items = restored.items || [];
+                $scope.nameOfWork = restored.nameOfWork;
+                $scope.gstPercent = restored.gstPercent;
+                $scope.unforeseenAmount = restored.unforeseenAmount;
+                calculateItemAmounts();
+                $scope.updateTotals();
+                estimateData.items = restored.items;
+                estimateData.grandTotal = restored.grandTotal;
+                estimateData.version = restored.version;
                 localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
-                ModalService.alert('Success', 'Workflow action completed. New status: ' + StatusService.getLabel($scope.status));
-              }, function (error) {
-                $scope.workflowActing = false;
-                $scope.apiError = 'Failed: ' + (error.data || 'unknown error');
+                $scope.loadRevisionsAndRemarks();
+                $scope.closeVersionHistoryModal();
+                ModalService.alert('Restored', 'Estimate successfully restored to Revision ' + rev.revisionNumber + '.0');
+              }, function(err) {
+                ModalService.alert('Error', 'Failed to restore: ' + (err.data || 'Unauthorized or invalid status'));
               });
             });
           };
 
-          $scope.saveEstimateToDb = function () {
+          $scope.openDiffModal = function() {
+            $scope.diffModalVisible = true;
+            $scope.loadDiff();
+          };
+
+          $scope.closeDiffModal = function() {
+            $scope.diffModalVisible = false;
+          };
+
+          $scope.compareWithRevision = function(revNum) {
+            $scope.diffV1 = revNum;
+            $scope.diffV2 = $scope.revisions[0].revisionNumber;
+            $scope.closeVersionHistoryModal();
+            $scope.openDiffModal();
+          };
+
+          $scope.loadDiff = function() {
+            if (!$scope.estimateId || !$scope.diffV1 || !$scope.diffV2) return;
+            $http.get(API_BASE + '/estimates/' + $scope.estimateId + '/revisions/diff', {
+              params: { v1: $scope.diffV1, v2: $scope.diffV2 }
+            }).then(function(r) {
+              $scope.diffData = r.data || {};
+            });
+          };
+
+          $scope.saveEstimateToDb = function (callback) {
             $scope.saving = true;
             $scope.apiError = null;
             var payload = {
-              id: $scope.estimateId, nameOfWork: $scope.nameOfWork,
+              id: $scope.estimateId,
+              version: $scope.version,
+              nameOfWork: $scope.nameOfWork,
               gstPercent: parseFloat($scope.gstPercent) || 0,
               unforeseenAmount: parseFloat($scope.unforeseenAmount) || 0,
-              grandTotal: $scope.grandTotal(), items: $scope.items,
-              corp: $scope.corp, zoneName: $scope.zoneName, division: $scope.division,
-              circleName: $scope.circleName, wardName: $scope.wardName,
-              officerPhone: $scope.currentUser.phoneNumber
+              grandTotal: $scope.grandTotal(),
+              items: $scope.items,
+              corp: $scope.corp,
+              zoneName: $scope.zoneName,
+              division: $scope.division,
+              circleName: $scope.circleName,
+              wardName: $scope.wardName,
+              officerPhone: $scope.currentUser.phoneNumber,
+              lastRemarks: $scope.lastRemarks
             };
             $http.post(API_BASE + '/estimates', payload).then(function (response) {
               var saved = response.data;
               $scope.estimateId = saved.id;
+              $scope.version = saved.version || 0;
+              $scope.lastRemarks = saved.lastRemarks;
               estimateData.id = saved.id;
+              estimateData.version = saved.version;
+              estimateData.lastRemarks = saved.lastRemarks;
+              estimateData.createdAt = saved.createdAt;
               localStorage.setItem(APP_CONFIG.ESTIMATE_KEY, JSON.stringify(estimateData));
               $scope.saving = false;
-              ModalService.alert('Saved', 'Estimate saved successfully with ID: ' + saved.id);
+              $scope.loadRevisionsAndRemarks();
+              if (callback) {
+                callback(saved);
+              } else {
+                ModalService.alert('Saved', 'Estimate saved successfully with ID: #' + saved.id);
+              }
             }, function () {
               $scope.saving = false;
               $scope.apiError = 'Failed to save estimate. Make sure the server is running.';
@@ -647,11 +1355,12 @@
           };
 
           $scope.downloadExcel = function () {
-            function makeCell(val, isBold, align, showBorder, size, numFormat) {
+            function makeCell(val, isBold, align, showBorder, size, numFormat, bgColor) {
               var cell = { v: val };
               if (typeof val === 'number') { cell.t = 'n'; cell.z = numFormat || '#,##,##0.00'; }
               else { cell.t = 's'; }
               cell.s = { font: { name: 'Arial', sz: size || 10, bold: !!isBold }, alignment: { horizontal: align || 'left', vertical: 'center', wrapText: true } };
+              if (bgColor) { cell.s.fill = { fgColor: { rgb: bgColor } }; }
               if (showBorder) { cell.s.border = { top: { style: 'thin', color: { rgb: '000000' } }, bottom: { style: 'thin', color: { rgb: '000000' } }, left: { style: 'thin', color: { rgb: '000000' } }, right: { style: 'thin', color: { rgb: '000000' } } }; }
               return cell;
             }
@@ -702,33 +1411,91 @@
 
             // Sheet 3: General Abstract
             var absRows = [];
-            absRows.push([makeCell('GENERAL ABSTRACT',true,'center',false,14)].concat(Array(3).fill(null).map(function(){return makeCell('',false,'center',false);})));
-            absRows.push([makeCell('Name of Work: ' + $scope.nameOfWork,true,'left',false,9)].concat(Array(3).fill(null).map(function(){return makeCell('',false,'center',false);})));
+            absRows.push([makeCell('GENERAL ABSTRACT',true,'center',false,14)].concat(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);})));
+            absRows.push([makeCell('Name of Work: ' + $scope.nameOfWork,true,'left',false,9)].concat(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);})));
             var locStr = 'CORP: ' + ($scope.corp||'N/A') + ' | Zone: ' + ($scope.zoneName||'N/A') + ' | Div: ' + ($scope.division||'N/A') + ' | Circle: ' + ($scope.circleName||'N/A') + ' | Ward: ' + ($scope.wardName||'N/A');
-            absRows.push([makeCell(locStr,true,'left',false,9)].concat(Array(3).fill(null).map(function(){return makeCell('',false,'center',false);})));
-            absRows.push(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);}));
-            absRows.push([makeCell('Sl.No',true,'center',true,9),makeCell('Description',true,'left',true,9),makeCell('',true,'center',true,9),makeCell('Amount Rs.',true,'right',true,9)]);
-            absRows.push([makeCell('Part-I - Working Items',true,'left',true,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
-            absRows.push([makeCell(1,false,'center',true,null,'0'),makeCell('Cost of Material',false,'left',true),makeCell('',false,'center',true),makeCell($scope.costOfMaterial,false,'right',true)]);
-            absRows.push([makeCell(2,false,'center',true,null,'0'),makeCell('Cost of Civil work',false,'left',true),makeCell('',false,'center',true),makeCell($scope.costOfCivilWork,false,'right',true)]);
-            absRows.push([makeCell('Cost of Estimate : Part-I',true,'right',true,9)].concat(Array(2).fill(null).map(function(){return makeCell('',true,'right',true,9);})).concat([makeCell($scope.partITotal(),true,'right',true,9)]));
-            absRows.push([makeCell('Part-II - Reimbursible Items',true,'left',true,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
-            absRows.push([makeCell(3,false,'center',true,null,'0'),makeCell('GST @ ' + $scope.gstPercent + '%',false,'left',true),makeCell('Rs.',false,'center',true),makeCell($scope.gstAmount(),false,'right',true)]);
-            absRows.push([makeCell('Part-III: LS provisions',true,'left',true,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
-            absRows.push([makeCell(4,false,'center',true,null,'0'),makeCell('LS unforeseen items and rounding off',false,'left',true),makeCell('Rs.',false,'center',true),makeCell($scope.unforeseenAmount||0,false,'right',true)]);
-            absRows.push([makeCell(5,true,'center',true,null,'0'),makeCell('Grand Total (Part I + II + III)',true,'right',true,9),makeCell('Rs.',true,'center',true,9),makeCell($scope.grandTotal(),true,'right',true,9)]);
-            absRows.push(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);}));
-            absRows.push([makeCell($scope.totalInWords,true,'center',false,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'center',false);})));
-            absRows.push(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);}));
-            absRows.push([makeCell('Prepared by (AE):',true,'left',false),makeCell($scope.preparedByName||'Pending',false,'left',false),makeCell('Designation:',true,'right',false),makeCell($scope.preparedByDesignation||'N/A',false,'left',false)]);
-            absRows.push([makeCell('Verified by (DGM):',true,'left',false),makeCell($scope.verifiedByName||'Pending',false,'left',false),makeCell('Designation:',true,'right',false),makeCell($scope.verifiedByDesignation||'N/A',false,'left',false)]);
-            absRows.push([makeCell('Recommended by (GM):',true,'left',false),makeCell($scope.recommendedByName||'Pending',false,'left',false),makeCell('Designation:',true,'right',false),makeCell($scope.recommendedByDesignation||'N/A',false,'left',false)]);
-            absRows.push([makeCell('Reviewed by (CGM):',true,'left',false),makeCell($scope.forwardedByName||'Pending',false,'left',false),makeCell('Designation:',true,'right',false),makeCell($scope.forwardedByDesignation||'N/A',false,'left',false)]);
-            absRows.push([makeCell('Sanctioned by (DOP):',true,'left',false),makeCell($scope.sanctionedByName||'Pending',false,'left',false),makeCell('Designation:',true,'right',false),makeCell($scope.sanctionedByDesignation||'N/A',false,'left',false)]);
+            absRows.push([makeCell(locStr,true,'left',false,9)].concat(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);})));
+            absRows.push(Array(5).fill(null).map(function(){return makeCell('',false,'center',false);}));
+            absRows.push([makeCell('Sl.No',true,'center',true,9),makeCell('Description',true,'left',true,9),makeCell('',true,'center',true,9),makeCell('',true,'center',true,9),makeCell('Amount Rs.',true,'right',true,9)]);
+            absRows.push([makeCell('Part-I - Working Items',true,'left',true,9)].concat(Array(4).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
+            absRows.push([makeCell(1,false,'center',true,null,'0'),makeCell('Cost of Material',false,'left',true),makeCell('',false,'center',true),makeCell('',false,'center',true),makeCell($scope.costOfMaterial,false,'right',true)]);
+            absRows.push([makeCell(2,false,'center',true,null,'0'),makeCell('Cost of Civil work',false,'left',true),makeCell('',false,'center',true),makeCell('',false,'center',true),makeCell($scope.costOfCivilWork,false,'right',true)]);
+            absRows.push([makeCell('Cost of Estimate : Part-I',true,'right',true,9)].concat(Array(3).fill(null).map(function(){return makeCell('',true,'right',true,9);})).concat([makeCell($scope.partITotal(),true,'right',true,9)]));
+            absRows.push([makeCell('Part-II - Reimbursible Items',true,'left',true,9)].concat(Array(4).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
+            absRows.push([makeCell(3,false,'center',true,null,'0'),makeCell('GST @ ' + $scope.gstPercent + '%',false,'left',true),makeCell('Rs.',false,'center',true),makeCell('',false,'center',true),makeCell($scope.gstAmount(),false,'right',true)]);
+            absRows.push([makeCell('Part-III: LS provisions',true,'left',true,9)].concat(Array(4).fill(null).map(function(){return makeCell('',true,'left',true,9);})));
+            absRows.push([makeCell(4,false,'center',true,null,'0'),makeCell('LS unforeseen items and rounding off',false,'left',true),makeCell('Rs.',false,'center',true),makeCell('',false,'center',true),makeCell($scope.unforeseenAmount||0,false,'right',true)]);
+            absRows.push([makeCell(5,true,'center',true,null,'0'),makeCell('Grand Total (Part I + II + III)',true,'right',true,9),makeCell('Rs.',true,'center',true,9),makeCell('',true,'center',true,9),makeCell($scope.grandTotal(),true,'right',true,9)]);
+            absRows.push(Array(5).fill(null).map(function(){return makeCell('',false,'center',false);}));
+            absRows.push([makeCell($scope.totalInWords,true,'center',false,9)].concat(Array(4).fill(null).map(function(){return makeCell('',true,'center',false);})));
+            absRows.push(Array(5).fill(null).map(function(){return makeCell('',false,'center',false);}));
+
+            // Estimate metadata
+            var estIdStr = 'Estimate ID: ' + ($scope.estimateId || 'N/A');
+            var estStatusStr = 'Status: ' + ($scope.status || 'DRAFT');
+            var estVersionStr = 'Version: Rev ' + ($scope.revisions.length > 0 ? $scope.revisions[0].revisionNumber : ($scope.version || 1)) + '.0';
+            absRows.push([makeCell(estIdStr + '  |  ' + estStatusStr + '  |  ' + estVersionStr,true,'center',false,9)].concat(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);})));
+            var dateStr = 'Date Created: ';
+            if ($scope.createdAt) {
+              try {
+                var d = new Date($scope.createdAt);
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                var hh = d.getHours(), ampm = hh >= 12 ? 'PM' : 'AM';
+                hh = hh % 12 || 12;
+                var mm = d.getMinutes(); mm = mm < 10 ? '0' + mm : mm;
+                dateStr += d.getDate() + '-' + months[d.getMonth()] + '-' + d.getFullYear() + ' ' + hh + ':' + mm + ' ' + ampm;
+              } catch(e) { dateStr += $scope.createdAt; }
+            } else {
+              dateStr += new Date().toLocaleDateString('en-IN');
+            }
+            absRows.push([makeCell(dateStr,true,'center',false,9)].concat(Array(4).fill(null).map(function(){return makeCell('',false,'center',false);})));
+            absRows.push(Array(5).fill(null).map(function(){return makeCell('',false,'center',false);}));
+
+            // Authorisation section header
+            absRows.push([makeCell('AUTHORISATION / SIGNATURES',true,'center',true,11,'','7A7A38')].concat(Array(4).fill(null).map(function(){return makeCell('',true,'center',true,11,'','7A7A38');})));
+
+            // Signature table header
+            absRows.push([
+              makeCell('Sl.No',true,'center',true,9,'','A0C4DE'),
+              makeCell('Role',true,'left',true,9,'','A0C4DE'),
+              makeCell('Officer Name',true,'left',true,9,'','A0C4DE'),
+              makeCell('Designation',true,'left',true,9,'','A0C4DE'),
+              makeCell('Status',true,'center',true,9,'','A0C4DE')
+            ]);
+
+            // Signature data rows
+            var sigData = [
+              { role: 'Prepared by (AE)', name: $scope.preparedByName, desg: $scope.preparedByDesignation, signed: !!$scope.preparedByName, label: 'Signed' },
+              { role: 'Verified by (DGM)', name: $scope.verifiedByName, desg: $scope.verifiedByDesignation, signed: !!$scope.verifiedByName, label: 'Signed' },
+              { role: 'Recommended by (GM)', name: $scope.recommendedByName, desg: $scope.recommendedByDesignation, signed: !!$scope.recommendedByName, label: 'Signed' },
+              { role: 'Reviewed by (CGM)', name: $scope.forwardedByName, desg: $scope.forwardedByDesignation, signed: !!$scope.forwardedByName, label: 'Signed' },
+              { role: 'Sanctioned by (DOP)', name: $scope.sanctionedByName, desg: $scope.sanctionedByDesignation, signed: !!$scope.sanctionedByName, label: 'Approved' }
+            ];
+            sigData.forEach(function(s, i) {
+              var rowBg = i % 2 === 0 ? 'F0F7E8' : 'FFFFFF';
+              absRows.push([
+                makeCell(i + 1, false, 'center', true, null, '0', rowBg),
+                makeCell(s.role, false, 'left', true, null, null, rowBg),
+                makeCell(s.name || 'Pending', false, 'left', true, null, null, rowBg),
+                makeCell(s.desg || 'N/A', false, 'left', true, null, null, rowBg),
+                makeCell(s.signed ? '✓ ' + s.label : '○ Pending', false, 'center', true, null, null, rowBg)
+              ]);
+            });
 
             var ws3 = XLSX.utils.aoa_to_sheet(absRows);
-            ws3['!cols'] = [{wch:18},{wch:35},{wch:15},{wch:25}];
-            ws3['!merges'] = [{s:{r:0,c:0},e:{r:0,c:3}},{s:{r:1,c:0},e:{r:1,c:3}},{s:{r:2,c:0},e:{r:2,c:3}},{s:{r:5,c:0},e:{r:5,c:3}},{s:{r:9,c:0},e:{r:9,c:3}},{s:{r:11,c:0},e:{r:11,c:3}},{s:{r:15,c:0},e:{r:15,c:3}}];
+            ws3['!cols'] = [{wch:10},{wch:25},{wch:30},{wch:35},{wch:15}];
+            ws3['!merges'] = [
+              {s:{r:0,c:0},e:{r:0,c:4}},
+              {s:{r:1,c:0},e:{r:1,c:4}},
+              {s:{r:2,c:0},e:{r:2,c:4}},
+              {s:{r:5,c:0},e:{r:5,c:4}},
+              {s:{r:9,c:0},e:{r:9,c:4}},
+              {s:{r:11,c:0},e:{r:11,c:4}},
+              {s:{r:15,c:0},e:{r:15,c:4}},
+              {s:{r:17,c:0},e:{r:17,c:4}},
+              {s:{r:18,c:0},e:{r:18,c:4}},
+              {s:{r:20,c:0},e:{r:20,c:4}}
+            ];
 
             XLSX.utils.book_append_sheet(wb, ws1, 'Materials');
             XLSX.utils.book_append_sheet(wb, ws2, 'Civil Works');

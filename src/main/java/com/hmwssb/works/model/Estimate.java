@@ -85,9 +85,12 @@ public class Estimate {
     @Column(name = "sanctioned_by_designation", length = 100)
     private String sanctionedByDesignation;
 
+    @Column(name = "last_remarks", length = 1000)
+    private String lastRemarks;
+
     @Version
     @Column(name = "version")
-    private Long version;
+    private Long version = 0L;
 
     // ── Lifecycle Hook ──────────────────────────────────────────────────────
     @PrePersist
@@ -95,6 +98,9 @@ public class Estimate {
         this.createdAt = LocalDateTime.now();
         if (this.status == null) {
             this.status = "DRAFT";
+        }
+        if (this.version == null) {
+            this.version = 0L;
         }
     }
 
@@ -171,6 +177,9 @@ public class Estimate {
 
     public String getSanctionedByDesignation() { return sanctionedByDesignation; }
     public void setSanctionedByDesignation(String sanctionedByDesignation) { this.sanctionedByDesignation = sanctionedByDesignation; }
+
+    public String getLastRemarks() { return lastRemarks; }
+    public void setLastRemarks(String lastRemarks) { this.lastRemarks = lastRemarks; }
 
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }

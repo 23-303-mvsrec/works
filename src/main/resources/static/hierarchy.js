@@ -498,3 +498,6 @@ var WARD_HIERARCHY = {
     }
   }
 };
+if (typeof window !== 'undefined') {
+  window.WARD_HIERARCHY = WARD_HIERARCHY;
+}
