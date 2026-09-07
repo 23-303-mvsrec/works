@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Dashboard • HMWSSB Works Portal (V2)</title>
+  <link rel="stylesheet" href="styles/theme-v2.css">
+  <script src="app-v2.js"></script>
+</head>
+<body>
+  <div id="gov-app-header"></div>
+
+  <main id="main-content" class="gov-container">
+    <!-- Header Banner & Quick Action Buttons -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h2 style="font-size:20px; font-weight:800; color:var(--hmwssb-navy-900);">Engineering Works & Estimates Overview</h2>
+        <p style="font-size:12px; color:var(--slate-500); margin-top:2px;">
+          Hyderabad Metropolitan Water Supply and Sewerage Board • Real-time Monitoring & Measurement
+        </p>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <a href="measurement-v2.html" class="btn btn-primary">
+          <span>📐</span> New Measurement Book
+        </a>
+        <a href="ssr-v2.html" class="btn btn-secondary">
+          <span>📖</span> SSR Rate Master
+        </a>
+      </div>
+    </div>
+
+    <!-- Executive KPI Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card navy">
+        <div class="metric-icon">📑</div>
+        <div class="metric-info">
+          <h3>Total Estimates</h3>
+          <div class="value" id="stat-total-count">—</div>
+          <div class="meta">Registered in FY 2024-25</div>
+        </div>
+      </div>
+
+      <div class="metric-card warning">
+        <div class="metric-icon">⏳</div>
+        <div class="metric-info">
+          <h3>In Scrutiny / Review</h3>
+          <div class="value" id="stat-pending-count" style="color:var(--ashok-gold-700);">—</div>
+          <div class="meta">Awaiting Technical Sanction</div>
+        </div>
+      </div>
+
+      <div class="metric-card success">
+        <div class="metric-icon">✅</div>
+        <div class="metric-info">
+          <h3>Sanctioned Value</h3>
+          <div class="value" id="stat-approved-value" style="color:var(--tg-green-800);">—</div>
+          <div class="meta">Approved & Administratively Sanctioned</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">💧</div>
+        <div class="metric-info">
+          <h3>Active Master Items</h3>
+          <div class="value" id="stat-ssr-count">500+</div>
+          <div class="meta">Standard Schedule of Rates</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Workflow Launchpad -->
+    <div class="gov-card" style="background:linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%); border-color:var(--hmwssb-cyan-100); margin-bottom:24px;">
+      <div class="gov-card-body" style="padding:16px 20px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 style="font-size:14px; font-weight:800; color:var(--hmwssb-navy-900);">Fast Launchpad</h3>
+            <p style="font-size:12px; color:var(--slate-600);">Direct access to core engineering workflows and technical sanction desks</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="measurement-v2.html" class="btn btn-primary btn-sm">📐 1. Record Measurements</a>
+            <a href="abstract-v2.html" class="btn btn-amber btn-sm">📑 2. General Abstract & GST</a>
+            <a href="approvals-v2.html" class="btn btn-success btn-sm">✅ 3. Scrutiny & Sanctions</a>
+            <a href="admin.html" class="btn btn-secondary btn-sm">⚙️ Officer Setup</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Works Estimates Registry Table -->
+    <div class="gov-card">
+      <div class="gov-card-header">
+        <h2><span>📋</span> Registered Estimates & Works Directory</h2>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="search-filter" oninput="filterTable()" placeholder="Search by work or location..." class="form-control" style="width:240px; padding:5px 10px; font-size:12px;">
+          <select id="status-filter" onchange="filterTable()" class="form-control" style="width:160px; padding:5px 10px; font-size:12px;">
+            <option value="">All Statuses</option>
+            <option value="DRAFT">Draft</option>
+            <option value="SUBMITTED_TO_DGM">Pending DGM</option>
+            <option value="SUBMITTED_TO_GM">Pending GM</option>
+            <option value="SUBMITTED_TO_CGM">Pending CGM</option>
+            <option value="SUBMITTED_TO_DOP">Pending DOP</option>
+            <option value="APPROVED">Approved & Sanctioned</option>
+          </select>
+          <button onclick="loadEstimates()" class="btn btn-secondary btn-sm" title="Refresh list">🔄</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="gov-table" id="estimates-table">
+          <thead>
+            <tr>
+              <th style="width:55px;">ID</th>
+              <th>Name of Work</th>
+              <th>Corporation / Zone / Division</th>
+              <th>Circle & Ward</th>
+              <th>Prepared By</th>
+              <th style="width:130px; text-align:right;">Grand Total (₹)</th>
+              <th style="width:120px; text-align:center;">Workflow Status</th>
+              <th style="width:160px; text-align:center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="estimates-tbody">
+            <tr>
+              <td colspan="8" style="text-align:center; padding:30px; color:var(--slate-500);">
+                Loading official works estimates registry...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="gov-app-footer"></div>
+
+  <script>
+    var allEstimates = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      HMWSSB.UI.renderHeader('dashboard');
+      HMWSSB.UI.renderFooter();
+      loadEstimates();
+    });
+
+    async function loadEstimates() {
+      var tbody = document.getElementById('estimates-tbody');
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--slate-500);">Fetching live works records...</td></tr>';
+
+      try {
+        var user = HMWSSB.Auth.getUser();
+        var params = {};
+        if (user && user.phoneNumber && user.role !== 'ADMIN') {
+          params.officerPhone = user.phoneNumber;
+        }
+
+        var data = await HMWSSB.API.getEstimates(params);
+        allEstimates = Array.isArray(data) ? data : [];
+        updateMetrics(allEstimates);
+        renderTable(allEstimates);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#DC2626;">
+          Failed to load estimates from backend: ${err.message}.
+          <br><button onclick="loadEstimates()" class="btn btn-secondary btn-sm" style="margin-top:10px;">Retry</button>
+        </td></tr>`;
+      }
+    }
+
+    function updateMetrics(list) {
+      document.getElementById('stat-total-count').innerText = list.length;
+      var pending = list.filter(e => e.status && e.status !== 'DRAFT' && e.status !== 'APPROVED').length;
+      document.getElementById('stat-pending-count').innerText = pending;
+
+      var approvedTotal = list
+        .filter(e => e.status === 'APPROVED')
+        .reduce((sum, e) => sum + (Number(e.grandTotal) || 0), 0);
+      
+      if (approvedTotal >= 10000000) {
+        document.getElementById('stat-approved-value').innerText = '₹ ' + (approvedTotal / 10000000).toFixed(2) + ' Cr';
+      } else if (approvedTotal >= 100000) {
+        document.getElementById('stat-approved-value').innerText = '₹ ' + (approvedTotal / 100000).toFixed(2) + ' L';
+      } else {
+        document.getElementById('stat-approved-value').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(approvedTotal);
+      }
+    }
+
+    function renderTable(list) {
+      var tbody = document.getElementById('estimates-tbody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--slate-500);">
+          No estimates found matching criteria. Click <b>"New Measurement Book"</b> to draft an estimate.
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(est => {
+        var corpZone = [est.corp, est.zoneName, est.division].filter(Boolean).join(' • ') || '—';
+        var circleWard = [est.circleName, est.wardName].filter(Boolean).join(' / ') || '—';
+        var prep = est.preparedByName ? (est.preparedByName + (est.preparedByDesignation ? ` (${est.preparedByDesignation})` : '')) : '—';
+        var badge = HMWSSB.Utils.getStatusBadge(est.status);
+        var total = HMWSSB.Utils.formatCurrency(est.grandTotal);
+
+        return `
+          <tr>
+            <td class="center" style="font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);">#${est.id}</td>
+            <td style="font-weight:600; color:var(--slate-900);">${est.nameOfWork || 'Untitled Work'}</td>
+            <td style="font-size:12px; color:var(--slate-600);">${corpZone}</td>
+            <td style="font-size:12px; color:var(--slate-600);">${circleWard}</td>
+            <td style="font-size:12px; color:var(--slate-700);">${prep}</td>
+            <td class="num" style="color:var(--hmwssb-navy-900); font-weight:700;">₹ ${total}</td>
+            <td class="center">${badge}</td>
+            <td class="center">
+              <div style="display:flex; gap:6px; justify-content:center;">
+                <button onclick="openEstimate(${est.id}, 'measurement')" class="btn btn-outline btn-sm" title="Open Measurement Book">
+                  📐 MB
+                </button>
+                <button onclick="openEstimate(${est.id}, 'abstract')" class="btn btn-primary btn-sm" title="View General Abstract">
+                  📑 Abstract
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterTable() {
+      var q = document.getElementById('search-filter').value.toLowerCase().trim();
+      var st = document.getElementById('status-filter').value;
+
+      var filtered = allEstimates.filter(e => {
+        if (st && (e.status || 'DRAFT') !== st) return false;
+        if (q) {
+          var matchText = [e.nameOfWork, e.corp, e.zoneName, e.division, e.circleName, e.wardName, e.preparedByName]
+            .filter(Boolean).join(' ').toLowerCase();
+          return matchText.includes(q);
+        }
+        return true;
+      });
+
+      renderTable(filtered);
+    }
+
+    async function openEstimate(id, target) {
+      try {
+        var est = await HMWSSB.API.getEstimate(id);
+        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(est));
+        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(est));
+        if (target === 'measurement') {
+          window.location.href = 'measurement-v2.html?id=' + id;
+        } else {
+          window.location.href = 'abstract-v2.html?id=' + id;
+        }
+      } catch (e) {
+        alert('Could not open estimate: ' + e.message);
+      }
+    }
+  </script>
+</body>
+</html>
