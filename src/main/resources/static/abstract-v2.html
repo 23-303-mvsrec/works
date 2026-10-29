@@ -3,499 +3,1068 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>General Abstract & Sanction Workflow • HMWSSB Portal (V2)</title>
+  <title>General Abstract &amp; Technical Sanction • HMWSSB Works Portal (V2)</title>
   <link rel="stylesheet" href="styles/theme-v2.css">
+  <script src="hierarchy.js"></script>
   <script src="app-v2.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
-    .total-banner {
-      background: linear-gradient(135deg, #0A2540 0%, #061A30 100%);
-      color: #FFFFFF;
+    .abstract-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
       border-radius: 8px;
-      padding: 20px 24px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .title-header {
+      background: var(--hmwssb-navy-900);
+      color: #FFFFFF;
+      text-align: center;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .name-of-work-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      color: #1E293B;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .name-of-work-box .work-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .name-of-work-box .work-title span {
+      color: var(--hmwssb-blue-600);
+      font-weight: 800;
+      margin-right: 6px;
+    }
+    .hierarchy-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px dashed #CBD5E1;
+      font-size: 12px;
+      color: #475569;
+    }
+    .hierarchy-chips-grid strong {
+      color: #0F172A;
+    }
+    .abstract-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .abstract-table th, .abstract-table td {
+      border: 1px solid #CBD5E1;
+      padding: 8px 12px;
+    }
+    .abstract-table th {
+      background: var(--hmwssb-navy-900);
+      color: #FFFFFF;
+      font-weight: 700;
+      text-align: center;
+    }
+    .abstract-table .col-sno { width: 60px; text-align: center; }
+    .abstract-table .col-desc { width: auto; }
+    .abstract-table .col-rs { width: 50px; text-align: center; }
+    .abstract-table .col-amt { width: 150px; text-align: right; font-family: var(--font-mono); }
+    .part-header-row td {
+      background: #F1F5F9;
+      font-weight: 700;
+      color: var(--hmwssb-navy-900);
+    }
+    .part-i-total td {
+      background: #F8FAFC;
+      font-weight: 700;
+    }
+    .grand-total-row td {
+      background: var(--hmwssb-navy-900);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 14.5px;
+    }
+    .grand-total-row td .amt {
+      color: #A7F3D0;
+    }
+    .ls-input {
+      width: 120px;
+      text-align: right;
+      padding: 4px 8px;
+      border: 1px solid #94A3B8;
+      border-radius: 4px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      background: #FFFFFF;
+    }
+    .ls-input:focus {
+      border-color: var(--hmwssb-blue-600);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+    .words-box {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 13.5px;
+      margin-top: 16px;
       margin-bottom: 24px;
-      box-shadow: var(--shadow-md);
+      color: #166534;
+    }
+    .sig-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .sig-card {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+    }
+    .sig-card.signed {
+      background: #F0FDF4;
+      border-color: #86EFAC;
+    }
+    .sig-role {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .sig-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0F172A;
+    }
+    .sig-desig {
+      font-size: 11px;
+      color: #64748B;
+      margin-top: 2px;
+    }
+    .sig-status {
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .actions-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
-      border-left: 6px solid var(--tg-green-700);
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #E2E8F0;
     }
-    .rupee-words-box {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 6px;
-      padding: 8px 14px;
-      font-size: 13px;
-      color: #FEF3C7;
-      font-style: italic;
-      margin-top: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+    .tag-btn {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tag-btn:hover {
+      background: #E2E8F0;
+    }
+    .tag-btn.active {
+      background: #0284C7;
+      color: #FFFFFF;
+      border-color: #0284C7;
     }
     .remark-bubble {
-      background: var(--slate-50);
-      border-left: 3px solid var(--hmwssb-blue-600);
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
       padding: 10px 14px;
-      border-radius: 0 6px 6px 0;
       margin-bottom: 10px;
-      font-size: 12.5px;
     }
-    .print-signatures {
-      display: none;
+    .remark-bubble.return {
+      border-left: 4px solid #DC2626;
+      background: #FEF2F2;
+    }
+    .remark-bubble.forward {
+      border-left: 4px solid #0284C7;
+      background: #F0F9FF;
+    }
+    .remark-bubble.approved {
+      border-left: 4px solid #16A34A;
+      background: #F0FDF4;
     }
     @media print {
-      .print-signatures {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        margin-top: 60px;
-        text-align: center;
+      .no-print, #gov-app-header, #gov-breadcrumbs, #gov-app-footer, .actions-bar, .modal-backdrop {
+        display: none !important;
       }
-      .sig-line {
-        border-top: 1px solid #000;
-        padding-top: 6px;
-        font-size: 10pt;
-        font-weight: 700;
-      }
+      body { background: #FFFFFF; padding: 0; }
+      .abstract-container { border: none; box-shadow: none; padding: 0; max-width: 100%; }
+      .title-header { background: transparent; color: #000; border-bottom: 2px solid #000; padding: 0 0 6px 0; }
+      .abstract-table th { background: #E2E8F0 !important; color: #000 !important; }
+      .ls-input { border: none; text-align: right; }
+      .sig-grid { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; }
     }
   </style>
 </head>
 <body>
   <div id="gov-app-header"></div>
+  <div id="gov-breadcrumbs"></div>
 
-  <main id="main-content" class="gov-container">
-    <!-- Work Title & Navigation Header -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-      <div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <h2 style="font-size:19px; font-weight:800; color:var(--hmwssb-navy-900);">
-            📑 General Abstract & Technical Sanction Sheet
-          </h2>
-          <span id="badge-status"></span>
+  <main id="main-content" class="gov-container" style="padding-top: 14px; padding-bottom: 40px;">
+
+    <!-- Top Tools & Stage Visualizer -->
+    <div class="gov-card no-print" style="margin-bottom: 16px;">
+      <div class="gov-card-body" style="padding: 12px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span id="badge-status-container"></span>
+          <span style="font-size:12px; color:var(--slate-500); font-weight:600;" id="est-meta-label">Loading estimate...</span>
         </div>
-        <p id="est-meta-line" style="font-size:12px; color:var(--slate-500); margin-top:2px;">
-          Loading estimate details...
-        </p>
-      </div>
-
-      <div style="display:flex; gap:8px;" class="no-print">
-        <a href="measurement-v2.html" class="btn btn-secondary">← Back to MB Sheet</a>
-        <button onclick="saveEstimateToDb()" class="btn btn-primary" id="btn-save-db">💾 Save to Database</button>
-        <button onclick="window.print()" class="btn btn-outline">🖨️ Official Print / Export</button>
-      </div>
-    </div>
-
-    <!-- Multi-Stage Workflow Visualizer -->
-    <div class="gov-card no-print">
-      <div class="gov-card-body" style="padding:14px 20px;">
-        <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); margin-bottom:4px;">
-          Official Technical Sanction Workflow
-        </div>
-        <div class="workflow-stages" id="workflow-bar">
-          <div class="stage-step" id="stage-DRAFT">
-            <div class="step-circle">1</div>
-            <div class="step-label">Draft (AE)</div>
-          </div>
-          <div class="stage-step" id="stage-SUBMITTED_TO_DGM">
-            <div class="step-circle">2</div>
-            <div class="step-label">DGM (EE)</div>
-          </div>
-          <div class="stage-step" id="stage-SUBMITTED_TO_GM">
-            <div class="step-circle">3</div>
-            <div class="step-label">GM (SE)</div>
-          </div>
-          <div class="stage-step" id="stage-SUBMITTED_TO_CGM">
-            <div class="step-circle">4</div>
-            <div class="step-label">CGM (CE)</div>
-          </div>
-          <div class="stage-step" id="stage-SUBMITTED_TO_DOP">
-            <div class="step-circle">5</div>
-            <div class="step-label">DOP (Director)</div>
-          </div>
-          <div class="stage-step" id="stage-APPROVED">
-            <div class="step-circle">6</div>
-            <div class="step-label">Sanctioned</div>
-          </div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="goToMb()" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7l-5-5a1 1 0 0 0-1.4 0l-12 12a1 1 0 0 0 0 1.4l5 5a1 1 0 0 0 1.4 0l12-12a1 1 0 0 0 0-1.4z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/></svg>
+            Back to Measurement Sheet
+          </button>
+          <button onclick="openVersionHistoryModal()" class="btn btn-secondary btn-sm" id="btn-ver-history" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Version History
+          </button>
+          <button onclick="scrollToRemarks()" class="btn btn-secondary btn-sm" id="btn-remarks-scroll" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Remarks Trail
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Official Grand Total Banner with Legal Words -->
-    <div class="total-banner">
-      <div>
-        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#93C5FD;">
-          Total Abstract Estimate Value (All Inclusive)
+    <!-- General Abstract Container -->
+    <div class="abstract-container">
+      <div class="title-header">
+        General Abstract
+      </div>
+
+      <!-- Name of Work & Location Hierarchy Details -->
+      <div class="name-of-work-box">
+        <div class="work-title">
+          <span>Name of Work:</span>
+          <span id="disp-work-name" style="color:#0F172A; font-weight:700;">Loading...</span>
         </div>
-        <div style="font-size:32px; font-weight:800; font-family:var(--font-mono); color:#FFFFFF; margin-top:2px;" id="disp-grand-total">
-          ₹ 0.00
-        </div>
-        <div class="rupee-words-box" id="disp-rupee-words">
-          Rupees Zero Only
+        <div class="hierarchy-chips-grid">
+          <div><strong>CORP:</strong> <span id="disp-corp">—</span></div>
+          <div><strong>Zone Name:</strong> <span id="disp-zone">—</span></div>
+          <div><strong>DIVISION:</strong> <span id="disp-division">—</span></div>
+          <div><strong>Circle Name:</strong> <span id="disp-circle">—</span></div>
+          <div><strong>Ward Name:</strong> <span id="disp-ward">—</span></div>
         </div>
       </div>
 
-      <!-- Quick Action Buttons for Supervising Officers -->
-      <div style="display:flex; flex-direction:column; gap:8px;" class="no-print" id="workflow-actions-panel">
-        <button onclick="forwardWorkflow()" class="btn btn-success" id="btn-forward">
-          ⏩ Forward to Next Authority
-        </button>
-        <button onclick="returnWorkflow()" class="btn btn-amber" id="btn-return">
-          ↩ Return with Remarks
-        </button>
-      </div>
-    </div>
+      <!-- Exact General Abstract Table -->
+      <table class="abstract-table">
+        <thead>
+          <tr>
+            <th class="col-sno">Sl.No</th>
+            <th class="col-desc">Description</th>
+            <th class="col-rs"></th>
+            <th class="col-amt">Amount Rs.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Part-I Section -->
+          <tr class="part-header-row">
+            <td colspan="4">Part-I - Working Items</td>
+          </tr>
+          <tr>
+            <td class="col-sno">1</td>
+            <td>Cost of Material</td>
+            <td class="col-rs"></td>
+            <td class="col-amt" id="disp-material-amt">0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sno">2</td>
+            <td>Cost of Civil work</td>
+            <td class="col-rs"></td>
+            <td class="col-amt" id="disp-civil-amt">0.00</td>
+          </tr>
+          <tr class="part-i-total">
+            <td class="col-sno"></td>
+            <td style="text-align:right; font-weight:700;">Cost of Estimate : Part-I</td>
+            <td class="col-rs"></td>
+            <td class="col-amt" style="font-weight:700;" id="disp-part1-total">0.00</td>
+          </tr>
 
-    <!-- General Abstract Cost Breakdown -->
-    <div class="gov-card">
-      <div class="gov-card-header">
-        <h2><span>📊</span> Part-I: Measured Work Items (Abstract of Quantities)</h2>
-      </div>
-      <div class="table-responsive">
-        <table class="gov-table" id="abstract-table">
-          <thead>
-            <tr>
-              <th style="width:45px;">S.No</th>
-              <th style="width:80px;">Type</th>
-              <th>Description of Item of Work</th>
-              <th style="width:100px; text-align:right;">Quantity</th>
-              <th style="width:70px;">Unit</th>
-              <th style="width:110px; text-align:right;">Rate (₹)</th>
-              <th style="width:130px; text-align:right;">Amount (₹)</th>
-            </tr>
-          </thead>
-          <tbody id="abstract-tbody"></tbody>
-        </table>
-      </div>
-    </div>
+          <!-- Part-II Section -->
+          <tr class="part-header-row">
+            <td colspan="4">Part-II - Reimbursible Items</td>
+          </tr>
+          <tr>
+            <td class="col-sno">3</td>
+            <td>GST @ <span id="disp-gst-percent">0</span>%</td>
+            <td class="col-rs">Rs.</td>
+            <td class="col-amt" id="disp-gst-amt">0.00</td>
+          </tr>
 
-    <!-- Part-II & Part-III Provisions -->
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
-      <!-- Statutory Provisions Grid -->
-      <div class="gov-card">
-        <div class="gov-card-header">
-          <h2><span>⚖️</span> Part-II: Statutory Additions</h2>
-        </div>
-        <div class="gov-card-body" style="padding:14px;">
-          <table style="width:100%; font-size:13px;">
-            <tr style="border-bottom:1px solid var(--slate-200); height:40px;">
-              <td><b>Part-I Civil Total:</b></td>
-              <td style="text-align:right; font-family:var(--font-mono); font-weight:700;" id="val-part1">₹ 0.00</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--slate-200); height:44px;">
-              <td>
-                <b>GST Rate Applied:</b>
-                <select id="sel-gst" onchange="recomputeAll()" class="form-control" style="width:80px; display:inline-block; margin-left:8px; padding:3px 6px;">
-                  <option value="0">0%</option>
-                  <option value="5">5%</option>
-                  <option value="12">12%</option>
-                  <option value="18" selected>18%</option>
-                </select>
-              </td>
-              <td style="text-align:right; font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);" id="val-gst">₹ 0.00</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--slate-200); height:40px;">
-              <td><b>Labour Welfare Cess (1%):</b></td>
-              <td style="text-align:right; font-family:var(--font-mono); font-weight:600;" id="val-cess">₹ 0.00</td>
-            </tr>
-            <tr style="height:40px;">
-              <td><b>Quality Control (0.5%):</b></td>
-              <td style="text-align:right; font-family:var(--font-mono); font-weight:600;" id="val-qc">₹ 0.00</td>
-            </tr>
-          </table>
-        </div>
+          <!-- Part-III Section -->
+          <tr class="part-header-row">
+            <td colspan="4">Part-III: LS provisions</td>
+          </tr>
+          <tr>
+            <td class="col-sno">4</td>
+            <td>LS unforeseen items and rounding off</td>
+            <td class="col-rs">Rs.</td>
+            <td class="col-amt" style="padding: 4px 6px;">
+              <input type="number" step="0.01" min="0" class="ls-input" id="unforeseen-input" value="0.00" oninput="onUnforeseenInput(this.value)">
+            </td>
+          </tr>
+
+          <!-- Grand Total Row -->
+          <tr class="grand-total-row">
+            <td class="col-sno">5</td>
+            <td style="text-align:right; text-transform:uppercase;">Grand Total (Part I + II + III)</td>
+            <td class="col-rs" style="color:#A7F3D0;">Rs.</td>
+            <td class="col-amt"><span class="amt" id="disp-grand-total">0.00</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Words Box -->
+      <div class="words-box" id="disp-rupee-words">
+        Rupees Zero Only
       </div>
 
-      <!-- Contingency & Unforeseen -->
-      <div class="gov-card">
-        <div class="gov-card-header">
-          <h2><span>🛡️</span> Part-III: Contingencies & Unforeseen Items</h2>
-        </div>
-        <div class="gov-card-body" style="padding:14px;">
-          <div class="form-group" style="margin-bottom:14px;">
-            <label>Lumpsum (LS) Unforeseen Provision (₹)</label>
-            <input type="number" id="unforeseen-input" step="100" class="form-control" value="0" oninput="recomputeAll()" placeholder="Enter unforeseen items amount">
-            <span style="font-size:11px; color:var(--slate-500); margin-top:3px;">
-              Provisions for unexpected site obstructions, utility diversions, or emergency night shifts.
-            </span>
+      <!-- Multi-Signature Block -->
+      <div class="sig-grid" id="sig-grid-container">
+        <!-- AE -->
+        <div class="sig-card" id="sig-card-ae">
+          <div class="sig-role">Prepared by </div>
+          <div id="sig-ae-content">
+            <div class="sig-name">—</div>
+            <div class="sig-desig">Manager (Engg)</div>
+            <div class="sig-status" style="color:var(--slate-400);">Pending Signature</div>
           </div>
+        </div>
+        <!-- DGM -->
+        <div class="sig-card" id="sig-card-dgm">
+          <div class="sig-role">Verified by (DGM)</div>
+          <div id="sig-dgm-content">
+            <div class="sig-name">—</div>
+            <div class="sig-desig">Deputy General Manager</div>
+            <div class="sig-status" style="color:var(--slate-400);">Pending Scrutiny</div>
+          </div>
+        </div>
+        <!-- GM -->
+        <div class="sig-card" id="sig-card-gm">
+          <div class="sig-role">Recommended by (GM)</div>
+          <div id="sig-gm-content">
+            <div class="sig-name">—</div>
+            <div class="sig-desig">General Manager</div>
+            <div class="sig-status" style="color:var(--slate-400);">Pending Recom.</div>
+          </div>
+        </div>
+        <!-- CGM -->
+        <div class="sig-card" id="sig-card-cgm">
+          <div class="sig-role">Reviewed by (CGM)</div>
+          <div id="sig-cgm-content">
+            <div class="sig-name">—</div>
+            <div class="sig-desig">Chief General Manager</div>
+            <div class="sig-status" style="color:var(--slate-400);">Pending Review</div>
+          </div>
+        </div>
+        <!-- DOP -->
+        <div class="sig-card" id="sig-card-dop">
+          <div class="sig-role">Sanctioned by (DOP)</div>
+          <div id="sig-dop-content">
+            <div class="sig-name">—</div>
+            <div class="sig-desig">Director of Projects</div>
+            <div class="sig-status" style="color:var(--slate-400);">Pending Sanction</div>
+          </div>
+        </div>
+      </div>
 
-          <div style="background:var(--slate-100); border-radius:6px; padding:10px 14px;">
-            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px;">
-              <span>Net Sanctioned Amount:</span>
-              <span id="val-net-sanction" style="font-family:var(--font-mono); color:var(--tg-green-800);">₹ 0.00</span>
+      <!-- Scrutiny Remarks Trail Panel -->
+      <div class="gov-card no-print" id="remarks-section" style="margin-top: 24px; border: 1px solid #CBD5E1;">
+        <div class="gov-card-header" style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+          <h3 style="font-size:13.5px; font-weight:700; margin:0; color:#1E293B; display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Scrutiny Observations &amp; Remarks Trail
+          </h3>
+          <button onclick="toggleRemarkForm()" class="btn btn-secondary btn-sm" id="btn-toggle-remark">+ Add Scrutiny Note</button>
+        </div>
+        <div class="gov-card-body" style="padding: 14px;">
+          <!-- Inline Form -->
+          <div id="new-remark-form" style="display:none; background:#F0F9FF; border:1px solid #BAE6FD; border-radius:6px; padding:12px; margin-bottom:14px;">
+            <div style="font-size:11.5px; font-weight:700; color:#0369A1; margin-bottom:6px;">Quick Observation Tags:</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;" id="inline-tags-container"></div>
+            <textarea id="inline-remark-text" class="form-control" rows="2" placeholder="Enter official scrutiny note or observation..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+              <button onclick="toggleRemarkForm()" class="btn btn-secondary btn-sm">Cancel</button>
+              <button onclick="submitInlineRemark()" class="btn btn-primary btn-sm" id="btn-submit-inline">Post Observation</button>
             </div>
           </div>
+
+          <div id="remarks-list-container">
+            <p style="color:var(--slate-500); font-size:12px; text-align:center; padding:10px 0;">Loading scrutiny remarks...</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Scrutiny Notes & Remarks Trail -->
-    <div class="gov-card no-print">
-      <div class="gov-card-header">
-        <h2><span>📝</span> Scrutiny Remarks & Administrative Audit Trail</h2>
-        <button onclick="addScrutinyNote()" class="btn btn-secondary btn-sm">➕ Add Note</button>
-      </div>
-      <div class="gov-card-body">
-        <div id="remarks-container">
-          <p style="color:var(--slate-500); font-size:12px;">No official remarks registered for this estimate yet.</p>
+      <!-- Action Buttons Panel -->
+      <div class="actions-bar no-print">
+        <button class="btn btn-secondary" onclick="goToMb()" style="display:inline-flex; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Measurement Sheet
+        </button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="saveEstimateToDb()" id="btn-save-db" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Estimate
+          </button>
+          <button class="btn btn-success" onclick="openActionModal('FORWARD')" id="btn-forward-modal" style="display:none; font-weight:700; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Forward Estimate
+          </button>
+          <button class="btn btn-danger" onclick="openActionModal('RETURN')" id="btn-return-modal" style="display:none; font-weight:700; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            Return Estimate
+          </button>
+          <button class="btn btn-outline" onclick="window.print()" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Official Print
+          </button>
+          <button class="btn btn-outline" onclick="downloadExcel()" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Sheet
+          </button>
         </div>
       </div>
+
     </div>
 
-    <!-- Official Government Print Signature Blocks -->
-    <div class="print-signatures">
-      <div>
-        <div class="sig-line">Prepared by (AE / Manager)</div>
-        <div style="font-size:9pt; color:#555;">HMWSSB Section Office</div>
-      </div>
-      <div>
-        <div class="sig-line">Verified by (EE / DGM)</div>
-        <div style="font-size:9pt; color:#555;">HMWSSB Sub-Division</div>
-      </div>
-      <div>
-        <div class="sig-line">Recommended by (SE / GM)</div>
-        <div style="font-size:9pt; color:#555;">HMWSSB Circle Office</div>
-      </div>
-      <div>
-        <div class="sig-line">Sanctioned by (CE / CGM)</div>
-        <div style="font-size:9pt; color:#555;">Technical Sanction Authority</div>
-      </div>
-    </div>
   </main>
 
   <div id="gov-app-footer"></div>
 
+  <!-- ── 1. Themed Workflow Action Modal (Forward / Return with Quick Tags) ── -->
+  <div class="modal-backdrop" id="action-modal-backdrop" style="display:none;">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header" id="action-modal-header" style="background: var(--hmwssb-navy-900);">
+        <h3 class="modal-title" id="action-modal-title" style="color:#FFFFFF;">Forward Estimate for Scrutiny / Approval</h3>
+        <button type="button" class="modal-close-btn" onclick="closeActionModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px; font-weight:600; color:#1E293B; margin-bottom:10px;" id="action-modal-prompt">
+          Add official scrutiny observations / notes (optional):
+        </p>
+
+        <div style="margin-bottom:12px;">
+          <div style="font-size:11px; font-weight:700; color:#64748B; margin-bottom:6px;">Quick Observation Tags:</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;" id="modal-tags-container"></div>
+        </div>
+
+        <div class="form-group">
+          <textarea id="action-remarks-text" class="form-control" rows="4" placeholder="Enter remarks or instructions..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeActionModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-action" onclick="executeWorkflowAction()">Confirm Action</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. Themed Version History Modal ── -->
+  <div class="modal-backdrop" id="history-modal-backdrop" style="display:none;">
+    <div class="modal-box" style="max-width: 700px;">
+      <div class="modal-header" style="background: var(--hmwssb-navy-900);">
+        <h3 class="modal-title" style="color:#FFFFFF; display:flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Estimate Version History &amp; Revisions
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeVersionHistoryModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="history-modal-body" style="max-height: 400px; overflow-y:auto;">
+        <p style="text-align:center; color:var(--slate-500); padding:20px;">Loading revisions...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeVersionHistoryModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     var currentEstimate = null;
+    var currentActionType = 'FORWARD';
+    var selectedModalTags = [];
+    var selectedInlineTags = [];
+    var remarksList = [];
+    var revisionsList = [];
 
-    document.addEventListener('DOMContentLoaded', function () {
+    var SCRUTINY_TAGS = [
+      'Measurement Correction',
+      'Rate Adjustment',
+      'Scope Modification',
+      'Item Addition',
+      'Item Deletion',
+      'Calculation Error',
+      'SSR Non-Compliance',
+      'Administrative Direction',
+      'Site Inspection Finding',
+      'Drawing Discrepancy',
+      'Contingency Revision',
+      'Compliance Cleared',
+      'Specifications Verified',
+      'Hierarchy Verification'
+    ];
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      var user = HMWSSB.Auth.requireLogin();
+      if (!user) return;
+
       HMWSSB.UI.renderHeader('abstract');
+      HMWSSB.UI.renderBreadcrumbs([
+        { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+        { label: 'Estimate Preparation', url: 'measurement-v2.html' },
+        { label: 'General Abstract' }
+      ]);
       HMWSSB.UI.renderFooter();
-      loadEstimate();
+
+      renderTagButtons('modal-tags-container', selectedModalTags, toggleModalTag);
+      renderTagButtons('inline-tags-container', selectedInlineTags, toggleInlineTag);
+
+      await loadEstimate();
     });
 
-    function loadEstimate() {
-      var raw = localStorage.getItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY) || localStorage.getItem(HMWSSB.CONFIG.ESTIMATE_KEY);
-      if (raw) {
+    function renderTagButtons(containerId, tagArray, toggleFn) {
+      var c = document.getElementById(containerId);
+      if (!c) return;
+      c.innerHTML = '';
+      SCRUTINY_TAGS.forEach(function (tag) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tag-btn' + (tagArray.indexOf(tag) !== -1 ? ' active' : '');
+        btn.textContent = tag;
+        btn.onclick = function () { toggleFn(tag); };
+        c.appendChild(btn);
+      });
+    }
+
+    function toggleModalTag(tag) {
+      var idx = selectedModalTags.indexOf(tag);
+      if (idx === -1) selectedModalTags.push(tag);
+      else selectedModalTags.splice(idx, 1);
+      renderTagButtons('modal-tags-container', selectedModalTags, toggleModalTag);
+    }
+
+    function toggleInlineTag(tag) {
+      var idx = selectedInlineTags.indexOf(tag);
+      if (idx === -1) selectedInlineTags.push(tag);
+      else selectedInlineTags.splice(idx, 1);
+      renderTagButtons('inline-tags-container', selectedInlineTags, toggleInlineTag);
+    }
+
+    async function loadEstimate() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var estId = urlParams.get('id');
+
+      if (estId) {
         try {
-          currentEstimate = JSON.parse(raw);
-          populateEstimate();
-          return;
-        } catch (e) {}
-      }
-
-      // Default fallback sample
-      currentEstimate = {
-        nameOfWork: 'Laying 200mm Dia SWG Sewer Line at Ward 101, Div VI',
-        corp: 'GHMC',
-        zoneName: 'Central Zone',
-        division: 'Division VI',
-        circleName: 'Circle II',
-        wardName: 'Ward 101',
-        status: 'DRAFT',
-        gstPercent: 18.0,
-        unforeseenAmount: 5000.0,
-        items: [
-          { sno: 1, isMaterial: 'No', description: 'Earthwork excavation in all classes of soils for trenches...', quantity: 202.5, unit: 'CUM', rate: 185.00, amount: 37462.50 },
-          { sno: 2, isMaterial: 'Yes', description: 'Supply and delivery of 200mm dia SWG pipes (SP-1) per RMT...', quantity: 150.0, unit: 'RMT', rate: 742.00, amount: 111300.00 }
-        ]
-      };
-      populateEstimate();
-    }
-
-    function populateEstimate() {
-      var meta = [
-        currentEstimate.corp,
-        currentEstimate.zoneName,
-        currentEstimate.division,
-        currentEstimate.circleName,
-        currentEstimate.wardName
-      ].filter(Boolean).join(' • ');
-
-      document.getElementById('est-meta-line').innerText = (currentEstimate.nameOfWork || 'Estimate') + ' (' + (meta || 'General Location') + ')';
-      document.getElementById('badge-status').innerHTML = HMWSSB.Utils.getStatusBadge(currentEstimate.status);
-
-      if (currentEstimate.gstPercent !== undefined) {
-        document.getElementById('sel-gst').value = String(currentEstimate.gstPercent);
-      }
-      if (currentEstimate.unforeseenAmount !== undefined) {
-        document.getElementById('unforeseen-input').value = currentEstimate.unforeseenAmount;
-      }
-
-      updateWorkflowBar(currentEstimate.status || 'DRAFT');
-      renderItemsTable();
-      recomputeAll();
-      if (currentEstimate.id) loadRemarks(currentEstimate.id);
-    }
-
-    function updateWorkflowBar(status) {
-      var stages = ['DRAFT', 'SUBMITTED_TO_DGM', 'SUBMITTED_TO_GM', 'SUBMITTED_TO_CGM', 'SUBMITTED_TO_DOP', 'APPROVED'];
-      var activeIdx = stages.indexOf(status);
-      if (activeIdx === -1) activeIdx = 0;
-
-      stages.forEach((st, idx) => {
-        var el = document.getElementById('stage-' + st);
-        if (el) {
-          el.classList.remove('active', 'completed');
-          if (idx < activeIdx) el.classList.add('completed');
-          else if (idx === activeIdx) el.classList.add('active');
+          currentEstimate = await HMWSSB.API.getEstimate(estId);
+        } catch (e) {
+          HMWSSB.UI.showToast('Could not load estimate #' + estId + ': ' + e.message, 'error');
         }
-      });
+      }
+
+      if (!currentEstimate) {
+        currentEstimate = HMWSSB.Storage.loadDraft();
+      }
+
+      if (!currentEstimate) {
+        HMWSSB.UI.showToast('No active estimate draft found. Redirecting to measurement sheet...', 'warning');
+        setTimeout(function () { window.location.href = 'measurement-v2.html'; }, 1000);
+        return;
+      }
+
+      var user = HMWSSB.Auth.getUser();
+      var isManager = (user && (user.role || '').toUpperCase() === 'MANAGER');
+
+      // If draft is unsaved (new estimate), ensure jurisdiction is aligned with active manager's scope
+      if (user && !currentEstimate.id) {
+        currentEstimate.officerPhone = user.phoneNumber;
+        if (isManager) {
+          if (!currentEstimate.wardName || !HMWSSB.LocationScope.isManagerAuthorizedForWard(user, currentEstimate.wardName)) {
+            var activeOpt = HMWSSB.LocationScope.getDefaultEstimateOption(user);
+            if (activeOpt) {
+              currentEstimate.corp = activeOpt.corp || currentEstimate.corp || 'MMC';
+              currentEstimate.zoneName = activeOpt.zone || currentEstimate.zoneName || 'LB Nagar';
+              currentEstimate.division = activeOpt.division || currentEstimate.division || '5';
+              currentEstimate.circleName = activeOpt.circle || currentEstimate.circleName || '';
+              currentEstimate.wardName = activeOpt.ward || '';
+              HMWSSB.Storage.saveDraft(currentEstimate);
+            }
+          }
+        }
+      }
+
+      // Re-run calculations for consistency
+      HMWSSB.Calculations.recalculate(currentEstimate);
+
+      renderEstimateDisplay();
+      updateWorkflowControls();
+      if (urlParams.get('openModal')) {
+        openActionModal('FORWARD');
+      }
+      if (currentEstimate.id) {
+        loadRemarks(currentEstimate.id);
+        loadRevisions(currentEstimate.id);
+      }
     }
 
-    function renderItemsTable() {
-      var tbody = document.getElementById('abstract-tbody');
-      tbody.innerHTML = '';
-      var items = currentEstimate.items || [];
+    function renderEstimateDisplay() {
+      var est = currentEstimate;
+      document.getElementById('disp-work-name').textContent = est.nameOfWork || est.workName || 'Untitled Work';
+      document.getElementById('disp-corp').textContent = est.corp || '—';
+      document.getElementById('disp-zone').textContent = est.zoneName || '—';
+      document.getElementById('disp-division').textContent = est.division ? ('Div ' + est.division) : '—';
+      document.getElementById('disp-circle').textContent = est.circleName || '—';
+      document.getElementById('disp-ward').textContent = est.wardName || '—';
 
-      items.forEach((it, idx) => {
-        var tr = document.createElement('tr');
-        var isMat = (it.isMaterial === 'Yes' || it.isMaterial === true);
-        tr.innerHTML = `
-          <td class="center" style="font-weight:700;">${idx + 1}</td>
-          <td><span class="badge ${isMat ? 'badge-pending' : 'badge-draft'}">${isMat ? 'Material' : 'Civil'}</span></td>
-          <td style="font-weight:600; color:var(--slate-900);">${it.description || '—'}</td>
-          <td class="num">${HMWSSB.Utils.formatCurrency(it.quantity || 0)}</td>
-          <td class="center">${it.unit || 'Each'}</td>
-          <td class="num">₹ ${HMWSSB.Utils.formatCurrency(it.rate || 0)}</td>
-          <td class="num" style="font-weight:700; color:var(--hmwssb-navy-900);">₹ ${HMWSSB.Utils.formatCurrency(it.amount || 0)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      var isRet = HMWSSB.Workflow.isReturned(est);
+      var badge = HMWSSB.Formatting.getStatusBadge(est.status, isRet);
+      document.getElementById('badge-status-container').innerHTML = badge;
+
+      var meta = (est.id ? ('Estimate #' + est.id + ' • ') : 'New Draft • ') + 'Rev v' + (est.version || 1) + '.0';
+      document.getElementById('est-meta-label').textContent = meta;
+
+      // Table Figures
+      document.getElementById('disp-material-amt').textContent = HMWSSB.Formatting.formatNumber(est.costOfMaterial, 2);
+      document.getElementById('disp-civil-amt').textContent = HMWSSB.Formatting.formatNumber(est.costOfCivilWork, 2);
+      document.getElementById('disp-part1-total').textContent = HMWSSB.Formatting.formatNumber(est.partITotal, 2);
+      document.getElementById('disp-gst-percent').textContent = est.gstPercent !== undefined ? est.gstPercent : 0;
+      document.getElementById('disp-gst-amt').textContent = HMWSSB.Formatting.formatNumber(est.gstAmount, 2);
+      document.getElementById('unforeseen-input').value = (est.unforeseenAmount !== undefined ? est.unforeseenAmount : 0).toFixed(2);
+      document.getElementById('disp-grand-total').textContent = HMWSSB.Formatting.formatNumber(est.grandTotal, 2);
+      document.getElementById('disp-rupee-words').textContent = HMWSSB.Formatting.numberToRupeeWords(est.grandTotal);
+
+      // Signatures
+      renderSignatures(est);
     }
 
-    function recomputeAll() {
-      var items = currentEstimate.items || [];
-      var part1 = items.reduce((sum, it) => sum + (Number(it.amount) || 0), 0);
+    function renderSignatures(est) {
+      function setSig(cardId, contentId, name, desig, roleDefault, approved) {
+        var card = document.getElementById(cardId);
+        var content = document.getElementById(contentId);
+        if (!card || !content) return;
 
-      var gstPct = Number(document.getElementById('sel-gst').value) || 0;
-      var gstAmt = HMWSSB.Utils.round(part1 * (gstPct / 100), 2);
-      var cess = HMWSSB.Utils.round(part1 * 0.01, 2);
-      var qc = HMWSSB.Utils.round(part1 * 0.005, 2);
+        if (name && name.trim()) {
+          card.className = 'sig-card signed';
+          content.innerHTML = `
+            <div class="sig-name">${escapeHtml(name)}</div>
+            <div class="sig-desig">${escapeHtml(desig || roleDefault)}</div>
+            <div class="sig-status" style="color:#16A34A; display:flex; align-items:center; justify-content:center; gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              ${approved ? 'Approved' : 'Signed'}
+            </div>
+          `;
+        } else {
+          card.className = 'sig-card';
+          content.innerHTML = `
+            <div class="sig-name">—</div>
+            <div class="sig-desig">${escapeHtml(roleDefault)}</div>
+            <div class="sig-status" style="color:var(--slate-400);">${approved ? 'Pending Sanction' : 'Pending Review'}</div>
+          `;
+        }
+      }
 
-      var unforeseen = Number(document.getElementById('unforeseen-input').value) || 0;
-      var grand = HMWSSB.Utils.round(part1 + gstAmt + unforeseen, 2);
-
-      document.getElementById('val-part1').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(part1);
-      document.getElementById('val-gst').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(gstAmt);
-      document.getElementById('val-cess').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(cess);
-      document.getElementById('val-qc').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(qc);
-      document.getElementById('val-net-sanction').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(grand);
-
-      document.getElementById('disp-grand-total').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(grand);
-      document.getElementById('disp-rupee-words').innerText = HMWSSB.Utils.numberToRupeeWords(grand);
-
-      currentEstimate.grandTotal = grand;
-      currentEstimate.gstPercent = gstPct;
-      currentEstimate.unforeseenAmount = unforeseen;
+      setSig('sig-card-ae', 'sig-ae-content', est.preparedByName, est.preparedByDesignation, 'Manager (Engg)', false);
+      setSig('sig-card-dgm', 'sig-dgm-content', est.verifiedByName, est.verifiedByDesignation, 'Deputy General Manager', false);
+      setSig('sig-card-gm', 'sig-gm-content', est.recommendedByName, est.recommendedByDesignation, 'General Manager', false);
+      setSig('sig-card-cgm', 'sig-cgm-content', est.forwardedByName, est.forwardedByDesignation, 'Chief General Manager', false);
+      setSig('sig-card-dop', 'sig-dop-content', est.sanctionedByName, est.sanctionedByDesignation, 'Director of Projects', true);
     }
 
+    function onUnforeseenInput(val) {
+      var amt = parseFloat(val) || 0;
+      if (amt < 0) amt = 0;
+      currentEstimate.unforeseenAmount = amt;
+      HMWSSB.Calculations.recalculate(currentEstimate);
+
+      document.getElementById('disp-grand-total').textContent = HMWSSB.Formatting.formatNumber(currentEstimate.grandTotal, 2);
+      document.getElementById('disp-rupee-words').textContent = HMWSSB.Formatting.numberToRupeeWords(currentEstimate.grandTotal);
+      HMWSSB.Storage.saveDraft(currentEstimate);
+    }
+
+    function updateWorkflowControls() {
+      var user = HMWSSB.Auth.getUser();
+      var actions = HMWSSB.Workflow.getAllowedActions(currentEstimate, user);
+      var canEdit = HMWSSB.Workflow.canEdit(currentEstimate, user);
+
+      var btnSave = document.getElementById('btn-save-db');
+      var btnFwd = document.getElementById('btn-forward-modal');
+      var btnRet = document.getElementById('btn-return-modal');
+      var inputUnforeseen = document.getElementById('unforeseen-input');
+
+      btnSave.style.display = canEdit ? 'inline-block' : 'none';
+      inputUnforeseen.disabled = !canEdit;
+
+      if (actions.indexOf('FORWARD') !== -1 || actions.indexOf('APPROVE') !== -1) {
+        btnFwd.style.display = 'inline-block';
+        if (actions.indexOf('APPROVE') !== -1) {
+          btnFwd.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg> Accord Technical Sanction';
+          btnFwd.className = 'btn btn-success';
+        } else {
+          btnFwd.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Forward Estimate';
+          btnFwd.className = 'btn btn-primary';
+        }
+      } else {
+        btnFwd.style.display = 'none';
+      }
+
+      if (actions.indexOf('RETURN') !== -1) {
+        btnRet.style.display = 'inline-block';
+      } else {
+        btnRet.style.display = 'none';
+      }
+    }
+
+    // ── Save to Database ─────────────────────────────────────────────────────
     async function saveEstimateToDb() {
+      var user = HMWSSB.Auth.getUser();
+      var isManager = (user && (user.role || '').toUpperCase() === 'MANAGER');
+
+      if (isManager && (!currentEstimate || !currentEstimate.id)) {
+        if (!currentEstimate.wardName || !HMWSSB.LocationScope.isManagerAuthorizedForWard(user, currentEstimate.wardName)) {
+          var assigned = (user.locations || []).map(function(l) { return l.wardName; }).filter(Boolean).join(', ');
+          HMWSSB.UI.showToast('Cannot save: Estimate must be assigned to your ward (' + (assigned || 'None assigned') + '). Please return to Measurement Sheet to set location.', 'error');
+          return;
+        }
+      }
+
       var btn = document.getElementById('btn-save-db');
-      btn.innerText = '⏳ Saving...';
       btn.disabled = true;
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Saving...';
 
       try {
-        var user = HMWSSB.Auth.getUser() || {};
-        currentEstimate.officerPhone = user.phoneNumber || '9876543210';
+        currentEstimate.officerPhone = user.phoneNumber;
         var saved = await HMWSSB.API.saveEstimate(currentEstimate);
         currentEstimate = saved;
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(saved));
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(saved));
-        populateEstimate();
-        alert('Estimate successfully saved to database with ID #' + saved.id + '!');
+        HMWSSB.Storage.saveDraft(saved);
+        HMWSSB.UI.showToast('Estimate #' + (saved.id || '') + ' saved successfully to database!', 'success');
+        renderEstimateDisplay();
+        updateWorkflowControls();
+        loadRemarks(saved.id);
+        loadRevisions(saved.id);
       } catch (e) {
-        alert('Save Error: ' + e.message);
+        HMWSSB.UI.showToast('Save failed: ' + e.message, 'error');
       } finally {
-        btn.innerText = '💾 Save to Database';
         btn.disabled = false;
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Estimate';
       }
     }
 
-    async function forwardWorkflow() {
-      if (!currentEstimate.id) {
-        alert('Please save the estimate to the database first before forwarding.');
+    // ── Action Modal (Forward / Return) ──────────────────────────────────────
+    function openActionModal(actionType) {
+      if (!currentEstimate || !currentEstimate.id) {
+        HMWSSB.UI.showToast('Please save the estimate to database before forwarding.', 'warning');
+        return;
+      }
+      currentActionType = actionType;
+      selectedModalTags = [];
+      renderTagButtons('modal-tags-container', selectedModalTags, toggleModalTag);
+      document.getElementById('action-remarks-text').value = '';
+
+      var titleEl = document.getElementById('action-modal-title');
+      var promptEl = document.getElementById('action-modal-prompt');
+      var btnEl = document.getElementById('btn-confirm-action');
+
+      if (actionType === 'RETURN') {
+        titleEl.textContent = 'Return Estimate for Corrections';
+        promptEl.innerHTML = 'Please specify reasons for return / corrections required: <span style="color:#DC2626; font-weight:700;">(mandatory)</span>';
+        btnEl.textContent = 'Confirm Return';
+        btnEl.className = 'btn btn-danger';
+      } else {
+        var user = HMWSSB.Auth.getUser();
+        var isDop = (user.role || '').toUpperCase() === 'DOP' || currentEstimate.status === 'SUBMITTED_TO_DOP';
+        titleEl.textContent = isDop ? 'Accord Technical Sanction' : 'Forward Estimate for Scrutiny / Approval';
+        promptEl.innerHTML = 'Add official scrutiny observations / notes: <span style="color:#64748B; font-weight:600;">(optional)</span>';
+        btnEl.textContent = isDop ? 'Confirm Sanction' : 'Confirm & Forward';
+        btnEl.className = 'btn btn-success';
+      }
+
+      document.getElementById('action-modal-backdrop').style.display = 'flex';
+    }
+
+    function closeActionModal() {
+      document.getElementById('action-modal-backdrop').style.display = 'none';
+    }
+
+    async function executeWorkflowAction() {
+      var user = HMWSSB.Auth.getUser();
+      var remarks = document.getElementById('action-remarks-text').value.trim();
+      var tags = selectedModalTags.join(', ');
+
+      if (currentActionType === 'RETURN' && !remarks) {
+        HMWSSB.UI.showToast('Return remarks are mandatory. Please provide instructions for correction.', 'error');
+        document.getElementById('action-remarks-text').focus();
         return;
       }
 
-      var remarks = prompt('Enter official scrutiny remarks for forwarding:', 'Measurements verified and recommended for sanction.');
-      if (remarks === null) return;
+      var btn = document.getElementById('btn-confirm-action');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
 
       try {
-        var user = HMWSSB.Auth.getUser() || {};
-        var updated = await HMWSSB.API.performAction(currentEstimate.id, 'FORWARD', user.phoneNumber, remarks, 'FORWARD');
+        var updated = await HMWSSB.API.performAction(currentEstimate.id, currentActionType, user.phoneNumber, remarks, tags);
         currentEstimate = updated;
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(updated));
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(updated));
-        populateEstimate();
-        alert('Estimate successfully forwarded! New status: ' + updated.status);
+        HMWSSB.Storage.saveDraft(updated);
+        closeActionModal();
+        HMWSSB.UI.showToast('Estimate #' + updated.id + ' successfully ' + (currentActionType === 'RETURN' ? 'returned' : 'forwarded') + '!', 'success');
+        renderEstimateDisplay();
+        updateWorkflowControls();
+        loadRemarks(updated.id);
+        loadRevisions(updated.id);
       } catch (e) {
-        alert('Workflow Error: ' + e.message);
+        HMWSSB.UI.showToast('Workflow action failed: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirm Action';
       }
     }
 
-    async function returnWorkflow() {
-      if (!currentEstimate.id) {
-        alert('Please save the estimate first.');
-        return;
-      }
-
-      var remarks = prompt('Enter reason for returning to previous officer:', 'Clarification required regarding trench depth and rates.');
-      if (!remarks) return;
-
-      try {
-        var user = HMWSSB.Auth.getUser() || {};
-        var updated = await HMWSSB.API.performAction(currentEstimate.id, 'RETURN', user.phoneNumber, remarks, 'RETURN');
-        currentEstimate = updated;
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(updated));
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(updated));
-        populateEstimate();
-        alert('Estimate returned. Status updated to: ' + updated.status);
-      } catch (e) {
-        alert('Workflow Error: ' + e.message);
-      }
-    }
-
+    // ── Remarks Trail ────────────────────────────────────────────────────────
     async function loadRemarks(estId) {
+      var container = document.getElementById('remarks-list-container');
       try {
-        var remarks = await HMWSSB.API.getRemarks(estId);
-        var container = document.getElementById('remarks-container');
-        if (!remarks || remarks.length === 0) {
-          container.innerHTML = '<p style="color:var(--slate-500); font-size:12px;">No scrutiny notes recorded yet.</p>';
+        remarksList = await HMWSSB.API.getRemarks(estId);
+        if (!remarksList || remarksList.length === 0) {
+          container.innerHTML = '<p style="color:var(--slate-500); font-size:12px; text-align:center; padding:10px 0;">No official scrutiny remarks recorded yet for this estimate.</p>';
           return;
         }
 
-        container.innerHTML = remarks.map(r => `
-          <div class="remark-bubble">
-            <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
-              <b style="color:var(--hmwssb-navy-900);">${r.officerName || 'Officer'} (${r.officerRole || 'OFFICER'})</b>
-              <span style="font-size:11px; color:var(--slate-400);">${HMWSSB.Utils.formatDate(r.createdAt)}</span>
+        var html = '';
+        remarksList.forEach(function (r) {
+          var actClass = r.action === 'RETURN' ? 'return' : (r.action === 'FORWARD' ? 'forward' : 'approved');
+          html += `
+            <div class="remark-bubble ${actClass}">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <div style="font-size:12px; font-weight:700; color:#1E293B;">
+                  ${escapeHtml(r.officerName || 'Officer')} <span style="font-size:11px; color:#64748B; font-weight:500;">(${escapeHtml(r.officerDesignation || r.officerRole || '')})</span>
+                </div>
+                <div style="font-size:11px; color:#64748B;">${HMWSSB.Formatting.formatDate(r.createdAt)}</div>
+              </div>
+              <div style="font-size:12.5px; color:#334155; line-height:1.4;">${escapeHtml(r.remarks || '')}</div>
+              ${r.tags ? `<div style="margin-top:6px;"><span class="badge" style="background:#E2E8F0; color:#334155; font-size:10px; margin-right:4px;">${escapeHtml(r.tags)}</span></div>` : ''}
             </div>
-            <div>${r.remarks || 'No text'}</div>
-            <div style="font-size:10.5px; color:var(--slate-500); margin-top:3px;">Action: <b>${r.action}</b> • Transition: ${r.fromStatus || 'DRAFT'} → ${r.toStatus || 'SUBMITTED'}</div>
-          </div>
-        `).join('');
-      } catch (e) {}
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = '<p style="color:#DC2626; font-size:12px;">Failed to load scrutiny remarks.</p>';
+      }
     }
 
-    async function addScrutinyNote() {
-      if (!currentEstimate.id) {
-        alert('Please save the estimate before attaching scrutiny notes.');
+    function toggleRemarkForm() {
+      var form = document.getElementById('new-remark-form');
+      var btn = document.getElementById('btn-toggle-remark');
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+        btn.textContent = '− Cancel Note';
+      } else {
+        form.style.display = 'none';
+        btn.textContent = '+ Add Scrutiny Note';
+      }
+    }
+
+    async function submitInlineRemark() {
+      var user = HMWSSB.Auth.getUser();
+      var text = document.getElementById('inline-remark-text').value.trim();
+      var tags = selectedInlineTags.join(', ');
+
+      if (!text) {
+        HMWSSB.UI.showToast('Please type an observation note.', 'warning');
         return;
       }
-      var note = prompt('Enter scrutiny note / technical remarks:');
-      if (!note) return;
+      if (!currentEstimate || !currentEstimate.id) {
+        HMWSSB.UI.showToast('Please save the estimate first.', 'warning');
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit-inline');
+      btn.disabled = true;
+      btn.textContent = 'Posting...';
 
       try {
-        var user = HMWSSB.Auth.getUser() || {};
-        await HMWSSB.API.post('/estimates/' + currentEstimate.id + '/remarks', {
-          officerPhone: user.phoneNumber,
-          remarks: note,
-          tags: 'SCRUTINY'
-        });
+        await HMWSSB.API.addRemark(currentEstimate.id, user.phoneNumber, text, tags);
+        document.getElementById('inline-remark-text').value = '';
+        selectedInlineTags = [];
+        renderTagButtons('inline-tags-container', selectedInlineTags, toggleInlineTag);
+        toggleRemarkForm();
+        HMWSSB.UI.showToast('Scrutiny observation posted.', 'success');
         loadRemarks(currentEstimate.id);
       } catch (e) {
-        alert('Failed to add remark: ' + e.message);
+        HMWSSB.UI.showToast('Failed to post remark: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Post Observation';
       }
+    }
+
+    // ── Version History ──────────────────────────────────────────────────────
+    async function loadRevisions(estId) {
+      try {
+        revisionsList = await HMWSSB.API.getRevisions(estId);
+        var btn = document.getElementById('btn-ver-history');
+        if (btn && revisionsList.length > 0) {
+          btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Version History (' + revisionsList.length + ')';
+        }
+      } catch (e) {
+        console.error('Failed to load revisions', e);
+      }
+    }
+
+    function openVersionHistoryModal() {
+      var body = document.getElementById('history-modal-body');
+      if (!revisionsList || revisionsList.length === 0) {
+        body.innerHTML = '<p style="text-align:center; color:var(--slate-500); padding:20px;">No previous revisions recorded for this estimate.</p>';
+      } else {
+        var html = '';
+        revisionsList.forEach(function (rev) {
+          html += `
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-left:4px solid var(--hmwssb-navy-900); border-radius:6px; padding:12px; margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <span class="badge" style="background:var(--hmwssb-navy-900); color:#FFF;">Rev ${rev.revisionNumber}.0</span>
+                  <strong style="margin-left:6px; font-size:12.5px;">${escapeHtml(rev.officerName || 'Officer')}</strong>
+                  <span style="font-size:11px; color:#64748B;">(${escapeHtml(rev.officerDesignation || '')})</span>
+                </div>
+                <span style="font-size:11px; color:#64748B;">${HMWSSB.Formatting.formatDate(rev.createdAt)}</span>
+              </div>
+              <div style="font-size:12px; color:#0369A1; font-weight:600; margin-top:6px;">${escapeHtml(rev.changeSummary || 'Revision captured')}</div>
+              ${rev.remarks ? `<div style="font-size:12px; color:#475569; margin-top:4px;"><em>"${escapeHtml(rev.remarks)}"</em></div>` : ''}
+              <div style="margin-top:6px; font-size:12px; font-weight:700; font-family:var(--font-mono); color:#0F172A;">
+                Grand Total: ${HMWSSB.Formatting.formatCurrency(rev.grandTotal)}
+              </div>
+            </div>
+          `;
+        });
+        body.innerHTML = html;
+      }
+      document.getElementById('history-modal-backdrop').style.display = 'flex';
+    }
+
+    function closeVersionHistoryModal() {
+      document.getElementById('history-modal-backdrop').style.display = 'none';
+    }
+
+    function goToMb() {
+      var idParam = currentEstimate && currentEstimate.id ? ('?id=' + currentEstimate.id) : '';
+      window.location.href = 'measurement-v2.html' + idParam;
+    }
+
+    function scrollToRemarks() {
+      var el = document.getElementById('remarks-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function downloadExcel() {
+      if (typeof XLSX === 'undefined') {
+        HMWSSB.UI.showToast('Excel library not loaded.', 'error');
+        return;
+      }
+      var est = currentEstimate;
+      var wb = XLSX.utils.book_new();
+
+      // Abstract Sheet
+      var abstractData = [
+        ['HYDERABAD METROPOLITAN WATER SUPPLY AND SEWERAGE BOARD'],
+        ['GENERAL ABSTRACT'],
+        ['Name of Work:', est.nameOfWork || ''],
+        ['CORP:', est.corp || '', 'Zone:', est.zoneName || '', 'Division:', est.division || '', 'Circle:', est.circleName || '', 'Ward:', est.wardName || ''],
+        [''],
+        ['Sl.No', 'Description', 'Rs.', 'Amount (Rs.)'],
+        ['Part-I - Working Items', '', '', ''],
+        [1, 'Cost of Material', '', est.costOfMaterial || 0],
+        [2, 'Cost of Civil work', '', est.costOfCivilWork || 0],
+        ['', 'Cost of Estimate : Part-I', '', est.partITotal || 0],
+        ['Part-II - Reimbursible Items', '', '', ''],
+        [3, 'GST @ ' + (est.gstPercent || 0) + '%', 'Rs.', est.gstAmount || 0],
+        ['Part-III: LS provisions', '', '', ''],
+        [4, 'LS unforeseen items and rounding off', 'Rs.', est.unforeseenAmount || 0],
+        [5, 'GRAND TOTAL (PART I + II + III)', 'Rs.', est.grandTotal || 0],
+        [''],
+        ['Amount in Words:', HMWSSB.Formatting.numberToRupeeWords(est.grandTotal)]
+      ];
+      var wsAbstract = XLSX.utils.aoa_to_sheet(abstractData);
+      XLSX.utils.book_append_sheet(wb, wsAbstract, 'General Abstract');
+
+      // Measurement Sheet
+      if (est.items && Array.isArray(est.items)) {
+        var mbData = [
+          ['S.No', 'Category', 'Description', 'No.', 'L', 'B', 'D', 'Quantity', 'Unit', 'Rate', 'Amount']
+        ];
+        est.items.forEach(function (it, idx) {
+          mbData.push([
+            idx + 1,
+            it.isMaterial === 'Yes' ? 'Material' : 'Civil',
+            it.description || '',
+            it.num || 1,
+            it.length || '',
+            it.breadth || '',
+            it.depth || '',
+            it.quantity || 0,
+            it.unit || '',
+            it.rate || 0,
+            it.amount || 0
+          ]);
+        });
+        var wsMb = XLSX.utils.aoa_to_sheet(mbData);
+        XLSX.utils.book_append_sheet(wb, wsMb, 'Measurement Sheet');
+      }
+
+      var filename = 'Estimate_' + (est.id || 'draft') + '_Abstract.xlsx';
+      XLSX.writeFile(wb, filename);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    var aModal = new URLSearchParams(window.location.search).get('actionModal');
+    if (aModal) {
+      setTimeout(function() { openActionModal(aModal); }, 1200);
     }
   </script>
 </body>

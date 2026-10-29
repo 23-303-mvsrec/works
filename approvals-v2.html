@@ -12,6 +12,7 @@
       border-bottom: 2px solid var(--slate-200);
       margin-bottom: 20px;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .filter-tab {
       padding: 10px 18px;
@@ -31,74 +32,73 @@
       color: var(--hmwssb-navy-900);
       border-bottom-color: var(--hmwssb-navy-900);
     }
-    /* Scrutiny Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(10, 37, 64, 0.6);
-      backdrop-filter: blur(2px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      padding: 20px;
-    }
-    .modal-content {
-      background: #FFFFFF;
-      border-radius: 8px;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      border-top: 4px solid var(--hmwssb-navy-900);
-    }
   </style>
 </head>
 <body>
   <div id="gov-app-header"></div>
+  <div id="gov-breadcrumbs"></div>
 
-  <main id="main-content" class="gov-container">
+  <main id="main-content" class="gov-container" style="padding-top: 14px; padding-bottom: 40px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
       <div>
-        <h2 style="font-size:19px; font-weight:800; color:var(--hmwssb-navy-900);">
-          ✅ Scrutiny & Sanctions Desk
-        </h2>
-        <p style="font-size:12px; color:var(--slate-500); margin-top:2px;">
+        <h1 style="font-size:19px; font-weight:800; color:var(--hmwssb-navy-900); margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          Technical Scrutiny &amp; Sanctions Desk
+        </h1>
+        <p style="font-size:12px; color:var(--slate-500); margin:4px 0 0 0;">
           Multi-tier technical scrutiny, verification, and sanction management workflow for authorized engineers.
         </p>
       </div>
 
       <div style="display:flex; gap:8px;">
-        <button onclick="loadEstimates()" class="btn btn-secondary btn-sm">🔄 Refresh Desk</button>
+        <button onclick="loadEstimates()" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh Desk
+        </button>
       </div>
     </div>
 
     <!-- Filter Tabs -->
     <div class="filter-tabs">
-      <button class="filter-tab active" onclick="setTab(this, 'PENDING')">⏳ Pending My Action (<span id="count-pending">0</span>)</button>
-      <button class="filter-tab" onclick="setTab(this, 'ALL')">📋 All In-Progress (<span id="count-all">0</span>)</button>
-      <button class="filter-tab" onclick="setTab(this, 'APPROVED')">✅ Sanctioned & Approved (<span id="count-approved">0</span>)</button>
-      <button class="filter-tab" onclick="setTab(this, 'DRAFT')">📝 Drafts (<span id="count-draft">0</span>)</button>
+      <button class="filter-tab active" onclick="setTab(this, 'PENDING_MY_ACTION')" style="display:inline-flex; align-items:center; gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Pending My Action (<span id="count-my-action">0</span>)
+      </button>
+      <button class="filter-tab" onclick="setTab(this, 'ALL_IN_PROGRESS')" style="display:inline-flex; align-items:center; gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        All In Scrutiny (<span id="count-all-in-progress">0</span>)
+      </button>
+      <button class="filter-tab" onclick="setTab(this, 'APPROVED')" style="display:inline-flex; align-items:center; gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        Technically Sanctioned (<span id="count-approved">0</span>)
+      </button>
+      <button class="filter-tab" onclick="setTab(this, 'ALL')" style="display:inline-flex; align-items:center; gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Complete Register (<span id="count-all">0</span>)
+      </button>
     </div>
 
     <!-- Estimates Table -->
     <div class="gov-card">
-      <div class="gov-card-header">
-        <h2><span>📑</span> Workflow Queue</h2>
-        <input type="text" id="filter-search" oninput="applyFilter()" placeholder="Search queue by title or ward..." class="form-control" style="width:240px; padding:5px 10px; font-size:12px;">
+      <div class="gov-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2 style="font-size:14.5px; margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Official Scrutiny Queue
+        </h2>
+        <input type="text" id="filter-search" oninput="applyFilter()" placeholder="Search queue by title, file or ward..." class="form-control" style="width:260px; padding:6px 12px; font-size:12px;">
       </div>
 
       <div class="table-responsive">
         <table class="gov-table" id="queue-table">
           <thead>
             <tr>
-              <th style="width:55px;">ID</th>
-              <th>Name of Work</th>
-              <th>Location (Zone / Div / Ward)</th>
+              <th style="width:65px;">ID</th>
+              <th>Name of Work & File Details</th>
+              <th>Jurisdiction (Zone / Div / Circle)</th>
               <th>Prepared By</th>
-              <th style="width:125px; text-align:right;">Grand Total (₹)</th>
-              <th style="width:130px; text-align:center;">Current Status</th>
-              <th style="width:180px; text-align:center;">Scrutiny Action</th>
+              <th style="width:130px; text-align:right;">Grand Total (₹)</th>
+              <th style="width:140px; text-align:center;">Current Status</th>
+              <th style="width:190px; text-align:center;">Scrutiny Action</th>
             </tr>
           </thead>
           <tbody id="queue-tbody">
@@ -113,41 +113,55 @@
     </div>
   </main>
 
-  <!-- Scrutiny Action Modal -->
-  <div id="scrutiny-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
-      <div style="background:var(--hmwssb-navy-900); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-size:15px; font-weight:700;">Officer Scrutiny & Sanction Action</h3>
-        <button onclick="closeModal()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+  <!-- Themed Scrutiny & Sanction Action Modal (Forward / Return with Quick Observation Tags) -->
+  <div id="scrutiny-modal" class="modal-backdrop" style="display:none;">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header" id="modal-header" style="background:var(--hmwssb-navy-900); color:#FFFFFF; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;">
+        <h3 class="modal-title" style="font-size:15px; font-weight:700; margin:0; color:#FFFFFF;" id="modal-title">Forward Estimate for Scrutiny / Approval</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal()">&times;</button>
       </div>
 
-      <div style="padding:20px;">
-        <div style="background:var(--slate-100); border-radius:6px; padding:12px; margin-bottom:16px;">
-          <div style="font-size:11px; text-transform:uppercase; color:var(--slate-500); font-weight:700;">Estimate Target</div>
-          <div id="modal-work-name" style="font-size:14px; font-weight:700; color:var(--hmwssb-navy-900); margin-top:2px;">—</div>
-          <div id="modal-work-meta" style="font-size:12px; color:var(--slate-600); margin-top:2px;">—</div>
+      <div class="modal-body" style="padding:20px;">
+        <!-- Target Work File Summary -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:10px 14px; margin-bottom:14px;">
+          <div style="font-size:11px; text-transform:uppercase; color:#64748B; font-weight:700; letter-spacing:0.5px;">Target Work File</div>
+          <div id="modal-work-name" style="font-size:13.5px; font-weight:700; color:#1E293B; margin-top:2px;">—</div>
+          <div id="modal-work-meta" style="font-size:11.5px; color:#64748B; margin-top:2px;">—</div>
         </div>
 
-        <div class="form-group" style="margin-bottom:14px;">
-          <label class="required">Official Scrutiny Remarks</label>
-          <textarea id="modal-remarks" class="form-control" rows="3" placeholder="Enter official remarks, verification notes, or reason for return..."></textarea>
+        <!-- Action Mode Switcher Tabs (Forward vs Return) -->
+        <div id="modal-action-switch-container" style="display:flex; gap:8px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid #E2E8F0;">
+          <button type="button" class="btn btn-sm" id="btn-tab-forward" onclick="setModalAction('FORWARD')" style="font-weight:700;">
+            Forward / Recommend
+          </button>
+          <button type="button" class="btn btn-sm" id="btn-tab-return" onclick="setModalAction('RETURN')" style="font-weight:700;">
+            Return for Corrections
+          </button>
         </div>
 
-        <div class="form-group" style="margin-bottom:18px;">
-          <label>Scrutiny Category Tag</label>
-          <select id="modal-tags" class="form-control">
-            <option value="SCRUTINY_PASS">Engineering & Measurements Verified</option>
-            <option value="RATES_CHECK">SSR Schedule Rates Confirmed</option>
-            <option value="BUDGET_PROVISION">Budget Allocation Validated</option>
-            <option value="CLARIFICATION_REQUIRED">Clarification / Site Measurement Resubmission Needed</option>
-          </select>
+        <!-- Dynamic Action Prompt -->
+        <p style="font-size:12.5px; font-weight:600; color:#1E293B; margin-bottom:10px;" id="modal-action-prompt">
+          Add official scrutiny observations / notes: <span style="color:#64748B; font-weight:600;">(optional)</span>
+        </p>
+
+        <!-- Quick Observation Tags -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:11px; font-weight:700; color:#64748B; margin-bottom:6px;">Quick Observation Tags:</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;" id="modal-tags-container"></div>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--slate-200); padding-top:14px;">
-          <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
-          <button onclick="submitAction('RETURN')" class="btn btn-amber">↩ Return for Revision</button>
-          <button onclick="submitAction('FORWARD')" class="btn btn-success" id="modal-btn-forward">⏩ Forward / Sanction</button>
+        <!-- Textarea Remarks -->
+        <div class="form-group" style="margin-bottom:4px;">
+          <textarea id="modal-remarks" class="form-control" rows="4" placeholder="Enter remarks or instructions..."></textarea>
+          <div id="modal-validation-error" style="display:none; color:#DC2626; font-size:12px; font-weight:600; margin-top:6px;">
+            Return remarks are mandatory. Please specify reasons for return / corrections required.
+          </div>
         </div>
+      </div>
+
+      <div class="modal-footer" style="padding:12px 20px; background:var(--slate-50); border-top:1px solid var(--slate-200); display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modal-btn-confirm" onclick="executeModalAction()">Confirm &amp; Forward</button>
       </div>
     </div>
   </div>
@@ -156,17 +170,25 @@
 
   <script>
     var queueList = [];
-    var activeTab = 'PENDING';
+    var activeTab = 'PENDING_MY_ACTION';
     var selectedEstimate = null;
 
     document.addEventListener('DOMContentLoaded', function () {
+      var user = HMWSSB.Auth.requireLogin();
+      if (!user) return;
+
       HMWSSB.UI.renderHeader('approvals');
+      HMWSSB.UI.renderBreadcrumbs([
+        { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+        { label: 'Scrutiny & Sanctions' }
+      ]);
       HMWSSB.UI.renderFooter();
+
       loadEstimates();
     });
 
     function setTab(btn, tab) {
-      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.filter-tab').forEach(function (t) { t.classList.remove('active'); });
       btn.classList.add('active');
       activeTab = tab;
       applyFilter();
@@ -174,52 +196,56 @@
 
     async function loadEstimates() {
       var tbody = document.getElementById('queue-tbody');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--slate-500);">Loading queue...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--slate-500);">Loading scrutiny queue...</td></tr>';
 
       try {
-        var user = HMWSSB.Auth.getUser() || {};
-        var params = {};
-        if (user.phoneNumber && user.role !== 'ADMIN') {
-          params.officerPhone = user.phoneNumber;
-        }
-
-        queueList = await HMWSSB.API.getEstimates(params);
+        queueList = await HMWSSB.API.getEstimates();
         if (!Array.isArray(queueList)) queueList = [];
         updateCounts();
         applyFilter();
       } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:#DC2626;">Error loading queue: ${e.message}</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:#DC2626;">Error loading queue: ' + e.message + '</td></tr>';
       }
     }
 
     function updateCounts() {
-      var user = HMWSSB.Auth.getUser() || { role: 'MANAGER' };
-      var pending = queueList.filter(e => e.status && e.status !== 'DRAFT' && e.status !== 'APPROVED').length;
-      var approved = queueList.filter(e => e.status === 'APPROVED').length;
-      var draft = queueList.filter(e => !e.status || e.status === 'DRAFT').length;
+      var user = HMWSSB.Auth.getUser() || {};
+      var myPending = 0;
+      var inProgress = 0;
+      var approved = 0;
 
-      document.getElementById('count-pending').innerText = pending;
-      document.getElementById('count-all').innerText = queueList.length;
+      queueList.forEach(function (e) {
+        var st = e.status || 'DRAFT';
+        if (HMWSSB.Workflow.isPendingForUser(e, user)) myPending++;
+        if (st !== 'DRAFT' && st !== 'APPROVED') inProgress++;
+        if (st === 'APPROVED') approved++;
+      });
+
+      document.getElementById('count-my-action').innerText = myPending;
+      document.getElementById('count-all-in-progress').innerText = inProgress;
       document.getElementById('count-approved').innerText = approved;
-      document.getElementById('count-draft').innerText = draft;
+      document.getElementById('count-all').innerText = queueList.length;
     }
 
     function applyFilter() {
+      var user = HMWSSB.Auth.getUser() || {};
       var q = document.getElementById('filter-search').value.toLowerCase().trim();
 
-      var filtered = queueList.filter(e => {
+      var filtered = queueList.filter(function (e) {
         var st = e.status || 'DRAFT';
-        if (activeTab === 'PENDING') {
+
+        if (activeTab === 'PENDING_MY_ACTION') {
+          if (!HMWSSB.Workflow.isPendingForUser(e, user)) return false;
+        } else if (activeTab === 'ALL_IN_PROGRESS') {
           if (st === 'DRAFT' || st === 'APPROVED') return false;
         } else if (activeTab === 'APPROVED') {
           if (st !== 'APPROVED') return false;
-        } else if (activeTab === 'DRAFT') {
-          if (st !== 'DRAFT') return false;
         }
 
         if (q) {
-          var line = [e.nameOfWork, e.zoneName, e.division, e.circleName, e.wardName].filter(Boolean).join(' ').toLowerCase();
-          return line.includes(q);
+          var line = [e.workName, e.nameOfWork, e.fileNumber, e.zoneName, e.division, e.circleName, e.wardName, e.createdByName]
+            .filter(Boolean).join(' ').toLowerCase();
+          return line.indexOf(q) !== -1;
         }
         return true;
       });
@@ -230,39 +256,188 @@
     function renderTable(list) {
       var tbody = document.getElementById('queue-tbody');
       if (!list || list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--slate-500);">No estimates currently in this queue.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--slate-500);">No estimates found in this queue.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = list.map(est => `
-        <tr>
-          <td class="center" style="font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);">#${est.id}</td>
-          <td style="font-weight:600; color:var(--slate-900);">${est.nameOfWork || 'Untitled Work'}</td>
-          <td style="font-size:12px; color:var(--slate-600);">${[est.zoneName, est.division, est.wardName].filter(Boolean).join(' • ') || '—'}</td>
-          <td style="font-size:12px; color:var(--slate-700);">${est.preparedByName || '—'}</td>
-          <td class="num" style="font-weight:700; color:var(--hmwssb-navy-900);">₹ ${HMWSSB.Utils.formatCurrency(est.grandTotal || 0)}</td>
-          <td class="center">${HMWSSB.Utils.getStatusBadge(est.status)}</td>
-          <td class="center">
-            <div style="display:flex; gap:6px; justify-content:center;">
-              <button onclick="openScrutinyModal(${est.id})" class="btn btn-primary btn-sm">
-                ✍️ Scrutinize
-              </button>
-              <button onclick="viewEstimate(${est.id})" class="btn btn-outline btn-sm">
-                👁️ View
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
+      var user = HMWSSB.Auth.getUser() || {};
+
+      var rowsHtml = '';
+      list.forEach(function (est) {
+        var isRet = HMWSSB.Workflow.isReturned(est);
+        var canAct = HMWSSB.Workflow.isPendingForUser(est, user);
+        var badge = HMWSSB.Formatting.getStatusBadge(est.status, isRet);
+        var locationStr = [est.zoneName, est.division ? ('Div ' + est.division) : '', est.wardName].filter(Boolean).join(' • ') || '—';
+
+        rowsHtml += `
+          <tr>
+            <td class="center" style="font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);">#${est.id}</td>
+            <td>
+              <div style="font-weight:700; color:#1E293B;">${est.workName || est.nameOfWork || 'Untitled Work'}</div>
+              <div style="font-size:11px; color:#64748B; margin-top:2px;">File: <b>${est.fileNumber || '—'}</b></div>
+            </td>
+            <td style="font-size:12px; color:#475569;">${locationStr}</td>
+            <td style="font-size:12px; color:#475569;">${est.preparedByName || est.createdByName || 'Officer'}</td>
+            <td class="num" style="font-weight:700; color:var(--hmwssb-navy-900);">${HMWSSB.Formatting.formatCurrency(est.grandTotal || 0)}</td>
+            <td class="center">${badge}</td>
+            <td class="center">
+              <div style="display:flex; gap:6px; justify-content:center;">
+                ${canAct ? `
+                  <button onclick="openScrutinyModal(${est.id})" class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    Scrutinize
+                  </button>
+                ` : ''}
+                <a href="abstract-v2.html?id=${est.id}" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:4px;" title="View Full Abstract">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Abstract
+                </a>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = rowsHtml;
+    }
+
+    var SCRUTINY_TAGS = [
+      'Measurement Correction',
+      'Rate Adjustment',
+      'Scope Modification',
+      'Item Addition',
+      'Item Deletion',
+      'Calculation Error',
+      'SSR Non-Compliance',
+      'Administrative Direction',
+      'Site Inspection Finding',
+      'Drawing Discrepancy',
+      'Contingency Revision',
+      'Compliance Cleared',
+      'Specifications Verified',
+      'Hierarchy Verification'
+    ];
+
+    var currentModalAction = 'FORWARD';
+    var selectedModalTags = [];
+
+    function renderModalTags() {
+      var c = document.getElementById('modal-tags-container');
+      if (!c) return;
+      c.innerHTML = '';
+      SCRUTINY_TAGS.forEach(function (tag) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tag-btn' + (selectedModalTags.indexOf(tag) !== -1 ? ' active' : '');
+        btn.textContent = tag;
+        btn.onclick = function () { toggleModalTag(tag); };
+        c.appendChild(btn);
+      });
+    }
+
+    function toggleModalTag(tag) {
+      var idx = selectedModalTags.indexOf(tag);
+      if (idx === -1) selectedModalTags.push(tag);
+      else selectedModalTags.splice(idx, 1);
+      renderModalTags();
+    }
+
+    function setModalAction(action) {
+      if (!selectedEstimate) return;
+      currentModalAction = action;
+      var user = HMWSSB.Auth.getUser() || {};
+      var status = selectedEstimate.status || 'DRAFT';
+      var isDop = (user.role || '').toUpperCase() === 'DOP' && status === 'SUBMITTED_TO_DOP';
+
+      var titleEl = document.getElementById('modal-title');
+      var promptEl = document.getElementById('modal-action-prompt');
+      var btnConfirm = document.getElementById('modal-btn-confirm');
+      var tabFwd = document.getElementById('btn-tab-forward');
+      var tabRet = document.getElementById('btn-tab-return');
+      var remarksEl = document.getElementById('modal-remarks');
+      var errEl = document.getElementById('modal-validation-error');
+      if (errEl) errEl.style.display = 'none';
+      if (remarksEl) remarksEl.style.borderColor = '';
+
+      if (action === 'RETURN') {
+        titleEl.textContent = 'Return Estimate for Corrections';
+        promptEl.innerHTML = 'Please specify reasons for return / corrections required: <span style="color:#DC2626; font-weight:700;">(mandatory)</span>';
+        remarksEl.placeholder = 'Please specify reasons for return / corrections required (mandatory)...';
+        btnConfirm.textContent = 'Confirm Return';
+        btnConfirm.className = 'btn btn-danger';
+        btnConfirm.style.background = '#DC2626';
+        btnConfirm.style.borderColor = '#DC2626';
+        btnConfirm.style.color = '#FFFFFF';
+
+        tabRet.className = 'btn btn-sm btn-danger';
+        tabRet.style.background = '#DC2626';
+        tabRet.style.borderColor = '#DC2626';
+        tabRet.style.color = '#FFFFFF';
+        tabFwd.className = 'btn btn-sm btn-secondary';
+        tabFwd.style.background = '#F1F5F9';
+        tabFwd.style.borderColor = '#CBD5E1';
+        tabFwd.style.color = '#475569';
+      } else {
+        // FORWARD or APPROVE
+        if (isDop) {
+          titleEl.textContent = 'Accord Technical Sanction';
+          promptEl.innerHTML = 'Add official sanction observations / notes: <span style="color:#64748B; font-weight:600;">(optional)</span>';
+          remarksEl.placeholder = 'Enter technical sanction observations (optional)...';
+          btnConfirm.textContent = 'Confirm Sanction';
+          btnConfirm.className = 'btn btn-success';
+          btnConfirm.style.background = '#059669';
+          btnConfirm.style.borderColor = '#059669';
+          btnConfirm.style.color = '#FFFFFF';
+        } else {
+          titleEl.textContent = 'Forward Estimate for Scrutiny / Approval';
+          promptEl.innerHTML = 'Add official scrutiny observations / notes: <span style="color:#64748B; font-weight:600;">(optional)</span>';
+          remarksEl.placeholder = 'Enter official scrutiny observations / notes (optional)...';
+          btnConfirm.textContent = 'Confirm & Forward';
+          btnConfirm.className = 'btn btn-primary';
+          btnConfirm.style.background = '#0284C7';
+          btnConfirm.style.borderColor = '#0284C7';
+          btnConfirm.style.color = '#FFFFFF';
+        }
+
+        tabFwd.className = 'btn btn-sm btn-primary';
+        tabFwd.style.background = '#0284C7';
+        tabFwd.style.borderColor = '#0284C7';
+        tabFwd.style.color = '#FFFFFF';
+        tabRet.className = 'btn btn-sm btn-secondary';
+        tabRet.style.background = '#F1F5F9';
+        tabRet.style.borderColor = '#CBD5E1';
+        tabRet.style.color = '#475569';
+      }
     }
 
     function openScrutinyModal(id) {
-      selectedEstimate = queueList.find(e => e.id === id);
+      selectedEstimate = queueList.find(function (e) { return e.id === id; });
       if (!selectedEstimate) return;
 
-      document.getElementById('modal-work-name').innerText = selectedEstimate.nameOfWork || 'Estimate #' + id;
-      document.getElementById('modal-work-meta').innerText = `ID #${id} • Amount: ₹ ${HMWSSB.Utils.formatCurrency(selectedEstimate.grandTotal)} • Current Status: ${selectedEstimate.status || 'DRAFT'}`;
-      document.getElementById('modal-remarks').value = 'Measurements and rates verified as per current SSR.';
+      var user = HMWSSB.Auth.getUser() || {};
+      var status = selectedEstimate.status || 'DRAFT';
+      var isDop = (user.role || '').toUpperCase() === 'DOP' && status === 'SUBMITTED_TO_DOP';
+
+      document.getElementById('modal-work-name').innerText = selectedEstimate.workName || selectedEstimate.nameOfWork || ('Estimate #' + id);
+      document.getElementById('modal-work-meta').innerText = 'ID #' + id + ' • File: ' + (selectedEstimate.fileNumber || '—') + ' • Value: ' + HMWSSB.Formatting.formatCurrency(selectedEstimate.grandTotal || 0) + ' • Current Status: ' + status;
+
+      var tabFwd = document.getElementById('btn-tab-forward');
+      var tabRet = document.getElementById('btn-tab-return');
+      if (isDop) {
+        tabFwd.textContent = 'Accord Technical Sanction';
+      } else {
+        tabFwd.textContent = 'Forward / Recommend';
+      }
+
+      // Can only return if not already in draft
+      tabRet.style.display = (status !== 'DRAFT') ? 'inline-block' : 'none';
+
+      selectedModalTags = [];
+      renderModalTags();
+      document.getElementById('modal-remarks').value = '';
+
+      setModalAction('FORWARD');
+
       document.getElementById('scrutiny-modal').style.display = 'flex';
     }
 
@@ -271,31 +446,52 @@
       selectedEstimate = null;
     }
 
-    async function submitAction(action) {
+    async function executeModalAction() {
       if (!selectedEstimate) return;
       var remarks = document.getElementById('modal-remarks').value.trim();
-      var tag = document.getElementById('modal-tags').value;
+      var tags = selectedModalTags.join(', ');
       var user = HMWSSB.Auth.getUser() || {};
+      var actionToRun = currentModalAction;
+
+      var status = selectedEstimate.status || 'DRAFT';
+      var isDop = (user.role || '').toUpperCase() === 'DOP' && status === 'SUBMITTED_TO_DOP';
+      if (actionToRun === 'FORWARD' && isDop) {
+        actionToRun = 'APPROVE';
+      }
+
+      if (actionToRun === 'RETURN' && !remarks) {
+        var errEl = document.getElementById('modal-validation-error');
+        if (errEl) errEl.style.display = 'block';
+        var remarksEl = document.getElementById('modal-remarks');
+        remarksEl.style.borderColor = '#DC2626';
+        remarksEl.focus();
+        HMWSSB.UI.showToast('Please specify reasons for return / corrections required (mandatory).', 'error');
+        return;
+      }
+
+      var btnConfirm = document.getElementById('modal-btn-confirm');
+      btnConfirm.disabled = true;
+      btnConfirm.textContent = 'Processing...';
 
       try {
-        await HMWSSB.API.performAction(selectedEstimate.id, action, user.phoneNumber || '9876543210', remarks, tag);
-        alert(`Successfully executed ${action} on estimate #${selectedEstimate.id}!`);
+        var updated = await HMWSSB.API.performAction(selectedEstimate.id, actionToRun, user.phoneNumber, remarks, tags);
+        HMWSSB.UI.showToast('Estimate #' + selectedEstimate.id + ' successfully ' + (actionToRun === 'RETURN' ? 'returned for corrections' : (actionToRun === 'APPROVE' ? 'technically sanctioned' : 'forwarded')) + '!', 'success');
         closeModal();
         loadEstimates();
       } catch (err) {
-        alert('Action Error: ' + err.message);
+        HMWSSB.UI.showToast('Action Error: ' + err.message, 'error');
+      } finally {
+        btnConfirm.disabled = false;
       }
     }
 
-    async function viewEstimate(id) {
-      try {
-        var est = await HMWSSB.API.getEstimate(id);
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(est));
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(est));
-        window.location.href = 'abstract-v2.html?id=' + id;
-      } catch (e) {
-        alert('Could not view estimate: ' + e.message);
-      }
+    var mId = new URLSearchParams(window.location.search).get('modalId');
+    var mAct = new URLSearchParams(window.location.search).get('modalAction');
+    if (mId) {
+      setTimeout(function() {
+        openScrutinyModal(parseInt(mId));
+        if (mAct) setModalAction(mAct.toUpperCase());
+      }, 1200);
     }
   </script>
 </body>

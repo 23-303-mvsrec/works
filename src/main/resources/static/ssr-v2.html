@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SSR Rate Master Catalog • HMWSSB Portal (V2)</title>
+  <title>Item Master List (SSR 2024–25) • HMWSSB Portal (V2)</title>
   <link rel="stylesheet" href="styles/theme-v2.css">
   <script src="app-v2.js"></script>
   <style>
@@ -33,48 +33,59 @@
 </head>
 <body>
   <div id="gov-app-header"></div>
+  <div id="gov-breadcrumbs"></div>
 
-  <main id="main-content" class="gov-container">
+  <main id="main-content" class="gov-container" style="padding-top: 14px; padding-bottom: 40px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
       <div>
-        <h2 style="font-size:19px; font-weight:800; color:var(--hmwssb-navy-900);">
-          📖 Standard Schedule of Rates (SSR 2024–25)
-        </h2>
-        <p style="font-size:12px; color:var(--slate-500); margin-top:2px;">
+        <h1 style="font-size:20px; font-weight:800; color:var(--hmwssb-navy-900); margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          Standard Item Master List (SSR 2024–25)
+        </h1>
+        <p style="font-size:12px; color:var(--slate-500); margin-top:4px;">
           Official approved unit rates and technical specifications for water supply, sewerage, and civil works.
         </p>
       </div>
 
       <div style="display:flex; gap:8px;">
-        <a href="measurement-v2.html" class="btn btn-primary">📐 Open Measurement Book</a>
+        <a href="measurement-v2.html" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="2 2 9.58 2 13.58 6 22 6 22 22 2 22 2 2"></polygon><line x1="6" y1="18" x2="6" y2="11"></line><line x1="10" y1="18" x2="10" y2="13"></line><line x1="14" y1="18" x2="14" y2="9"></line><line x1="18" y1="18" x2="18" y2="14"></line></svg>
+          Open Measurement Book
+        </a>
       </div>
     </div>
 
     <!-- Category Filter Chips -->
     <div class="filter-chips">
       <button class="filter-chip active" onclick="setCategory(this, '')">All Items</button>
-      <button class="filter-chip" onclick="setCategory(this, 'pipe')">🚰 Pipes (DI / CI / SWG / HDPE)</button>
-      <button class="filter-chip" onclick="setCategory(this, 'excavation')">⛏️ Excavation & Trenching</button>
-      <button class="filter-chip" onclick="setCategory(this, 'road')">🛣️ Road Cutting & Restoration</button>
-      <button class="filter-chip" onclick="setCategory(this, 'valve')">⚙️ Valves & Chambers</button>
-      <button class="filter-chip" onclick="setCategory(this, 'concrete')">🧱 Concrete & Masonry</button>
+      <button class="filter-chip" onclick="setCategory(this, 'pipe')">Pipes (DI / CI / SWG / HDPE)</button>
+      <button class="filter-chip" onclick="setCategory(this, 'excavation')">Excavation & Trenching</button>
+      <button class="filter-chip" onclick="setCategory(this, 'road')">Road Cutting & Restoration</button>
+      <button class="filter-chip" onclick="setCategory(this, 'valve')">Valves & Chambers</button>
+      <button class="filter-chip" onclick="setCategory(this, 'concrete')">Concrete & Masonry</button>
     </div>
 
     <!-- Search Box Card -->
     <div class="gov-card">
       <div class="gov-card-body" style="padding:14px 20px;">
         <div style="display:flex; gap:12px; align-items:center;">
-          <input type="text" id="ssr-search" oninput="onSearchInput()" placeholder="Search SSR catalog by keywords (e.g. 200mm, ductile iron, road cutting, dewatering)..." class="form-control" style="font-size:13px; padding:9px 14px;">
-          <button onclick="executeSearch()" class="btn btn-primary" style="padding:9px 18px;">🔍 Search</button>
+          <input type="text" id="ssr-search" oninput="onSearchInput()" placeholder="Search Item Master catalog by keywords (e.g. 200mm, ductile iron, road cutting, dewatering)..." class="form-control" style="font-size:13px; padding:9px 14px;">
+          <button onclick="executeSearch()" class="btn btn-primary" style="padding:9px 18px; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Catalog Results Table -->
     <div class="gov-card">
-      <div class="gov-card-header">
-        <h2><span>📋</span> Master Catalog Items (<span id="results-count">0</span> items)</h2>
-        <span style="font-size:11px; color:var(--slate-500);">Live synchronization with HMWSSB PostgreSQL Master DB</span>
+      <div class="gov-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="font-size:15px; margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Item Master Directory (<span id="results-count">0</span> items)
+        </h2>
+        <span style="font-size:11px; color:var(--slate-500);">Live synchronization with HMWSSB PostgreSQL Database</span>
       </div>
 
       <div class="table-responsive" style="max-height:600px; overflow-y:auto;">
@@ -83,15 +94,15 @@
             <tr>
               <th style="width:60px;">Sl.No</th>
               <th>Description of Work Item & Specifications</th>
-              <th style="width:100px; text-align:center;">Unit</th>
-              <th style="width:130px; text-align:right;">Standard Rate (₹)</th>
+              <th style="width:110px; text-align:center;">Unit</th>
+              <th style="width:140px; text-align:right;">Standard Rate (₹)</th>
               <th style="width:160px; text-align:center;">Actions</th>
             </tr>
           </thead>
           <tbody id="ssr-tbody">
             <tr>
               <td colspan="5" style="text-align:center; padding:30px; color:var(--slate-500);">
-                Loading Standard Schedule of Rates catalog...
+                Loading Standard Item Master catalog...
               </td>
             </tr>
           </tbody>
@@ -107,14 +118,22 @@
     var searchTimeout = null;
 
     document.addEventListener('DOMContentLoaded', function () {
+      var user = HMWSSB.Auth.requireLogin();
+      if (!user) return;
+
       HMWSSB.UI.renderHeader('ssr');
+      HMWSSB.UI.renderBreadcrumbs([
+        { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+        { label: 'Item Master List' }
+      ]);
       HMWSSB.UI.renderFooter();
+
       document.getElementById('ssr-search').value = currentQuery;
       executeSearch();
     });
 
     function setCategory(btn, query) {
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.filter-chip').forEach(function (c) { c.classList.remove('active'); });
       btn.classList.add('active');
       currentQuery = query;
       document.getElementById('ssr-search').value = query;
@@ -129,46 +148,53 @@
     async function executeSearch() {
       var q = document.getElementById('ssr-search').value.trim();
       var tbody = document.getElementById('ssr-tbody');
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--slate-500);">Searching SSR database...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--slate-500);">Searching Item Master database...</td></tr>';
 
       try {
         var items = await HMWSSB.API.searchItems(q || 'pipe');
         document.getElementById('results-count').innerText = items ? items.length : 0;
 
         if (!items || items.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--slate-500);">No matching SSR items found. Try different search terms.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--slate-500);">No matching items found. Try different search terms.</td></tr>';
           return;
         }
 
-        tbody.innerHTML = items.map((item, idx) => `
-          <tr>
-            <td class="center" style="font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);">#${item.slno || (idx + 1)}</td>
-            <td style="font-weight:600; color:var(--slate-800); line-height:1.4;">${item.itemDescription || '—'}</td>
-            <td class="center"><span class="badge badge-draft">${item.unit || 'Each'}</span></td>
-            <td class="num" style="color:var(--hmwssb-navy-900); font-size:13px; font-weight:800;">₹ ${HMWSSB.Utils.formatCurrency(item.rate || 0)}</td>
-            <td class="center">
-              <button onclick="addToMeasurementBook('${escapeQuotes(item.itemDescription)}', '${item.unit}', ${item.rate})" class="btn btn-primary btn-sm">
-                ➕ Add to MB
-              </button>
-            </td>
-          </tr>
-        `).join('');
+        tbody.innerHTML = items.map(function (item, idx) {
+          var desc = item.itemDescription || item.description || '—';
+          var unit = item.unit || 'Each';
+          var rate = Number(item.rate) || 0;
+          var slno = item.slno || (idx + 1);
+
+          return `
+            <tr>
+              <td class="center" style="font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);">#${slno}</td>
+              <td style="font-weight:600; color:var(--slate-800); line-height:1.4;">${desc}</td>
+              <td class="center"><span class="badge badge-draft">${unit}</span></td>
+              <td class="num" style="color:var(--hmwssb-navy-900); font-size:13px; font-weight:800;">${HMWSSB.Formatting.formatCurrency(rate)}</td>
+              <td class="center">
+                <button onclick="addToMeasurementBook('${escapeQuotes(desc)}', '${unit}', ${rate})" class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add to Estimate
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:#DC2626;">Error loading SSR items: ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:#DC2626;">Error loading items: ${err.message}</td></tr>`;
       }
     }
 
     function addToMeasurementBook(desc, unit, rate) {
-      var raw = localStorage.getItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY) || localStorage.getItem(HMWSSB.CONFIG.ESTIMATE_KEY);
-      var est = {};
-      if (raw) {
-        try { est = JSON.parse(raw); } catch (e) {}
-      }
+      var est = HMWSSB.Storage.loadDraft() || {};
       if (!est.items || !Array.isArray(est.items)) est.items = [];
+
+      var isMat = desc.toLowerCase().includes('pipe') || desc.toLowerCase().includes('supply') || desc.toLowerCase().includes('valve');
 
       est.items.push({
         sno: est.items.length + 1,
-        isMaterial: desc.toLowerCase().includes('pipe') || desc.toLowerCase().includes('supply') ? 'Yes' : 'No',
+        isMaterial: isMat ? 'Yes' : 'No',
+        itemCategory: isMat ? 'MATERIAL' : 'CIVIL',
         description: desc,
         num: 1,
         length: 1.0,
@@ -180,12 +206,14 @@
         amount: Number(rate) || 0
       });
 
-      localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(est));
-      localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(est));
+      HMWSSB.Storage.saveDraft(est);
+      HMWSSB.UI.showToast('Item added to Measurement Book working draft', 'success');
 
-      if (confirm(`Added "${desc.slice(0, 50)}..." to Measurement Book!\n\nWould you like to open the Measurement Book now?`)) {
-        window.location.href = 'measurement-v2.html';
-      }
+      setTimeout(function () {
+        if (confirm('Item added successfully! Would you like to open the Measurement Book now?')) {
+          window.location.href = 'measurement-v2.html';
+        }
+      }, 200);
     }
 
     function escapeQuotes(s) {

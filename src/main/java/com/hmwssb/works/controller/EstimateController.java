@@ -793,7 +793,9 @@ public class EstimateController {
         }
 
         if ("MANAGER".equals(r)) {
-            if (loc.getCircleName() != null && !loc.getCircleName().trim().isEmpty() && !safeEquals(loc.getCircleName(), estCircle)) {
+            if (loc.getCircleName() != null && !loc.getCircleName().trim().isEmpty()
+                    && estCircle != null && !estCircle.trim().isEmpty()
+                    && !safeEquals(loc.getCircleName(), estCircle)) {
                 return false;
             }
             if (loc.getWardName() == null || loc.getWardName().trim().isEmpty()) {
@@ -852,6 +854,32 @@ public class EstimateController {
         return normalized.isEmpty() ? null : normalized;
     }
 
+    private String stripJurisdictionPrefix(String s) {
+        if (s == null) return null;
+        String clean = s.trim();
+        clean = clean.replaceAll("^(?i)(?:Ward|Circle|Division|Div|Zone|Corporation|Corp)[\\s.:#-]*", "").trim();
+        return clean;
+    }
+
+    private String extractJurisdictionNumber(String s) {
+        if (s == null) return null;
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?:^|[^0-9])(\\d{1,4})(?:$|[^0-9])").matcher(s.trim());
+        if (m.find()) {
+            return m.group(1);
+        }
+        return null;
+    }
+
+    private String extractJurisdictionName(String s) {
+        if (s == null) return null;
+        int dashIdx = s.indexOf("-");
+        if (dashIdx >= 0 && dashIdx + 1 < s.length()) {
+            String name = s.substring(dashIdx + 1).trim();
+            return name.isEmpty() ? null : name.toLowerCase();
+        }
+        return null;
+    }
+
     private boolean safeEquals(String s1, String s2) {
         String n1 = normalize(s1);
         String n2 = normalize(s2);
@@ -859,14 +887,29 @@ public class EstimateController {
         if (n1 == null || n2 == null) return false;
         if (n1.equalsIgnoreCase(n2)) return true;
 
-        if (isPureNumber(n1)) {
-            String num2 = extractNumberPrefix(n2);
-            if (n1.equalsIgnoreCase(num2)) return true;
+        String c1 = stripJurisdictionPrefix(n1);
+        String c2 = stripJurisdictionPrefix(n2);
+        if (c1.equalsIgnoreCase(c2)) return true;
+
+        String num1 = extractJurisdictionNumber(n1);
+        String num2 = extractJurisdictionNumber(n2);
+        if (num1 != null && num2 != null && num1.equals(num2)) {
+            String name1 = extractJurisdictionName(c1);
+            String name2 = extractJurisdictionName(c2);
+            if (name1 == null || name2 == null || name1.equalsIgnoreCase(name2)) {
+                return true;
+            }
         }
-        if (isPureNumber(n2)) {
-            String num1 = extractNumberPrefix(n1);
-            if (n2.equalsIgnoreCase(num1)) return true;
+
+        if (isPureNumber(c1)) {
+            String p2 = extractNumberPrefix(c2);
+            if (c1.equalsIgnoreCase(p2)) return true;
         }
+        if (isPureNumber(c2)) {
+            String p1 = extractNumberPrefix(c1);
+            if (c2.equalsIgnoreCase(p1)) return true;
+        }
+
         return false;
     }
 

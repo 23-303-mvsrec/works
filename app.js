@@ -156,7 +156,7 @@ hmwssbShared.factory('StatusService', [function () {
 
     getReturnLabel: function (status) {
       switch (status) {
-        case 'SUBMITTED_TO_DGM': return 'Manager (AE)';
+        case 'SUBMITTED_TO_DGM': return 'Manager ';
         case 'SUBMITTED_TO_GM': return 'DGM';
         case 'SUBMITTED_TO_CGM': return 'GM';
         case 'SUBMITTED_TO_DOP': return 'CGM';

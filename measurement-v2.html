@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Works Measurement Book (MB) • HMWSSB Portal (V2)</title>
+  <title>Estimate Preparation &amp; Measurement Sheet • HMWSSB Works Portal (V2)</title>
   <link rel="stylesheet" href="styles/theme-v2.css">
+  <script src="hierarchy.js"></script>
   <script src="app-v2.js"></script>
   <style>
     .mb-table-container {
@@ -16,6 +17,12 @@
       position: sticky;
       top: 0;
       z-index: 20;
+      background: var(--hmwssb-navy-900);
+      color: #FFFFFF;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      padding: 8px 6px;
     }
     .cell-input {
       width: 100%;
@@ -26,7 +33,7 @@
       font-family: inherit;
       background: #FFFFFF;
       outline: none;
-      transition: border 0.15s;
+      transition: border 0.15s, box-shadow 0.15s;
     }
     .cell-input:focus {
       border-color: var(--hmwssb-blue-600);
@@ -43,6 +50,37 @@
       border-color: var(--slate-200);
       cursor: not-allowed;
     }
+    .autocomplete-box {
+      position: relative;
+      width: 100%;
+    }
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 4px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 1000;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .autocomplete-item {
+      padding: 8px 10px;
+      border-bottom: 1px solid #F1F5F9;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: #EFF6FF;
+      color: #1D4ED8;
+    }
     .summary-bar {
       display: flex;
       justify-content: space-between;
@@ -50,18 +88,18 @@
       background: var(--hmwssb-navy-900);
       color: var(--white);
       border-radius: 8px;
-      padding: 14px 20px;
-      margin-top: 16px;
+      padding: 16px 22px;
+      margin-top: 18px;
       box-shadow: var(--shadow-md);
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
     }
     .summary-pill {
       display: flex;
       flex-direction: column;
     }
     .summary-pill .label {
-      font-size: 10.5px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--slate-300);
@@ -73,79 +111,152 @@
       font-weight: 800;
       color: #A7F3D0;
     }
+    .scope-bar {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
   </style>
 </head>
 <body>
   <div id="gov-app-header"></div>
+  <div id="gov-breadcrumbs"></div>
 
-  <main id="main-content" class="gov-container">
+  <main id="main-content" class="gov-container" style="padding-top: 14px; padding-bottom: 40px;">
+    
+    <!-- Active Location Scope Ribbon (Hidden per UI Review) -->
+    <div class="scope-bar" style="display:none;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        <div>
+          <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500);">Active Location Scope:</span>
+          <div style="font-size:13px; font-weight:700; color:var(--hmwssb-navy-900);" id="active-scope-label">Loading scope...</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <label for="sel-location-scope" style="font-size:12px; font-weight:600; color:var(--slate-700);">Switch Scope:</label>
+        <select id="sel-location-scope" class="form-control" style="font-size:12px; padding:4px 10px; width:auto; min-width:280px;" onchange="onLocationScopeChange()"></select>
+      </div>
+    </div>
+
+    <!-- Readonly Banner if not editable -->
+    <div id="readonly-warning-banner" class="alert alert-warning" style="display:none; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <b>Notice:</b> This estimate is currently in status <span id="readonly-status-text" style="font-weight:700;"></span>. Estimate measurements are locked in scrutiny/approval stage.
+        </div>
+      </div>
+    </div>
+
     <!-- Page Header & Action Controls -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
       <div>
-        <h2 style="font-size:19px; font-weight:800; color:var(--hmwssb-navy-900);">
-          📐 Works Measurement Book (MB Sheet)
-        </h2>
-        <p style="font-size:12px; color:var(--slate-500); margin-top:2px;">
+        <h1 style="font-size:19px; font-weight:800; color:var(--hmwssb-navy-900); margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7l-5-5a1 1 0 0 0-1.4 0l-12 12a1 1 0 0 0 0 1.4l5 5a1 1 0 0 0 1.4 0l12-12a1 1 0 0 0 0-1.4z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/></svg>
+          Estimate Preparation &amp; Detailed Measurement Sheet
+        </h1>
+        <p style="font-size:12px; color:var(--slate-500); margin:2px 0 0 0;">
           Record technical dimensions (L × B × D), quantities, and SSR schedule rates with real-time computation.
         </p>
       </div>
-      <div style="display:flex; gap:8px;">
-        <button onclick="saveDraftLocal()" class="btn btn-secondary">💾 Save Local Draft</button>
-        <button onclick="proceedToAbstract()" class="btn btn-primary">📑 Proceed to General Abstract →</button>
-        <button onclick="window.print()" class="btn btn-outline no-print">🖨️ Print Sheet</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="btn-revisions" onclick="showRevisionsModal()" class="btn btn-secondary btn-sm" style="display:none; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Revisions
+        </button>
+        <button id="btn-remarks" onclick="showRemarksModal()" class="btn btn-secondary btn-sm" style="display:none; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Remarks
+        </button>
+        <button onclick="newEstimate()" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Estimate
+        </button>
+        <button onclick="saveEstimateToServer()" id="btn-save-server" class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Estimate
+        </button>
+        <button onclick="proceedToAbstract()" class="btn btn-success btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          General Abstract &rarr;
+        </button>
+        <button onclick="window.print()" class="btn btn-outline btn-sm no-print" style="display:inline-flex; align-items:center; gap:5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Sheet
+        </button>
       </div>
     </div>
 
     <!-- Administrative Hierarchy Cascade Form -->
     <div class="gov-card">
       <div class="gov-card-header">
-        <h2><span>🏛️</span> Work Location & Administrative Jurisdiction</h2>
+        <h2 style="font-size:14.5px; margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="6" y1="21" x2="6" y2="10"/><line x1="18" y1="21" x2="18" y2="10"/><line x1="12" y1="21" x2="12" y2="10"/><path d="M3 10L12 3L21 10"/></svg>
+          Work Location &amp; Administrative Jurisdiction
+        </h2>
         <span style="font-size:11px; color:var(--slate-500);">All fields marked with <span style="color:#DC2626;">*</span> are mandatory</span>
       </div>
       <div class="gov-card-body">
         <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
           <div class="form-group">
-            <label class="required">Corporation</label>
+            <label class="required" for="sel-corp">Corporation</label>
             <select id="sel-corp" class="form-control" onchange="onCorpChange()"></select>
           </div>
           <div class="form-group">
-            <label class="required">Zone</label>
+            <label class="required" for="sel-zone">Zone</label>
             <select id="sel-zone" class="form-control" onchange="onZoneChange()"></select>
           </div>
           <div class="form-group">
-            <label class="required">Division</label>
+            <label class="required" for="sel-division">Division</label>
             <select id="sel-division" class="form-control" onchange="onDivisionChange()"></select>
           </div>
           <div class="form-group">
-            <label class="required">Circle</label>
+            <label class="required" for="sel-circle">Circle</label>
             <select id="sel-circle" class="form-control" onchange="onCircleChange()"></select>
           </div>
           <div class="form-group">
-            <label class="required">Ward / Section</label>
+            <label class="required" for="sel-ward">Ward / Section</label>
             <select id="sel-ward" class="form-control"></select>
           </div>
         </div>
 
-        <div style="display:flex; gap:14px; margin-top:10px; flex-wrap:wrap;">
+        <div style="display:flex; gap:14px; margin-top:12px; flex-wrap:wrap;">
           <div class="form-group" style="flex:2; min-width:300px;">
-            <label class="required">Name of Work / Project Title</label>
-            <input type="text" id="name-of-work" class="form-control" placeholder="e.g., Providing and Laying 200mm Dia SWG Sewer Line at Ward 101, Division VI...">
+            <label class="required" for="name-of-work">Name of Work / Project Title</label>
+            <input type="text" id="name-of-work" class="form-control" placeholder="e.g., Providing and Laying 200mm Dia SWG Sewer Line at Ward 49, Sahebnagar...">
           </div>
           <div class="form-group" style="flex:1; min-width:180px;">
-            <label>Measurement Book Reference</label>
-            <input type="text" id="mb-ref" class="form-control" placeholder="MB No. / Page No.">
+            <label for="file-number">File Number / Reference</label>
+            <input type="text" id="file-number" class="form-control" placeholder="e.g. HMWSSB/ENG/DIV6/2026/001">
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Dynamic Measurement Book Calculation Grid -->
+    <!-- Dynamic Measurement Calculation Grid -->
     <div class="gov-card">
-      <div class="gov-card-header">
-        <h2><span>📐</span> Detailed Measurement Book Entries</h2>
+      <div class="gov-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="font-size:14.5px; margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7l-5-5a1 1 0 0 0-1.4 0l-12 12a1 1 0 0 0 0 1.4l5 5a1 1 0 0 0 1.4 0l12-12a1 1 0 0 0 0-1.4z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/></svg>
+          Detailed Measurement Entries
+        </h2>
         <div style="display:flex; gap:6px;">
-          <button onclick="addRow()" class="btn btn-success btn-sm">➕ Add Row</button>
-          <button onclick="clearEmptyRows()" class="btn btn-secondary btn-sm">🧹 Cleanup</button>
+          <button id="btn-add-row" onclick="addRow()" class="btn btn-success btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Row
+          </button>
+          <button id="btn-cleanup" onclick="clearEmptyRows()" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Cleanup
+          </button>
         </div>
       </div>
 
@@ -153,18 +264,18 @@
         <table class="gov-table mb-table" id="mb-table">
           <thead>
             <tr>
-              <th style="width:40px;">S.No</th>
-              <th style="width:75px;">Type</th>
-              <th style="min-width:340px;">Description of Work Item (SSR Catalog Autocomplete)</th>
-              <th style="width:70px;">No.</th>
-              <th style="width:75px;">L (m)</th>
-              <th style="width:75px;">B (m)</th>
-              <th style="width:75px;">D (m)</th>
-              <th style="width:90px; text-align:right;">Quantity</th>
-              <th style="width:65px;">Unit</th>
-              <th style="width:95px; text-align:right;">Rate (₹)</th>
-              <th style="width:115px; text-align:right;">Amount (₹)</th>
-              <th style="width:50px; text-align:center;">Action</th>
+              <th style="width:40px; text-align:center;">S.No</th>
+              <th style="width:85px;">Material?</th>
+              <th style="min-width:320px;">Description of Work Item (SSR Autocomplete)</th>
+              <th style="width:65px; text-align:right;">No.</th>
+              <th class="col-dim" style="text-align:right;">L (m)</th>
+              <th class="col-dim" style="text-align:right;">B (m)</th>
+              <th class="col-dim" style="text-align:right;">D (m)</th>
+              <th style="width:95px; text-align:right;">Quantity</th>
+              <th style="width:70px; text-align:center;">Unit</th>
+              <th style="width:105px; text-align:right;">Rate (₹)</th>
+              <th class="col-amt" style="text-align:right;">Amount (₹)</th>
+              <th style="width:45px; text-align:center;">Action</th>
             </tr>
           </thead>
           <tbody id="mb-tbody"></tbody>
@@ -172,47 +283,183 @@
       </div>
     </div>
 
-    <!-- Live Calculated Summary Ribbon -->
+    <!-- Live Calculated Summary & GST Panel -->
     <div class="summary-bar">
       <div class="summary-pill">
         <span class="label">Total Items</span>
         <span class="val" id="sum-items-count" style="color:#FFFFFF;">0</span>
       </div>
       <div class="summary-pill">
-        <span class="label">Part-I Civil Total</span>
-        <span class="val" id="sum-civil-total">₹ 0.00</span>
+        <span class="label">Total Amount (Part-I)</span>
+        <span class="val" id="sum-gross-total" style="color:#FDE68A;">₹ 0.00</span>
       </div>
       <div class="summary-pill">
-        <span class="label">Material Component Total</span>
-        <span class="val" id="sum-material-total">₹ 0.00</span>
+        <span class="label">GST Rate</span>
+        <select id="sel-gst-percent" class="form-control" style="font-size:13px; font-weight:700; height:32px; padding:2px 8px; width:90px; background:#1E293B; color:#FFFFFF; border:1px solid #475569;" onchange="onGstChange()">
+          <option value="0">0%</option>
+          <option value="5">5%</option>
+          <option value="12">12%</option>
+          <option value="18">18%</option>
+        </select>
       </div>
       <div class="summary-pill">
-        <span class="label">Gross Measured Total</span>
-        <span class="val" id="sum-gross-total" style="font-size:22px; color:#FDE68A;">₹ 0.00</span>
+        <span class="label">GST Amount</span>
+        <span class="val" id="sum-gst-total">₹ 0.00</span>
       </div>
-      <div>
-        <button onclick="proceedToAbstract()" class="btn btn-amber">Proceed to Abstract →</button>
+      <div class="summary-pill">
+        <span class="label">Grand Total (I + II)</span>
+        <span class="val" id="sum-grand-total" style="font-size:22px; color:#A7F3D0;">₹ 0.00</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button onclick="proceedToAbstract()" class="btn btn-amber" style="font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          Generate Estimate (Abstract) &rarr;
+        </button>
       </div>
     </div>
+
+    <!-- Saved Estimates (Abstracts) Table -->
+    <div class="gov-card" style="margin-top:24px;">
+      <div class="gov-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="font-size:14.5px; margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          Saved Estimates (Abstracts) in Current Jurisdiction
+        </h2>
+        <button onclick="loadSavedEstimates()" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          Refresh List
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="gov-table" id="saved-estimates-table">
+          <thead>
+            <tr>
+              <th style="width:70px;">ID</th>
+              <th>Name Of Work</th>
+              <th style="width:190px;">Location Scope</th>
+              <th style="width:130px;">Prepared By</th>
+              <th style="width:120px; text-align:right;">Grand Total (₹)</th>
+              <th style="width:110px; text-align:center;">Status</th>
+              <th style="width:120px;">Saved Date</th>
+              <th style="width:110px; text-align:center;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="saved-estimates-tbody">
+            <tr>
+              <td colspan="8" style="text-align:center; color:var(--slate-500); padding:20px;">Loading saved estimates...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Global Floating Portal for SSR Item Autocomplete (Never Clipped by Overflow Containers) -->
+    <div id="ssr-floating-portal" class="ssr-floating-portal" style="display:none;"></div>
+
   </main>
 
   <div id="gov-app-footer"></div>
 
   <script>
+    var currentEstimate = null;
     var hierarchyData = null;
     var rows = [];
-    var searchTimer = null;
+    var searchTimers = {};
+    var isReadOnly = false;
+    var activeSearchRowIdx = -1;
+    var activeSearchInputEl = null;
 
     document.addEventListener('DOMContentLoaded', async function () {
+      var user = HMWSSB.Auth.requireLogin();
+      if (!user) return;
+
       HMWSSB.UI.renderHeader('measurement');
+      HMWSSB.UI.renderBreadcrumbs([
+        { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+        { label: 'Estimate Preparation Sheet' }
+      ]);
       HMWSSB.UI.renderFooter();
-      await loadHierarchy();
-      loadExistingEstimate();
+
+      initLocationScope();
+      await loadJurisdictions();
+      await initEstimate();
+      await loadSavedEstimates();
     });
 
-    async function loadHierarchy() {
+    // ── Location Scope ──────────────────────────────────────────────────────────
+    function initLocationScope() {
+      var user = HMWSSB.Auth.getUser();
+      var options = HMWSSB.LocationScope.getOptions(user);
+      var activeOpt = HMWSSB.LocationScope.getActiveOption(user);
+
+      var sel = document.getElementById('sel-location-scope');
+      sel.innerHTML = '';
+      options.forEach(function (opt) {
+        var el = document.createElement('option');
+        el.value = opt.key;
+        el.textContent = opt.label;
+        if (activeOpt && opt.key === activeOpt.key) el.selected = true;
+        sel.appendChild(el);
+      });
+
+      updateScopeLabel(activeOpt);
+    }
+
+    function updateScopeLabel(opt) {
+      var el = document.getElementById('active-scope-label');
+      if (!opt) {
+        el.textContent = 'General / All Scope';
+        return;
+      }
+      var parts = [];
+      if (opt.corp) parts.push(opt.corp);
+      if (opt.zone) parts.push(opt.zone);
+      if (opt.division) parts.push('Div ' + opt.division);
+      if (opt.circle) parts.push(opt.circle);
+      if (opt.ward) parts.push(opt.ward);
+      el.textContent = parts.length > 0 ? parts.join(' • ') : opt.label;
+    }
+
+    function onLocationScopeChange() {
+      var user = HMWSSB.Auth.getUser();
+      var sel = document.getElementById('sel-location-scope');
+      var opt = HMWSSB.LocationScope.setActiveOption(sel.value, user);
+      updateScopeLabel(opt);
+
+      // If drafting a fresh estimate, synchronize hierarchy
+      if (!currentEstimate || !currentEstimate.id) {
+        applyScopeToHierarchy(opt);
+      }
+      loadSavedEstimates();
+    }
+
+    function applyScopeToHierarchy(opt) {
+      if (!opt || !hierarchyData) return;
+      if (opt.corp) {
+        document.getElementById('sel-corp').value = opt.corp;
+        onCorpChange();
+      }
+      if (opt.zone) {
+        document.getElementById('sel-zone').value = opt.zone;
+        onZoneChange();
+      }
+      if (opt.division) {
+        document.getElementById('sel-division').value = opt.division;
+        onDivisionChange();
+      }
+      if (opt.circle) {
+        document.getElementById('sel-circle').value = opt.circle;
+        onCircleChange();
+      }
+      if (opt.ward) {
+        document.getElementById('sel-ward').value = opt.ward;
+      }
+    }
+
+    // ── Cascading Jurisdiction Dropdowns ──────────────────────────────────────
+    async function loadJurisdictions() {
       try {
-        hierarchyData = await HMWSSB.API.getJurisdictions();
+        hierarchyData = await HMWSSB.Jurisdiction.getHierarchy();
         populateCorps();
       } catch (err) {
         console.error('Failed to load jurisdiction hierarchy:', err);
@@ -222,336 +469,750 @@
     function populateCorps() {
       var sel = document.getElementById('sel-corp');
       sel.innerHTML = '<option value="">-- Select Corporation --</option>';
-      if (!hierarchyData || !hierarchyData.corporations) return;
-      hierarchyData.corporations.forEach(c => {
-        sel.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+      if (!hierarchyData) return;
+      var corps = Object.keys(hierarchyData);
+      corps.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        sel.appendChild(opt);
       });
     }
 
     function onCorpChange() {
-      var corpName = document.getElementById('sel-corp').value;
+      var corp = document.getElementById('sel-corp').value;
       var selZone = document.getElementById('sel-zone');
       selZone.innerHTML = '<option value="">-- Select Zone --</option>';
       document.getElementById('sel-division').innerHTML = '<option value="">-- Select Division --</option>';
       document.getElementById('sel-circle').innerHTML = '<option value="">-- Select Circle --</option>';
       document.getElementById('sel-ward').innerHTML = '<option value="">-- Select Ward --</option>';
 
-      if (!corpName || !hierarchyData) return;
-      var corp = hierarchyData.corporations.find(c => c.name === corpName);
-      if (corp && corp.zones) {
-        corp.zones.forEach(z => {
-          selZone.innerHTML += `<option value="${z.name}">${z.name}</option>`;
-        });
-      }
+      if (!corp || !hierarchyData || !hierarchyData[corp]) return;
+      var zones = Object.keys(hierarchyData[corp]);
+      zones.sort().forEach(function (z) {
+        var opt = document.createElement('option');
+        opt.value = z;
+        opt.textContent = z;
+        selZone.appendChild(opt);
+      });
     }
 
     function onZoneChange() {
-      var corpName = document.getElementById('sel-corp').value;
-      var zoneName = document.getElementById('sel-zone').value;
+      var corp = document.getElementById('sel-corp').value;
+      var zone = document.getElementById('sel-zone').value;
       var selDiv = document.getElementById('sel-division');
       selDiv.innerHTML = '<option value="">-- Select Division --</option>';
       document.getElementById('sel-circle').innerHTML = '<option value="">-- Select Circle --</option>';
       document.getElementById('sel-ward').innerHTML = '<option value="">-- Select Ward --</option>';
 
-      if (!zoneName || !hierarchyData) return;
-      var corp = hierarchyData.corporations.find(c => c.name === corpName);
-      var zone = corp ? corp.zones.find(z => z.name === zoneName) : null;
-      if (zone && zone.divisions) {
-        zone.divisions.forEach(d => {
-          selDiv.innerHTML += `<option value="${d.name}">${d.name}</option>`;
-        });
-      }
+      if (!corp || !zone || !hierarchyData[corp] || !hierarchyData[corp][zone]) return;
+      var divs = Object.keys(hierarchyData[corp][zone]);
+      divs.sort().forEach(function (d) {
+        var opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = 'Division ' + d;
+        selDiv.appendChild(opt);
+      });
     }
 
     function onDivisionChange() {
-      var corpName = document.getElementById('sel-corp').value;
-      var zoneName = document.getElementById('sel-zone').value;
-      var divName = document.getElementById('sel-division').value;
+      var corp = document.getElementById('sel-corp').value;
+      var zone = document.getElementById('sel-zone').value;
+      var div = document.getElementById('sel-division').value;
       var selCircle = document.getElementById('sel-circle');
       selCircle.innerHTML = '<option value="">-- Select Circle --</option>';
       document.getElementById('sel-ward').innerHTML = '<option value="">-- Select Ward --</option>';
 
-      if (!divName || !hierarchyData) return;
-      var corp = hierarchyData.corporations.find(c => c.name === corpName);
-      var zone = corp ? corp.zones.find(z => z.name === zoneName) : null;
-      var div = zone ? zone.divisions.find(d => d.name === divName) : null;
-      if (div && div.circles) {
-        div.circles.forEach(c => {
-          selCircle.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-        });
-      }
+      if (!corp || !zone || !div || !hierarchyData[corp] || !hierarchyData[corp][zone] || !hierarchyData[corp][zone][div]) return;
+      var circles = Object.keys(hierarchyData[corp][zone][div]);
+      circles.sort().forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        selCircle.appendChild(opt);
+      });
     }
 
     function onCircleChange() {
-      var corpName = document.getElementById('sel-corp').value;
-      var zoneName = document.getElementById('sel-zone').value;
-      var divName = document.getElementById('sel-division').value;
-      var circleName = document.getElementById('sel-circle').value;
+      var corp = document.getElementById('sel-corp').value;
+      var zone = document.getElementById('sel-zone').value;
+      var div = document.getElementById('sel-division').value;
+      var circle = document.getElementById('sel-circle').value;
       var selWard = document.getElementById('sel-ward');
       selWard.innerHTML = '<option value="">-- Select Ward --</option>';
 
-      if (!circleName || !hierarchyData) return;
-      var corp = hierarchyData.corporations.find(c => c.name === corpName);
-      var zone = corp ? corp.zones.find(z => z.name === zoneName) : null;
-      var div = zone ? zone.divisions.find(d => d.name === divName) : null;
-      var circle = div ? div.circles.find(c => c.name === circleName) : null;
-      if (circle && circle.wards) {
-        circle.wards.forEach(w => {
-          selWard.innerHTML += `<option value="${w}">${w}</option>`;
+      if (!corp || !zone || !div || !circle || !hierarchyData[corp] || !hierarchyData[corp][zone] || !hierarchyData[corp][zone][div] || !hierarchyData[corp][zone][div][circle]) return;
+      var wards = hierarchyData[corp][zone][div][circle];
+
+      var user = HMWSSB.Auth.getUser();
+      var isManager = (user && (user.role || '').toUpperCase() === 'MANAGER');
+
+      if (isManager && user.locations && user.locations.length > 0) {
+        var filteredWards = wards.filter(function (w) {
+          return HMWSSB.LocationScope.isManagerAuthorizedForWard(user, w);
         });
+        if (filteredWards.length > 0) {
+          wards = filteredWards;
+        }
+      }
+
+      wards.forEach(function (w) {
+        var opt = document.createElement('option');
+        opt.value = w;
+        opt.textContent = w;
+        selWard.appendChild(opt);
+      });
+
+      if (wards.length === 1) {
+        selWard.value = wards[0];
       }
     }
 
-    function loadExistingEstimate() {
-      var raw = localStorage.getItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY) || localStorage.getItem(HMWSSB.CONFIG.ESTIMATE_KEY);
-      if (raw) {
-        try {
-          var est = JSON.parse(raw);
-          if (est.nameOfWork) document.getElementById('name-of-work').value = est.nameOfWork;
-          if (est.corp) document.getElementById('sel-corp').value = est.corp;
-          onCorpChange();
-          if (est.zoneName) document.getElementById('sel-zone').value = est.zoneName;
-          onZoneChange();
-          if (est.division) document.getElementById('sel-division').value = est.division;
-          onDivisionChange();
-          if (est.circleName) document.getElementById('sel-circle').value = est.circleName;
-          onCircleChange();
-          if (est.wardName) document.getElementById('sel-ward').value = est.wardName;
+    // ── Estimate Initialization ──────────────────────────────────────────────
+    async function initEstimate() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var estId = urlParams.get('id');
 
-          if (est.items && Array.isArray(est.items) && est.items.length > 0) {
-            rows = est.items;
-            renderRows();
-            return;
-          }
-        } catch (e) {}
+      if (estId) {
+        try {
+          currentEstimate = await HMWSSB.API.getEstimate(estId);
+        } catch (e) {
+          HMWSSB.UI.showToast('Could not load estimate #' + estId + ': ' + e.message, 'error');
+        }
       }
 
-      // Default sample measurement rows
-      rows = [
-        { sno: 1, isMaterial: 'No', description: 'Earthwork excavation in all classes of soils for trenches...', num: 1, length: 150.0, breadth: 0.9, depth: 1.5, quantity: 202.5, unit: 'CUM', rate: 185.00, amount: 37462.50 },
-        { sno: 2, isMaterial: 'Yes', description: 'Supply and delivery of 200mm dia SWG pipes (SP-1) per RMT...', num: 1, length: 150.0, breadth: null, depth: null, quantity: 150.0, unit: 'RMT', rate: 742.00, amount: 111300.00 }
-      ];
+      if (!currentEstimate) {
+        currentEstimate = HMWSSB.Storage.loadDraft();
+      }
+
+      var user = HMWSSB.Auth.getUser();
+      var isAdmin = (user.role || '').toUpperCase() === 'ADMIN';
+
+      // Lock if not DRAFT and not ADMIN
+      if (currentEstimate && currentEstimate.status && currentEstimate.status !== 'DRAFT' && !isAdmin) {
+        isReadOnly = true;
+        document.getElementById('readonly-warning-banner').style.display = 'block';
+        document.getElementById('readonly-status-text').textContent = currentEstimate.status;
+        document.getElementById('btn-save-server').style.display = 'none';
+        document.getElementById('btn-add-row').style.display = 'none';
+        document.getElementById('btn-cleanup').style.display = 'none';
+      }
+
+      if (currentEstimate && currentEstimate.id) {
+        document.getElementById('btn-revisions').style.display = 'inline-block';
+        document.getElementById('btn-remarks').style.display = 'inline-block';
+        HMWSSB.UI.renderBreadcrumbs([
+          { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+          { label: 'Estimate Preparation', url: 'measurement-v2.html' },
+          { label: 'Estimate #' + currentEstimate.id }
+        ]);
+      }
+
+      // Populate form
+      if (currentEstimate) {
+        document.getElementById('name-of-work').value = currentEstimate.nameOfWork || currentEstimate.workName || '';
+        document.getElementById('file-number').value = currentEstimate.fileNumber || '';
+        if (currentEstimate.gstPercent !== undefined) {
+          document.getElementById('sel-gst-percent').value = String(currentEstimate.gstPercent);
+        }
+      }
+
+      var activeOpt = HMWSSB.LocationScope.getDefaultEstimateOption(user);
+
+      if (currentEstimate && currentEstimate.id) {
+        // Saved existing estimate: populate its exact saved jurisdiction
+        if (currentEstimate.corp) {
+          document.getElementById('sel-corp').value = currentEstimate.corp;
+          onCorpChange();
+          if (currentEstimate.zoneName) document.getElementById('sel-zone').value = currentEstimate.zoneName;
+          onZoneChange();
+          if (currentEstimate.division) document.getElementById('sel-division').value = currentEstimate.division;
+          onDivisionChange();
+          if (currentEstimate.circleName) document.getElementById('sel-circle').value = currentEstimate.circleName;
+          onCircleChange();
+          if (currentEstimate.wardName) document.getElementById('sel-ward').value = currentEstimate.wardName;
+        }
+      } else {
+        // Drafting a new estimate:
+        // Check if draft has valid jurisdiction authorized for current officer
+        var useDraftJurisdiction = false;
+        if (currentEstimate && currentEstimate.corp && currentEstimate.wardName) {
+          if (isAdmin || HMWSSB.LocationScope.isManagerAuthorizedForWard(user, currentEstimate.wardName)) {
+            useDraftJurisdiction = true;
+          }
+        }
+
+        if (useDraftJurisdiction) {
+          document.getElementById('sel-corp').value = currentEstimate.corp;
+          onCorpChange();
+          if (currentEstimate.zoneName) document.getElementById('sel-zone').value = currentEstimate.zoneName;
+          onZoneChange();
+          if (currentEstimate.division) document.getElementById('sel-division').value = currentEstimate.division;
+          onDivisionChange();
+          if (currentEstimate.circleName) document.getElementById('sel-circle').value = currentEstimate.circleName;
+          onCircleChange();
+          if (currentEstimate.wardName) document.getElementById('sel-ward').value = currentEstimate.wardName;
+        } else if (activeOpt) {
+          applyScopeToHierarchy(activeOpt);
+        }
+      }
+
+      // Populate Rows
+      if (currentEstimate && currentEstimate.items && Array.isArray(currentEstimate.items) && currentEstimate.items.length > 0) {
+        rows = currentEstimate.items;
+      } else {
+        rows = [
+          { isMaterial: 'Yes', description: '', num: 1, length: null, breadth: null, depth: null, quantity: 1, rate: 0, unit: '', amount: 0, itemId: null }
+        ];
+      }
+
       renderRows();
     }
 
+    function newEstimate() {
+      currentEstimate = null;
+      HMWSSB.Storage.clearDraft();
+      window.location.href = 'measurement-v2.html';
+    }
+
+    // ── Row Rendering & Dimension Math ───────────────────────────────────────
     function renderRows() {
       var tbody = document.getElementById('mb-tbody');
       tbody.innerHTML = '';
 
-      rows.forEach((row, idx) => {
-        var isDeduction = (Number(row.quantity) < 0) || (Number(row.num) < 0);
+      rows.forEach(function (row, idx) {
+        var isMat = (row.isMaterial === 'Yes' || row.isMaterial === true || row.itemCategory === 'MATERIAL');
         var tr = document.createElement('tr');
-        if (isDeduction) tr.className = 'deduction';
 
-        tr.innerHTML = `
-          <td class="center" style="font-weight:700;">${idx + 1}</td>
-          <td>
-            <select class="cell-input" onchange="updateRow(${idx}, 'isMaterial', this.value)">
-              <option value="No" ${row.isMaterial === 'No' ? 'selected' : ''}>Civil</option>
-              <option value="Yes" ${row.isMaterial === 'Yes' ? 'selected' : ''}>Material</option>
-            </select>
-          </td>
-          <td>
-            <div class="autocomplete-box">
-              <input type="text" class="cell-input" value="${escapeHtml(row.description || '')}"
-                placeholder="Type SSR item description..."
-                oninput="handleItemSearch(${idx}, this.value)"
-                onblur="hideAutocomplete(${idx})">
-              <ul class="autocomplete-dropdown" id="dropdown-${idx}" style="display:none;"></ul>
-            </div>
-          </td>
-          <td><input type="number" step="any" class="cell-input num" value="${row.num !== null && row.num !== undefined ? row.num : 1}" oninput="updateRow(${idx}, 'num', this.value)"></td>
-          <td><input type="number" step="any" class="cell-input num" value="${row.length || ''}" placeholder="L" oninput="updateRow(${idx}, 'length', this.value)"></td>
-          <td><input type="number" step="any" class="cell-input num" value="${row.breadth || ''}" placeholder="B" oninput="updateRow(${idx}, 'breadth', this.value)"></td>
-          <td><input type="number" step="any" class="cell-input num" value="${row.depth || ''}" placeholder="D" oninput="updateRow(${idx}, 'depth', this.value)"></td>
-          <td><input type="text" class="cell-input num" value="${HMWSSB.Utils.formatCurrency(row.quantity || 0)}" readonly></td>
-          <td><input type="text" class="cell-input center" value="${escapeHtml(row.unit || 'Each')}" oninput="updateRow(${idx}, 'unit', this.value)"></td>
-          <td><input type="number" step="0.01" class="cell-input num" value="${row.rate || 0}" oninput="updateRow(${idx}, 'rate', this.value)"></td>
-          <td><input type="text" class="cell-input num" value="${HMWSSB.Utils.formatCurrency(row.amount || 0)}" readonly style="font-weight:700; color:var(--hmwssb-navy-900);"></td>
-          <td class="center">
-            <button onclick="deleteRow(${idx})" class="btn btn-sm" style="background:#FEE2E2; color:#DC2626; border:none; padding:3px 6px;" title="Delete row">✕</button>
-          </td>
-        `;
+        var rowHtml = '';
+        rowHtml += '<td style="text-align:center; font-weight:700;">' + (idx + 1) + '</td>';
+        rowHtml += '<td>';
+        rowHtml += '  <select class="cell-input" ' + (isReadOnly ? 'disabled' : '') + ' onchange="updateRow(' + idx + ', \'isMaterial\', this.value)">';
+        rowHtml += '    <option value="Yes" ' + (isMat ? 'selected' : '') + '>Yes</option>';
+        rowHtml += '    <option value="No" ' + (!isMat ? 'selected' : '') + '>No</option>';
+        rowHtml += '  </select>';
+        rowHtml += '</td>';
+        rowHtml += '<td>';
+        rowHtml += '  <div class="autocomplete-box">';
+        rowHtml += '    <input type="text" class="cell-input" value="' + escapeHtml(row.description || '') + '"';
+        rowHtml += '      placeholder="Type SSR item description (e.g. pipe, excavation)..."';
+        rowHtml += '      ' + (isReadOnly ? 'readonly' : '') + '';
+        rowHtml += '      oninput="handleItemSearch(' + idx + ', this.value, this)"';
+        rowHtml += '      onkeydown="handleSearchKeydown(event, ' + idx + ', this)"';
+        rowHtml += '      onfocus="if (this.value && this.value.trim().length >= 2) handleItemSearch(' + idx + ', this.value, this)">';
+        rowHtml += '  </div>';
+        rowHtml += '</td>';
+        rowHtml += '<td><input type="number" step="any" min="0" class="cell-input num" ' + (isReadOnly ? 'readonly' : '') + ' value="' + (row.num !== null && row.num !== undefined ? row.num : 1) + '" oninput="updateRow(' + idx + ', \'num\', this.value)"></td>';
+        rowHtml += '<td class="col-dim"><input type="number" step="any" min="0" class="cell-input num" ' + (isReadOnly ? 'readonly' : '') + ' value="' + (row.length !== null && row.length !== undefined ? row.length : '') + '" placeholder="L" oninput="updateRow(' + idx + ', \'length\', this.value)"></td>';
+        rowHtml += '<td class="col-dim"><input type="number" step="any" min="0" class="cell-input num" ' + (isReadOnly ? 'readonly' : '') + ' value="' + (row.breadth !== null && row.breadth !== undefined ? row.breadth : '') + '" placeholder="B" oninput="updateRow(' + idx + ', \'breadth\', this.value)"></td>';
+        rowHtml += '<td class="col-dim"><input type="number" step="any" min="0" class="cell-input num" ' + (isReadOnly ? 'readonly' : '') + ' value="' + (row.depth !== null && row.depth !== undefined ? row.depth : '') + '" placeholder="D" oninput="updateRow(' + idx + ', \'depth\', this.value)"></td>';
+        rowHtml += '<td><input type="text" class="cell-input num" value="' + HMWSSB.Formatting.formatNumber(row.quantity || 0, 3) + '" readonly></td>';
+        rowHtml += '<td><input type="text" class="cell-input" style="text-align:center;" ' + (isReadOnly ? 'readonly' : '') + ' value="' + escapeHtml(row.unit || '') + '" oninput="updateRow(' + idx + ', \'unit\', this.value)"></td>';
+        rowHtml += '<td><input type="number" step="0.01" min="0" class="cell-input num" ' + (isReadOnly ? 'readonly' : '') + ' value="' + (row.rate || 0) + '" oninput="updateRow(' + idx + ', \'rate\', this.value)"></td>';
+        rowHtml += '<td class="col-amt"><input type="text" class="cell-input num" value="' + HMWSSB.Formatting.formatCurrency(row.amount || 0) + '" readonly style="font-weight:700; color:var(--hmwssb-navy-900);"></td>';
+        rowHtml += '<td style="text-align:center;">';
+        rowHtml += isReadOnly ? '—' : '<button onclick="deleteRow(' + idx + ')" class="btn btn-sm" style="background:#FEE2E2; color:#DC2626; border:none; padding:4px 8px; font-weight:700; display:inline-flex; align-items:center; justify-content:center;" title="Delete row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>';
+        rowHtml += '</td>';
+
+        tr.innerHTML = rowHtml;
         tbody.appendChild(tr);
       });
 
       calculateTotals();
     }
 
-    function updateRow(idx, field, value) {
-      if (field === 'isMaterial' || field === 'description' || field === 'unit') {
-        rows[idx][field] = value;
-      } else {
-        rows[idx][field] = value === '' ? null : Number(value);
-      }
-
-      // Compute Quantity = No * L * B * D (or appropriate formula)
-      var n = rows[idx].num !== null && rows[idx].num !== undefined ? Number(rows[idx].num) : 1;
-      var l = Number(rows[idx].length) || 0;
-      var b = Number(rows[idx].breadth) || 0;
-      var d = Number(rows[idx].depth) || 0;
-
-      var qty = n;
-      if (l > 0 && b > 0 && d > 0) {
-        qty = n * l * b * d;
-      } else if (l > 0 && b > 0) {
-        qty = n * l * b;
-      } else if (l > 0) {
-        qty = n * l;
-      }
-
-      rows[idx].quantity = HMWSSB.Utils.round(qty, 3);
-      var rate = Number(rows[idx].rate) || 0;
-      rows[idx].amount = HMWSSB.Utils.round(rows[idx].quantity * rate, 2);
-
-      // Re-render row outputs without breaking active focus
-      var tr = document.getElementById('mb-tbody').children[idx];
-      if (tr) {
-        var inputs = tr.querySelectorAll('input');
-        // Qty input is index 5, amount is index 8
-        if (inputs[5]) inputs[5].value = HMWSSB.Utils.formatCurrency(rows[idx].quantity);
-        if (inputs[8]) inputs[8].value = HMWSSB.Utils.formatCurrency(rows[idx].amount);
-      }
-      calculateTotals();
-    }
-
-    function calculateTotals() {
-      var civil = 0;
-      var material = 0;
-
-      rows.forEach(r => {
-        var amt = Number(r.amount) || 0;
-        if (r.isMaterial === 'Yes' || r.isMaterial === true) {
-          material += amt;
-        } else {
-          civil += amt;
-        }
-      });
-
-      var gross = civil + material;
-      document.getElementById('sum-items-count').innerText = rows.length;
-      document.getElementById('sum-civil-total').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(civil);
-      document.getElementById('sum-material-total').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(material);
-      document.getElementById('sum-gross-total').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(gross);
-    }
-
     function addRow() {
       rows.push({
-        sno: rows.length + 1,
-        isMaterial: 'No',
+        isMaterial: 'Yes',
         description: '',
         num: 1,
         length: null,
         breadth: null,
         depth: null,
-        quantity: 0,
-        unit: 'CUM',
+        quantity: 1,
+        unit: '',
         rate: 0,
-        amount: 0
+        amount: 0,
+        itemId: null
       });
       renderRows();
-      // Scroll to bottom
-      var container = document.querySelector('.mb-table-container');
-      container.scrollTop = container.scrollHeight;
     }
 
     function deleteRow(idx) {
+      if (rows.length <= 1) {
+        HMWSSB.UI.showToast('At least one row is required in the estimate.', 'warning');
+        return;
+      }
       rows.splice(idx, 1);
       renderRows();
     }
 
     function clearEmptyRows() {
-      rows = rows.filter(r => (r.description && r.description.trim()) || r.amount > 0);
-      if (rows.length === 0) addRow();
+      var filtered = rows.filter(function (r) {
+        return (r.description && r.description.trim() !== '') || (r.rate && r.rate > 0);
+      });
+      if (filtered.length === 0) {
+        filtered.push({ isMaterial: 'Yes', description: '', num: 1, length: null, breadth: null, depth: null, quantity: 1, unit: '', rate: 0, amount: 0 });
+      }
+      rows = filtered;
       renderRows();
     }
 
-    // SSR Autocomplete Engine
-    function handleItemSearch(idx, query) {
-      clearTimeout(searchTimer);
-      var dropdown = document.getElementById('dropdown-' + idx);
+    function updateRow(idx, field, value) {
+      if (field === 'isMaterial') {
+        rows[idx].isMaterial = value;
+        rows[idx].itemCategory = (value === 'Yes') ? 'MATERIAL' : 'CIVIL';
+      } else if (field === 'description' || field === 'unit') {
+        rows[idx][field] = value;
+      } else {
+        var numVal = value === '' ? null : parseFloat(value);
+        if (numVal !== null && !isNaN(numVal) && numVal < 0) numVal = 0; // Prevent negative dimensions
+        rows[idx][field] = numVal;
+      }
 
-      if (!query || query.trim().length < 2) {
-        dropdown.style.display = 'none';
+      // Exact V1 Dimensional Logic
+      HMWSSB.Calculations.computeRow(rows[idx]);
+
+      var tr = document.getElementById('mb-tbody').children[idx];
+      if (tr) {
+        var inputs = tr.querySelectorAll('input');
+        // inputs[0] is description, [1] is num, [2] is length, [3] is breadth, [4] is depth, [5] is quantity, [6] is unit, [7] is rate, [8] is amount
+        if (inputs[5]) inputs[5].value = HMWSSB.Formatting.formatNumber(rows[idx].quantity, 3);
+        if (inputs[8]) inputs[8].value = HMWSSB.Formatting.formatCurrency(rows[idx].amount);
+      }
+      calculateTotals();
+    }
+
+    function onGstChange() {
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      var gstPct = parseFloat(document.getElementById('sel-gst-percent').value) || 0;
+      var estDraft = {
+        items: rows,
+        gstPercent: gstPct,
+        unforeseenAmount: (currentEstimate && currentEstimate.unforeseenAmount) ? currentEstimate.unforeseenAmount : 0
+      };
+
+      var res = HMWSSB.Calculations.recalculate(estDraft);
+
+      document.getElementById('sum-items-count').innerText = rows.length;
+      document.getElementById('sum-gross-total').innerText = HMWSSB.Formatting.formatCurrency(res.partITotal);
+      document.getElementById('sum-gst-total').innerText = HMWSSB.Formatting.formatCurrency(res.gstAmount);
+      document.getElementById('sum-grand-total').innerText = HMWSSB.Formatting.formatCurrency(res.partITotal + res.gstAmount);
+    }
+
+    // ── SSR Autocomplete (Global Floating Portal - Never Clipped) ────────────
+    function getOrCreatePortal() {
+      var p = document.getElementById('ssr-floating-portal');
+      if (!p) {
+        p = document.createElement('div');
+        p.id = 'ssr-floating-portal';
+        p.className = 'ssr-floating-portal';
+        p.style.display = 'none';
+        document.body.appendChild(p);
+      }
+      return p;
+    }
+
+    function positionPortal(inputEl, itemCount) {
+      var portal = getOrCreatePortal();
+      var rect = inputEl.getBoundingClientRect();
+      var portalWidth = Math.min(760, Math.max(rect.width, 640));
+      var estHeight = Math.min(340, (itemCount || 5) * 62 + 44);
+
+      var spaceBelow = window.innerHeight - rect.bottom;
+      var spaceAbove = rect.top;
+
+      portal.style.position = 'fixed';
+      portal.style.zIndex = '999999';
+
+      var left = rect.left;
+      if (left + portalWidth > window.innerWidth - 16) {
+        left = Math.max(12, window.innerWidth - portalWidth - 16);
+      }
+      portal.style.left = left + 'px';
+      portal.style.width = portalWidth + 'px';
+
+      if (spaceBelow < 220 && spaceAbove > spaceBelow) {
+        var top = rect.top - estHeight - 4;
+        portal.style.top = Math.max(8, top) + 'px';
+        portal.style.maxHeight = Math.min(estHeight, spaceAbove - 16) + 'px';
+      } else {
+        portal.style.top = (rect.bottom + 4) + 'px';
+        portal.style.maxHeight = Math.min(340, spaceBelow - 16) + 'px';
+      }
+    }
+
+    function hidePortal() {
+      var portal = document.getElementById('ssr-floating-portal');
+      if (portal) {
+        portal.style.display = 'none';
+        portal.innerHTML = '';
+        portal._currentItems = null;
+        portal._activeRowIdx = -1;
+      }
+      activeSearchRowIdx = -1;
+      activeSearchInputEl = null;
+    }
+
+    function handleItemSearch(idx, val, inputEl) {
+      rows[idx].description = val;
+      activeSearchRowIdx = idx;
+      activeSearchInputEl = inputEl;
+
+      if (!val || val.trim().length < 2) {
+        hidePortal();
         return;
       }
 
-      searchTimer = setTimeout(async function () {
+      if (searchTimers[idx]) clearTimeout(searchTimers[idx]);
+      searchTimers[idx] = setTimeout(async function () {
+        if (activeSearchRowIdx !== idx) return;
+
         try {
-          var items = await HMWSSB.API.searchItems(query);
+          var items = await HMWSSB.API.searchItems(val);
+          if (activeSearchRowIdx !== idx) return;
+
+          var portal = getOrCreatePortal();
           if (!items || items.length === 0) {
-            dropdown.style.display = 'none';
+            hidePortal();
             return;
           }
 
-          dropdown.innerHTML = items.slice(0, 10).map(item => `
-            <li class="autocomplete-item" onmousedown="selectSsrItem(${idx}, '${escapeQuotes(item.itemDescription)}', '${item.unit || 'Each'}', ${item.rate || 0})">
-              <div style="font-weight:600; color:var(--hmwssb-navy-900);">${item.itemDescription}</div>
-              <div style="font-size:11px; color:var(--slate-500); margin-top:2px;">
-                Standard Unit: <b>${item.unit}</b> • Rate: <b>₹ ${HMWSSB.Utils.formatCurrency(item.rate)}</b>
+          var safeQ = val.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          var qRegex = new RegExp('(' + safeQ + ')', 'gi');
+
+          var html = `
+            <div class="ssr-portal-header">
+              <div class="ssr-header-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span>SSR 2024–25 Schedule Items</span>
+                <span class="ssr-count-badge">${items.length} items found</span>
               </div>
-            </li>
-          `).join('');
-          dropdown.style.display = 'block';
+              <div class="ssr-header-hints">
+                <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+                <span><kbd>↵</kbd> select</span>
+                <span><kbd>esc</kbd> close</span>
+              </div>
+            </div>
+            <ul class="ssr-portal-list">
+          `;
+
+          items.forEach(function (item, itemIdx) {
+            var desc = escapeHtml(item.itemDescription || '');
+            var highlightedDesc = desc.replace(qRegex, '<mark>$1</mark>');
+            var cat = (item.itemCategory || 'MATERIAL').toUpperCase();
+            var rateStr = HMWSSB.Formatting.formatCurrency(item.rate || 0);
+            var subCat = item.itemSubCategory ? escapeHtml(item.itemSubCategory) : '';
+
+            html += `
+              <li class="ssr-portal-item ${itemIdx === 0 ? 'active' : ''}" data-item-idx="${itemIdx}">
+                <div class="ssr-portal-item-top">
+                  <span class="ssr-portal-code">#${item.slno || ''}</span>
+                  <div class="ssr-portal-desc">${highlightedDesc}</div>
+                </div>
+                <div class="ssr-portal-item-meta">
+                  <span class="ssr-portal-rate">${rateStr} <span style="font-size:11px; font-weight:500; color:#64748B;">/ ${escapeHtml(item.unit || '')}</span></span>
+                  <span class="ssr-portal-cat">${cat}</span>
+                  ${subCat ? `<span style="font-size:11px; color:#94A3B8;">${subCat}</span>` : ''}
+                </div>
+              </li>
+            `;
+          });
+          html += '</ul>';
+
+          portal.innerHTML = html;
+
+          var listItems = portal.querySelectorAll('.ssr-portal-item');
+          listItems.forEach(function (li, i) {
+            li.onmousedown = function (e) {
+              e.preventDefault();
+              selectSuggestion(idx, items[i]);
+            };
+          });
+
+          positionPortal(inputEl, items.length);
+          portal.style.display = 'block';
+          portal._currentItems = items;
+          portal._activeRowIdx = idx;
         } catch (e) {
-          dropdown.style.display = 'none';
+          console.error('SSR search error', e);
         }
-      }, 300);
+      }, 180);
     }
 
-    function selectSsrItem(idx, desc, unit, rate) {
-      rows[idx].description = desc;
-      rows[idx].unit = unit;
-      rows[idx].rate = Number(rate) || 0;
-      updateRow(idx, 'rate', rows[idx].rate);
+    function selectSuggestion(idx, item) {
+      if (!rows[idx]) return;
+      rows[idx].description = item.itemDescription || '';
+      rows[idx].rate = item.rate || 0;
+      rows[idx].unit = item.unit || '';
+      rows[idx].itemId = item.slno || null;
+      if (item.itemCategory) {
+        var isMat = (item.itemCategory.toUpperCase() === 'MATERIAL');
+        rows[idx].isMaterial = isMat ? 'Yes' : 'No';
+        rows[idx].itemCategory = item.itemCategory.toUpperCase();
+      }
+
+      HMWSSB.Calculations.computeRow(rows[idx]);
+      hidePortal();
       renderRows();
-    }
+      calculateTotals();
 
-    function hideAutocomplete(idx) {
       setTimeout(function () {
-        var dropdown = document.getElementById('dropdown-' + idx);
-        if (dropdown) dropdown.style.display = 'none';
-      }, 250);
+        var tbody = document.getElementById('mb-tbody');
+        if (tbody && tbody.children[idx]) {
+          var inputs = tbody.children[idx].querySelectorAll('input');
+          if (inputs[1]) inputs[1].focus();
+        }
+      }, 50);
     }
 
-    function packageEstimate() {
-      var user = HMWSSB.Auth.getUser() || {};
-      return {
-        nameOfWork: document.getElementById('name-of-work').value.trim() || 'Untitled Estimate',
-        corp: document.getElementById('sel-corp').value,
-        zoneName: document.getElementById('sel-zone').value,
-        division: document.getElementById('sel-division').value,
-        circleName: document.getElementById('sel-circle').value,
-        wardName: document.getElementById('sel-ward').value,
-        officerPhone: user.phoneNumber || '9876543210',
-        preparedByName: user.name || 'Officer',
-        preparedByDesignation: user.designation || 'Manager (Engg)',
-        status: 'DRAFT',
-        gstPercent: 18.0,
-        unforeseenAmount: 0.0,
-        items: rows
+    function handleSearchKeydown(e, idx, inputEl) {
+      var portal = document.getElementById('ssr-floating-portal');
+      if (!portal || portal.style.display === 'none' || !portal._currentItems) {
+        return;
+      }
+
+      var items = portal.querySelectorAll('.ssr-portal-item');
+      if (items.length === 0) return;
+
+      var activeIndex = -1;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].classList.contains('active')) {
+          activeIndex = i;
+          break;
+        }
+      }
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        var nextIndex = activeIndex < items.length - 1 ? activeIndex + 1 : 0;
+        if (activeIndex >= 0) items[activeIndex].classList.remove('active');
+        items[nextIndex].classList.add('active');
+        items[nextIndex].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        var prevIndex = activeIndex > 0 ? activeIndex - 1 : items.length - 1;
+        if (activeIndex >= 0) items[activeIndex].classList.remove('active');
+        items[prevIndex].classList.add('active');
+        items[prevIndex].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0 && portal._currentItems[activeIndex]) {
+          e.preventDefault();
+          selectSuggestion(idx, portal._currentItems[activeIndex]);
+        }
+      } else if (e.key === 'Escape' || e.key === 'Tab') {
+        hidePortal();
+      }
+    }
+
+    document.addEventListener('mousedown', function (e) {
+      var portal = document.getElementById('ssr-floating-portal');
+      if (!portal || portal.style.display === 'none') return;
+      if (!portal.contains(e.target) && (!activeSearchInputEl || !activeSearchInputEl.contains(e.target))) {
+        hidePortal();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (activeSearchInputEl) {
+        var portal = document.getElementById('ssr-floating-portal');
+        if (portal && portal.style.display !== 'none') {
+          positionPortal(activeSearchInputEl, (portal._currentItems ? portal._currentItems.length : 5));
+        }
+      }
+    });
+
+    var tableScrollContainer = document.querySelector('.mb-table-container');
+    if (tableScrollContainer) {
+      tableScrollContainer.addEventListener('scroll', function () {
+        hidePortal();
+      });
+    }
+
+    // ── Build Estimate Payload ───────────────────────────────────────────────
+    function buildEstimatePayload() {
+      var workName = document.getElementById('name-of-work').value.trim();
+      if (!workName) {
+        HMWSSB.UI.showToast('Please enter a Name of Work before proceeding.', 'error');
+        document.getElementById('name-of-work').focus();
+        return null;
+      }
+
+      var corp = document.getElementById('sel-corp').value;
+      var zone = document.getElementById('sel-zone').value;
+      var div = document.getElementById('sel-division').value;
+      var circle = document.getElementById('sel-circle').value;
+      var ward = document.getElementById('sel-ward').value;
+
+      if (!corp || !zone || !div || !circle || !ward) {
+        HMWSSB.UI.showToast('Please complete all 5 administrative jurisdiction fields.', 'error');
+        return null;
+      }
+
+      var user = HMWSSB.Auth.getUser();
+      var isManager = (user && (user.role || '').toUpperCase() === 'MANAGER');
+      if (isManager && (!currentEstimate || !currentEstimate.id) && !HMWSSB.LocationScope.isManagerAuthorizedForWard(user, ward)) {
+        var assigned = (user.locations || []).map(function(l) { return l.wardName; }).filter(Boolean).join(', ');
+        HMWSSB.UI.showToast('As Manager, you can only create estimates for your assigned ward(s): ' + (assigned || 'None assigned') + '. Please select your assigned location from the scope switcher.', 'error');
+        document.getElementById('sel-ward').focus();
+        return null;
+      }
+      var gstPct = parseFloat(document.getElementById('sel-gst-percent').value) || 0;
+
+      var cleanItems = rows.map(function (r, i) {
+        var isMat = (r.isMaterial === 'Yes' || r.isMaterial === true || r.itemCategory === 'MATERIAL');
+        return {
+          slno: i + 1,
+          isMaterial: isMat ? 'Yes' : 'No',
+          itemCategory: isMat ? 'MATERIAL' : 'CIVIL',
+          description: r.description || '',
+          num: r.num !== null && r.num !== undefined ? parseFloat(r.num) : 1,
+          length: r.length !== null && r.length !== undefined && r.length !== '' ? parseFloat(r.length) : null,
+          breadth: r.breadth !== null && r.breadth !== undefined && r.breadth !== '' ? parseFloat(r.breadth) : null,
+          depth: r.depth !== null && r.depth !== undefined && r.depth !== '' ? parseFloat(r.depth) : null,
+          quantity: parseFloat(r.quantity) || 0,
+          unit: r.unit || '',
+          rate: parseFloat(r.rate) || 0,
+          amount: parseFloat(r.amount) || 0,
+          itemId: r.itemId || null
+        };
+      });
+
+      var est = {
+        id: currentEstimate ? currentEstimate.id : null,
+        version: currentEstimate ? (currentEstimate.version || 1) : 1,
+        nameOfWork: workName,
+        fileNumber: document.getElementById('file-number').value.trim(),
+        corp: corp,
+        zoneName: zone,
+        division: div,
+        circleName: circle,
+        wardName: ward,
+        officerPhone: user.phoneNumber,
+        status: currentEstimate ? (currentEstimate.status || 'DRAFT') : 'DRAFT',
+        gstPercent: gstPct,
+        unforeseenAmount: (currentEstimate && currentEstimate.unforeseenAmount !== undefined) ? currentEstimate.unforeseenAmount : 0,
+        items: cleanItems
       };
+
+      HMWSSB.Calculations.recalculate(est);
+      return est;
     }
 
-    function saveDraftLocal() {
-      var est = packageEstimate();
-      localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(est));
-      localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(est));
-      alert('Local Measurement Book draft successfully saved!');
+    async function saveEstimateToServer() {
+      var payload = buildEstimatePayload();
+      if (!payload) return;
+
+      var btn = document.getElementById('btn-save-server');
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Saving...';
+
+      try {
+        var saved = await HMWSSB.API.saveEstimate(payload);
+        currentEstimate = saved;
+        HMWSSB.Storage.saveDraft(saved);
+        HMWSSB.UI.showToast('Estimate #' + (saved.id || '') + ' saved successfully to database!', 'success');
+        document.getElementById('btn-revisions').style.display = 'inline-block';
+        document.getElementById('btn-remarks').style.display = 'inline-block';
+        loadSavedEstimates();
+      } catch (e) {
+        HMWSSB.UI.showToast('Failed to save estimate: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Estimate';
+      }
     }
 
     function proceedToAbstract() {
-      var est = packageEstimate();
-      localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(est));
-      localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(est));
-      window.location.href = 'abstract-v2.html';
+      var payload = buildEstimatePayload();
+      if (!payload) return;
+
+      HMWSSB.Storage.saveDraft(payload);
+      var estIdParam = payload.id ? ('?id=' + payload.id) : '';
+      window.location.href = 'abstract-v2.html' + estIdParam;
     }
 
-    function escapeHtml(s) {
-      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    // ── Saved Estimates Table ────────────────────────────────────────────────
+    async function loadSavedEstimates() {
+      var user = HMWSSB.Auth.getUser();
+      var activeOpt = HMWSSB.LocationScope.getActiveOption(user);
+      var params = { officerPhone: user.phoneNumber };
+
+      if (activeOpt) {
+        if (activeOpt.role) params.role = activeOpt.role;
+        if (activeOpt.ward) params.wardName = activeOpt.ward;
+        if (activeOpt.circle) params.circleName = activeOpt.circle;
+        if (activeOpt.division) params.division = activeOpt.division;
+        if (activeOpt.zone) params.zoneName = activeOpt.zone;
+        if (activeOpt.corp) params.corp = activeOpt.corp;
+      }
+
+      try {
+        var list = await HMWSSB.API.getEstimates(params);
+        renderSavedEstimates(list);
+      } catch (e) {
+        console.error('Failed to load saved estimates:', e);
+        var tbody = document.getElementById('saved-estimates-tbody');
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#DC2626; padding:16px;">Failed to load saved estimates from server.</td></tr>';
+      }
     }
-    function escapeQuotes(s) {
-      return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+    function renderSavedEstimates(list) {
+      var tbody = document.getElementById('saved-estimates-tbody');
+      tbody.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--slate-500); padding:20px;">No saved estimates found for this location scope.</td></tr>';
+        return;
+      }
+
+      list.forEach(function (est) {
+        var tr = document.createElement('tr');
+        var scopeText = [est.corp, est.division ? ('Div ' + est.division) : '', est.wardName || ''].filter(Boolean).join(' • ');
+        var isRet = HMWSSB.Workflow.isReturned(est);
+        var badge = HMWSSB.Formatting.getStatusBadge(est.status, isRet);
+
+        tr.innerHTML = `
+          <td style="font-weight:700; font-family:var(--font-mono); color:var(--hmwssb-navy-900);">#${est.id}</td>
+          <td style="font-weight:600; color:#1E293B;">${escapeHtml(est.nameOfWork || 'Untitled')}</td>
+          <td style="font-size:11.5px; color:#64748B;">${escapeHtml(scopeText)}</td>
+          <td style="font-size:11.5px;">${escapeHtml(est.preparedByName || est.createdByPhone || '—')}</td>
+          <td style="text-align:right; font-weight:700; font-family:var(--font-mono);">${HMWSSB.Formatting.formatCurrency(est.grandTotal)}</td>
+          <td style="text-align:center;">${badge}</td>
+          <td style="font-size:11.5px; color:#64748B;">${HMWSSB.Formatting.formatDate(est.updatedAt || est.createdAt)}</td>
+          <td style="text-align:center;">
+            <a href="abstract-v2.html?id=${est.id}" class="btn btn-sm btn-outline" style="padding:3px 8px; font-size:11px;">View Abstract</a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Auto-trigger search from query param if requested
+    var triggerQ = new URLSearchParams(window.location.search).get('triggerSearch');
+    if (triggerQ) {
+      setTimeout(function () {
+        var tbody = document.getElementById('mb-tbody');
+        if (tbody && tbody.children[0]) {
+          var input = tbody.children[0].querySelector('.autocomplete-box input');
+          if (input) {
+            input.value = triggerQ;
+            handleItemSearch(0, triggerQ, input);
+          }
+        }
+      }, 700);
     }
   </script>
 </body>

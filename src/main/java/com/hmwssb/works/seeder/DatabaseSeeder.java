@@ -188,7 +188,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     rev.setOfficerPhone(est.getOfficerPhone());
                     rev.setOfficerName(est.getPreparedByName() != null ? est.getPreparedByName() : "Officer");
                     rev.setOfficerRole("MANAGER");
-                    rev.setOfficerDesignation(est.getPreparedByDesignation() != null ? est.getPreparedByDesignation() : "Manager (AE)");
+                    rev.setOfficerDesignation(est.getPreparedByDesignation() != null ? est.getPreparedByDesignation() : "Manager ");
                     rev.setRemarks(est.getLastRemarks() != null ? est.getLastRemarks() : "Initial baseline estimate");
                     rev.setChangeSummary("Initial baseline snapshot");
                     rev.setSnapshotJson(mapper.writeValueAsString(est));
@@ -201,7 +201,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     rem.setOfficerPhone(est.getOfficerPhone() != null ? est.getOfficerPhone() : "SYSTEM");
                     rem.setOfficerName(est.getPreparedByName() != null ? est.getPreparedByName() : "System");
                     rem.setOfficerRole("MANAGER");
-                    rem.setOfficerDesignation(est.getPreparedByDesignation() != null ? est.getPreparedByDesignation() : "Manager (AE)");
+                    rem.setOfficerDesignation(est.getPreparedByDesignation() != null ? est.getPreparedByDesignation() : "Manager ");
                     rem.setAction("CREATE");
                     rem.setFromStatus(null);
                     rem.setToStatus(est.getStatus() != null ? est.getStatus() : "DRAFT");

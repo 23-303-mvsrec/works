@@ -9,22 +9,28 @@
 </head>
 <body>
   <div id="gov-app-header"></div>
+  <div id="gov-breadcrumbs"></div>
 
-  <main id="main-content" class="gov-container">
+  <main id="main-content" class="gov-container" style="padding-top: 14px; padding-bottom: 40px;">
     <!-- Header Banner & Quick Action Buttons -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
       <div>
-        <h2 style="font-size:20px; font-weight:800; color:var(--hmwssb-navy-900);">Engineering Works & Estimates Overview</h2>
-        <p style="font-size:12px; color:var(--slate-500); margin-top:2px;">
-          Hyderabad Metropolitan Water Supply and Sewerage Board • Real-time Monitoring & Measurement
+        <h1 style="font-size:20px; font-weight:800; color:var(--hmwssb-navy-900); margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Works &amp; Estimates Executive Dashboard
+        </h1>
+        <p style="font-size:12px; color:var(--slate-500); margin:4px 0 0 0;">
+          Hyderabad Metropolitan Water Supply and Sewerage Board • Departmental Works Monitoring
         </p>
       </div>
       <div style="display:flex; gap:8px;">
-        <a href="measurement-v2.html" class="btn btn-primary">
-          <span>📐</span> New Measurement Book
+        <a href="measurement-v2.html" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7l-5-5a1 1 0 0 0-1.4 0l-12 12a1 1 0 0 0 0 1.4l5 5a1 1 0 0 0 1.4 0l12-12a1 1 0 0 0 0-1.4z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/></svg>
+          Prepare Estimate
         </a>
-        <a href="ssr-v2.html" class="btn btn-secondary">
-          <span>📖</span> SSR Rate Master
+        <a href="estimates-v2.html" class="btn btn-secondary" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          My Estimates
         </a>
       </div>
     </div>
@@ -32,64 +38,57 @@
     <!-- Executive KPI Metrics Grid -->
     <div class="metrics-grid">
       <div class="metric-card navy">
-        <div class="metric-icon">📑</div>
+        <div class="metric-icon" style="display:flex; align-items:center; justify-content:center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
         <div class="metric-info">
-          <h3>Total Estimates</h3>
+          <h3>Total Registered Estimates</h3>
           <div class="value" id="stat-total-count">—</div>
-          <div class="meta">Registered in FY 2024-25</div>
+          <div class="meta">Registered in Current Registry</div>
         </div>
       </div>
 
       <div class="metric-card warning">
-        <div class="metric-icon">⏳</div>
+        <div class="metric-icon" style="display:flex; align-items:center; justify-content:center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
         <div class="metric-info">
-          <h3>In Scrutiny / Review</h3>
+          <h3>Under Scrutiny</h3>
           <div class="value" id="stat-pending-count" style="color:var(--ashok-gold-700);">—</div>
           <div class="meta">Awaiting Technical Sanction</div>
         </div>
       </div>
 
       <div class="metric-card success">
-        <div class="metric-icon">✅</div>
+        <div class="metric-icon" style="display:flex; align-items:center; justify-content:center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
         <div class="metric-info">
           <h3>Sanctioned Value</h3>
           <div class="value" id="stat-approved-value" style="color:var(--tg-green-800);">—</div>
-          <div class="meta">Approved & Administratively Sanctioned</div>
+          <div class="meta">Technically Sanctioned Total</div>
         </div>
       </div>
 
       <div class="metric-card">
-        <div class="metric-icon">💧</div>
+        <div class="metric-icon" style="display:flex; align-items:center; justify-content:center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
         <div class="metric-info">
-          <h3>Active Master Items</h3>
+          <h3>Item Master Catalog</h3>
           <div class="value" id="stat-ssr-count">500+</div>
           <div class="meta">Standard Schedule of Rates</div>
         </div>
       </div>
     </div>
 
-    <!-- Quick Navigation Workflow Launchpad -->
-    <div class="gov-card" style="background:linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%); border-color:var(--hmwssb-cyan-100); margin-bottom:24px;">
-      <div class="gov-card-body" style="padding:16px 20px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-          <div>
-            <h3 style="font-size:14px; font-weight:800; color:var(--hmwssb-navy-900);">Fast Launchpad</h3>
-            <p style="font-size:12px; color:var(--slate-600);">Direct access to core engineering workflows and technical sanction desks</p>
-          </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <a href="measurement-v2.html" class="btn btn-primary btn-sm">📐 1. Record Measurements</a>
-            <a href="abstract-v2.html" class="btn btn-amber btn-sm">📑 2. General Abstract & GST</a>
-            <a href="approvals-v2.html" class="btn btn-success btn-sm">✅ 3. Scrutiny & Sanctions</a>
-            <a href="admin.html" class="btn btn-secondary btn-sm">⚙️ Officer Setup</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Works Estimates Registry Table -->
-    <div class="gov-card">
-      <div class="gov-card-header">
-        <h2><span>📋</span> Registered Estimates & Works Directory</h2>
+    <div class="gov-card" style="margin-top:20px;">
+      <div class="gov-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2 style="font-size:15px; margin:0; display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          Registered Estimates &amp; Technical Works Directory
+        </h2>
         <div style="display:flex; gap:8px; align-items:center;">
           <input type="text" id="search-filter" oninput="filterTable()" placeholder="Search by work or location..." class="form-control" style="width:240px; padding:5px 10px; font-size:12px;">
           <select id="status-filter" onchange="filterTable()" class="form-control" style="width:160px; padding:5px 10px; font-size:12px;">
@@ -99,9 +98,11 @@
             <option value="SUBMITTED_TO_GM">Pending GM</option>
             <option value="SUBMITTED_TO_CGM">Pending CGM</option>
             <option value="SUBMITTED_TO_DOP">Pending DOP</option>
-            <option value="APPROVED">Approved & Sanctioned</option>
+            <option value="APPROVED">Technically Sanctioned</option>
           </select>
-          <button onclick="loadEstimates()" class="btn btn-secondary btn-sm" title="Refresh list">🔄</button>
+          <button onclick="loadEstimates()" class="btn btn-secondary btn-sm" title="Refresh list" style="display:inline-flex; align-items:center;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
         </div>
       </div>
 
@@ -109,14 +110,14 @@
         <table class="gov-table" id="estimates-table">
           <thead>
             <tr>
-              <th style="width:55px;">ID</th>
+              <th style="width:65px;">ID</th>
               <th>Name of Work</th>
               <th>Corporation / Zone / Division</th>
               <th>Circle & Ward</th>
               <th>Prepared By</th>
               <th style="width:130px; text-align:right;">Grand Total (₹)</th>
-              <th style="width:120px; text-align:center;">Workflow Status</th>
-              <th style="width:160px; text-align:center;">Actions</th>
+              <th style="width:140px; text-align:center;">Workflow Status</th>
+              <th style="width:170px; text-align:center;">Actions</th>
             </tr>
           </thead>
           <tbody id="estimates-tbody">
@@ -137,7 +138,14 @@
     var allEstimates = [];
 
     document.addEventListener('DOMContentLoaded', function () {
+      var user = HMWSSB.Auth.requireLogin();
+      if (!user) return;
+
       HMWSSB.UI.renderHeader('dashboard');
+      HMWSSB.UI.renderBreadcrumbs([
+        { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+        { label: 'Dashboard' }
+      ]);
       HMWSSB.UI.renderFooter();
       loadEstimates();
     });
@@ -147,13 +155,7 @@
       tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--slate-500);">Fetching live works records...</td></tr>';
 
       try {
-        var user = HMWSSB.Auth.getUser();
-        var params = {};
-        if (user && user.phoneNumber && user.role !== 'ADMIN') {
-          params.officerPhone = user.phoneNumber;
-        }
-
-        var data = await HMWSSB.API.getEstimates(params);
+        var data = await HMWSSB.API.getEstimates();
         allEstimates = Array.isArray(data) ? data : [];
         updateMetrics(allEstimates);
         renderTable(allEstimates);
@@ -167,19 +169,19 @@
 
     function updateMetrics(list) {
       document.getElementById('stat-total-count').innerText = list.length;
-      var pending = list.filter(e => e.status && e.status !== 'DRAFT' && e.status !== 'APPROVED').length;
+      var pending = list.filter(function (e) { return e.status && e.status !== 'DRAFT' && e.status !== 'APPROVED'; }).length;
       document.getElementById('stat-pending-count').innerText = pending;
 
       var approvedTotal = list
-        .filter(e => e.status === 'APPROVED')
-        .reduce((sum, e) => sum + (Number(e.grandTotal) || 0), 0);
+        .filter(function (e) { return e.status === 'APPROVED'; })
+        .reduce(function (sum, e) { return sum + (Number(e.grandTotal) || 0); }, 0);
       
       if (approvedTotal >= 10000000) {
         document.getElementById('stat-approved-value').innerText = '₹ ' + (approvedTotal / 10000000).toFixed(2) + ' Cr';
       } else if (approvedTotal >= 100000) {
         document.getElementById('stat-approved-value').innerText = '₹ ' + (approvedTotal / 100000).toFixed(2) + ' L';
       } else {
-        document.getElementById('stat-approved-value').innerText = '₹ ' + HMWSSB.Utils.formatCurrency(approvedTotal);
+        document.getElementById('stat-approved-value').innerText = HMWSSB.Formatting.formatCurrency(approvedTotal);
       }
     }
 
@@ -187,35 +189,40 @@
       var tbody = document.getElementById('estimates-tbody');
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--slate-500);">
-          No estimates found matching criteria. Click <b>"New Measurement Book"</b> to draft an estimate.
+          No estimates found matching criteria. Click <b>"Prepare Estimate"</b> to draft an estimate.
         </td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map(est => {
-        var corpZone = [est.corp, est.zoneName, est.division].filter(Boolean).join(' • ') || '—';
+      tbody.innerHTML = list.map(function (est) {
+        var corpZone = [est.corp, est.zoneName, est.division ? ('Div ' + est.division) : ''].filter(Boolean).join(' • ') || '—';
         var circleWard = [est.circleName, est.wardName].filter(Boolean).join(' / ') || '—';
-        var prep = est.preparedByName ? (est.preparedByName + (est.preparedByDesignation ? ` (${est.preparedByDesignation})` : '')) : '—';
-        var badge = HMWSSB.Utils.getStatusBadge(est.status);
-        var total = HMWSSB.Utils.formatCurrency(est.grandTotal);
+        var prepName = est.preparedByName || est.createdByName || '—';
+        var prepPhone = est.officerPhone || est.createdByPhone || '';
+        var prep = prepName + (prepPhone ? ' (' + prepPhone + ')' : '');
+        var isRet = HMWSSB.Workflow.isReturned(est);
+        var badge = HMWSSB.Formatting.getStatusBadge(est.status, isRet);
+        var total = HMWSSB.Formatting.formatCurrency(est.grandTotal || 0);
 
         return `
           <tr>
             <td class="center" style="font-family:var(--font-mono); font-weight:700; color:var(--hmwssb-navy-900);">#${est.id}</td>
-            <td style="font-weight:600; color:var(--slate-900);">${est.nameOfWork || 'Untitled Work'}</td>
+            <td style="font-weight:600; color:var(--slate-900);">${est.workName || est.nameOfWork || 'Untitled Work'}</td>
             <td style="font-size:12px; color:var(--slate-600);">${corpZone}</td>
             <td style="font-size:12px; color:var(--slate-600);">${circleWard}</td>
             <td style="font-size:12px; color:var(--slate-700);">${prep}</td>
-            <td class="num" style="color:var(--hmwssb-navy-900); font-weight:700;">₹ ${total}</td>
+            <td class="num" style="color:var(--hmwssb-navy-900); font-weight:700;">${total}</td>
             <td class="center">${badge}</td>
             <td class="center">
               <div style="display:flex; gap:6px; justify-content:center;">
-                <button onclick="openEstimate(${est.id}, 'measurement')" class="btn btn-outline btn-sm" title="Open Measurement Book">
-                  📐 MB
-                </button>
-                <button onclick="openEstimate(${est.id}, 'abstract')" class="btn btn-primary btn-sm" title="View General Abstract">
-                  📑 Abstract
-                </button>
+                <a href="measurement-v2.html?id=${est.id}" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:4px;" title="Open Estimate Sheet">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7l-5-5a1 1 0 0 0-1.4 0l-12 12a1 1 0 0 0 0 1.4l5 5a1 1 0 0 0 1.4 0l12-12a1 1 0 0 0 0-1.4z"/><line x1="14.5" y1="5.5" x2="18.5" y2="9.5"/></svg>
+                  Estimate
+                </a>
+                <a href="abstract-v2.html?id=${est.id}" class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:4px;" title="View General Abstract">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Abstract
+                </a>
               </div>
             </td>
           </tr>
@@ -227,10 +234,10 @@
       var q = document.getElementById('search-filter').value.toLowerCase().trim();
       var st = document.getElementById('status-filter').value;
 
-      var filtered = allEstimates.filter(e => {
+      var filtered = allEstimates.filter(function (e) {
         if (st && (e.status || 'DRAFT') !== st) return false;
         if (q) {
-          var matchText = [e.nameOfWork, e.corp, e.zoneName, e.division, e.circleName, e.wardName, e.preparedByName]
+          var matchText = [e.workName, e.nameOfWork, e.corp, e.zoneName, e.division, e.circleName, e.wardName, e.preparedByName, e.officerPhone]
             .filter(Boolean).join(' ').toLowerCase();
           return matchText.includes(q);
         }
@@ -238,21 +245,6 @@
       });
 
       renderTable(filtered);
-    }
-
-    async function openEstimate(id, target) {
-      try {
-        var est = await HMWSSB.API.getEstimate(id);
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_KEY, JSON.stringify(est));
-        localStorage.setItem(HMWSSB.CONFIG.ESTIMATE_V2_KEY, JSON.stringify(est));
-        if (target === 'measurement') {
-          window.location.href = 'measurement-v2.html?id=' + id;
-        } else {
-          window.location.href = 'abstract-v2.html?id=' + id;
-        }
-      } catch (e) {
-        alert('Could not open estimate: ' + e.message);
-      }
     }
   </script>
 </body>

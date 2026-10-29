@@ -533,7 +533,7 @@
     <div class="sig-grid">
       <!-- Prepared by AE -->
       <div class="sig-card">
-        <div class="sig-role">Prepared by (AE)</div>
+        <div class="sig-role">Prepared by </div>
         <div ng-if="preparedByName">
           <div class="sig-name">{{preparedByName}}</div>
           <div class="sig-designation">{{preparedByDesignation}}</div>
@@ -1477,7 +1477,7 @@
 
             // Signature data rows
             var sigData = [
-              { role: 'Prepared by (AE)', name: $scope.preparedByName, desg: $scope.preparedByDesignation, signed: !!$scope.preparedByName, label: 'Signed' },
+              { role: 'Prepared by ', name: $scope.preparedByName, desg: $scope.preparedByDesignation, signed: !!$scope.preparedByName, label: 'Signed' },
               { role: 'Verified by (DGM)', name: $scope.verifiedByName, desg: $scope.verifiedByDesignation, signed: !!$scope.verifiedByName, label: 'Signed' },
               { role: 'Recommended by (GM)', name: $scope.recommendedByName, desg: $scope.recommendedByDesignation, signed: !!$scope.recommendedByName, label: 'Signed' },
               { role: 'Reviewed by (CGM)', name: $scope.forwardedByName, desg: $scope.forwardedByDesignation, signed: !!$scope.forwardedByName, label: 'Signed' },

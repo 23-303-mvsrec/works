@@ -22,7 +22,7 @@
     }
     .login-card {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       background: #FFFFFF;
       border-radius: 12px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
@@ -70,20 +70,28 @@
       gap: 6px;
     }
     .role-chip {
-      padding: 4px 9px;
+      padding: 5px 9px;
       background: var(--slate-100);
       border: 1px solid var(--slate-300);
       border-radius: 4px;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--slate-700);
       cursor: pointer;
       transition: all 0.15s;
+      text-align: left;
     }
     .role-chip:hover {
       background: var(--hmwssb-cyan-100);
       color: var(--hmwssb-navy-900);
       border-color: var(--hmwssb-blue-600);
+    }
+    .active-session-box {
+      background: #EFF6FF;
+      border: 1px solid #93C5FD;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -112,33 +120,72 @@
       </div>
 
       <div class="login-body">
+        <!-- Active Session Card if already logged in -->
+        <div id="active-session-card" class="active-session-box" style="display:none;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:24px;">👤</span>
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; color:#1E40AF; font-weight:700;">Active Officer Session</div>
+              <div id="active-user-name" style="font-size:14px; font-weight:700; color:#1E293B;"></div>
+              <div id="active-user-role" style="font-size:11.5px; color:#475569;"></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="continueToApp()" style="flex:1;">
+              ➔ Continue to Portal
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="signOutCurrent()">
+              Sign In as Different Officer
+            </button>
+          </div>
+        </div>
+
         <div id="login-alert" style="display:none; padding:10px 12px; border-radius:6px; font-size:12px; font-weight:600; margin-bottom:14px;"></div>
 
         <form id="login-form" onsubmit="handleLogin(event)">
           <div class="form-group" style="margin-bottom:14px;">
-            <label class="required">Officer Mobile Number / User ID</label>
-            <input type="text" id="phone" class="form-control" placeholder="Enter 10-digit mobile or admin" required autofocus>
+            <label class="required" for="phone">Officer Mobile Number / User ID</label>
+            <input type="text" id="phone" class="form-control" placeholder="Enter 10-digit registered mobile or admin" required autofocus autocomplete="username">
           </div>
 
           <div class="form-group" style="margin-bottom:18px;">
-            <label class="required">Password</label>
-            <input type="password" id="password" class="form-control" placeholder="Enter officer password" required>
+            <label class="required" for="password">Password</label>
+            <input type="password" id="password" class="form-control" placeholder="Enter officer password" required autocomplete="current-password">
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width:100%; padding:10px; font-size:14px; border-radius:6px;">
-            🔒 Secure Officer Sign In
+          <button type="submit" id="btn-submit" class="btn btn-primary" style="width:100%; padding:10px; font-size:14px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Secure Officer Sign In
           </button>
         </form>
 
         <div class="quick-roles">
-          <h4>Demo Quick Login (Select Role)</h4>
+          <h4>Department Officer Accounts (Quick Select)</h4>
           <div class="role-chips">
-            <button class="role-chip" onclick="quickFill('7995010510', '1234', 'K.RAMAKRISHNA GOUD (Manager AE)')">👨‍💼 Manager (AE)</button>
-            <button class="role-chip" onclick="quickFill('7331185790', '1234', 'T.N SAINATH GOUD (DGM EE)')">👨‍💼 DGM (EE)</button>
-            <button class="role-chip" onclick="quickFill('9989994708', '1234', 'M.MAHENDER (GM SE)')">👨‍💼 GM (SE)</button>
-            <button class="role-chip" onclick="quickFill('9989989507', '1234', 'P.NAGENDRA KUMAR (CGM CE)')">👨‍💼 CGM (Chief Eng)</button>
-            <button class="role-chip" onclick="quickFill('9989999753', '1234', 'Vasa SatyaNarayana (DOP)')">🏛️ DOP (Director)</button>
-            <button class="role-chip" onclick="quickFill('admin', 'admin', 'System Administrator')">⚙️ Administrator</button>
+            <button type="button" class="role-chip" onclick="quickFill('9154866717', '1234', 'Smt. P. Sirivennela (Manager AE)')">
+              <b>Manager AE:</b> Sirivennela (9154866717)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('7995010510', '1234', 'Sri K. Ramakrishna Goud (Manager AE)')">
+              <b>Manager AE:</b> Ramakrishna Goud (7995010510)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('9989994369', '1234', 'Sri Nagar Raju (DGM EE)')">
+              <b>DGM EE:</b> Nagar Raju (9989994369)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('7331185790', '1234', 'Sri T.N Sainath Goud (DGM EE)')">
+              <b>DGM EE:</b> Sainath Goud (7331185790)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('9989994708', '1234', 'Sri P. Mahender (GM SE)')">
+              <b>GM SE:</b> Mahender (9989994708)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('9989989507', '1234', 'Sri M. Nagendra Kumar (CGM CE)')">
+              <b>CGM CE:</b> Nagendra Kumar (9989989507)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('9989999753', '1234', 'Sri Vasa SatyaNarayana (DOP)')">
+              <b>DOP Authority:</b> SatyaNarayana (9989999753)
+            </button>
+            <button type="button" class="role-chip" onclick="quickFill('admin', 'admin', 'System Administrator (IT Cell)')">
+              <b>Administrator:</b> admin
+            </button>
           </div>
         </div>
 
@@ -150,20 +197,62 @@
   </div>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var current = HMWSSB.Auth.getUser();
+      if (current) {
+        var card = document.getElementById('active-session-card');
+        var nameEl = document.getElementById('active-user-name');
+        var roleEl = document.getElementById('active-user-role');
+        if (card && nameEl && roleEl) {
+          nameEl.textContent = current.name || 'Department Officer';
+          roleEl.textContent = (current.role || 'OFFICER') + ' • ' + (current.designation || '') + ' (' + (current.phoneNumber || '') + ')';
+          card.style.display = 'block';
+        }
+      }
+    });
+
+    function continueToApp() {
+      var user = HMWSSB.Auth.getUser();
+      if (user && (user.role || '').toUpperCase() === 'ADMIN') {
+        window.location.href = 'admin-v2.html';
+      } else {
+        window.location.href = 'home-v2.html';
+      }
+    }
+
+    function signOutCurrent() {
+      HMWSSB.Auth.logout();
+      document.getElementById('active-session-card').style.display = 'none';
+      showAlert('Signed out of previous session. Please enter your credentials below.', '#EFF6FF', '#1E40AF');
+    }
+
     function quickFill(user, pass, label) {
       document.getElementById('phone').value = user;
       document.getElementById('password').value = pass;
-      document.getElementById('login-alert').style.display = 'block';
-      document.getElementById('login-alert').style.background = '#E0F2FE';
-      document.getElementById('login-alert').style.color = '#0369A1';
-      document.getElementById('login-alert').innerText = 'Selected: ' + label + ' (Click Secure Officer Sign In)';
+      showAlert('Selected: ' + label + '. Click "Secure Officer Sign In" to authenticate.', '#EFF6FF', '#1E40AF');
+    }
+
+    function showAlert(msg, bg, color) {
+      var alertBox = document.getElementById('login-alert');
+      alertBox.style.display = 'block';
+      alertBox.style.background = bg;
+      alertBox.style.color = color;
+      alertBox.innerText = msg;
     }
 
     async function handleLogin(e) {
       e.preventDefault();
       var phone = document.getElementById('phone').value.trim();
       var pass = document.getElementById('password').value.trim();
-      var alertBox = document.getElementById('login-alert');
+      var btn = document.getElementById('btn-submit');
+
+      if (!phone || !pass) {
+        showAlert('Please enter both Officer Mobile Number / User ID and Password.', '#FEF2F2', '#DC2626');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'Authenticating with HMWSSB Directory...';
 
       try {
         var res = await fetch('/api/users/login', {
@@ -175,29 +264,28 @@
         if (res.ok) {
           var user = await res.json();
           HMWSSB.Auth.setUser(user);
-          window.location.href = 'dashboard-v2.html';
+          showAlert('Authentication successful. Redirecting...', '#ECFDF5', '#047857');
+          setTimeout(function () {
+            if ((user.role || '').toUpperCase() === 'ADMIN') {
+              window.location.href = 'admin-v2.html';
+            } else {
+              window.location.href = 'home-v2.html';
+            }
+          }, 300);
+        } else if (res.status === 401) {
+          showAlert('Invalid Mobile Number or Password. Please verify your departmental credentials.', '#FEF2F2', '#DC2626');
+          btn.disabled = false;
+          btn.innerText = '🔒 Secure Officer Sign In';
         } else {
-          // If credentials fail or backend seeder not seeded, create mock officer session for smooth evaluation
-          var fallbackUser = {
-            phoneNumber: phone,
-            name: phone === 'admin' ? 'System Administrator' : 'Er. K. Venkata Ramana',
-            role: phone === 'admin' ? 'ADMIN' : (phone === '9876543214' ? 'DOP' : (phone === '9876543213' ? 'CGM' : (phone === '9876543212' ? 'GM' : (phone === '9876543211' ? 'DGM' : 'MANAGER')))),
-            designation: phone === 'admin' ? 'Admin' : 'Assistant Executive Engineer',
-            locations: []
-          };
-          HMWSSB.Auth.setUser(fallbackUser);
-          window.location.href = 'dashboard-v2.html';
+          var errorText = await res.text();
+          showAlert('Authentication error (' + res.status + '): ' + (errorText || 'Server rejected credentials'), '#FEF2F2', '#DC2626');
+          btn.disabled = false;
+          btn.innerText = '🔒 Secure Officer Sign In';
         }
       } catch (err) {
-        var fallbackUser = {
-          phoneNumber: phone,
-          name: 'Er. K. Venkata Ramana',
-          role: 'MANAGER',
-          designation: 'Manager (Engg)',
-          locations: []
-        };
-        HMWSSB.Auth.setUser(fallbackUser);
-        window.location.href = 'dashboard-v2.html';
+        showAlert('Unable to connect to HMWSSB Works backend server. Please ensure application is running at http://localhost:8080.', '#FEF2F2', '#DC2626');
+        btn.disabled = false;
+        btn.innerText = '🔒 Secure Officer Sign In';
       }
     }
   </script>

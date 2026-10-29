@@ -176,7 +176,7 @@ foreach ($row in $rows) {
             $users[$managerPhone] = @{
                 phoneNumber = $managerPhone
                 name = $managerName
-                designation = "Manager (AE)"
+                designation = "Manager "
                 role = "MANAGER"
                 locations = @()
             }

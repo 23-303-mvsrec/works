@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Seed Session</title>
+  <script src="app-v2.js"></script>
+</head>
+<body>
+<div id="status" style="font-family:sans-serif; padding:20px;">Signing in officer session...</div>
+<script>
+  (async function() {
+    var params = new URLSearchParams(window.location.search);
+    var phone = params.get('phone') || '7995010510';
+    var pass = params.get('pass') || params.get('password') || (phone === 'admin' ? 'admin' : '1234');
+    var next = params.get('next') || 'measurement-v2.html';
+    try {
+      var res = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ phoneNumber: phone, password: pass })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      var user = await res.json();
+      HMWSSB.Auth.setUser(user);
+      var activeOpt = HMWSSB.LocationScope.getDefaultEstimateOption(user);
+      if (activeOpt) {
+        HMWSSB.LocationScope.setActiveOption(activeOpt.key, user);
+      }
+      document.getElementById('status').innerText = 'Logged in as ' + user.name + '. Redirecting to ' + next;
+      setTimeout(function() {
+        window.location.href = next;
+      }, 300);
+    } catch(e) {
+      document.getElementById('status').innerText = 'Login error: ' + e.message;
+    }
+  })();
+</script>
+</body>
+</html>

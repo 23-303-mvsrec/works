@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical Sanction Reports • HMWSSB Works Portal</title>
+  <link rel="stylesheet" href="styles/theme-v2.css">
+  <script src="app-v2.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    .stepper-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+    }
+    .stepper-line {
+      position: absolute;
+      top: 24px;
+      left: 40px;
+      right: 40px;
+      height: 3px;
+      background: #E2E8F0;
+      z-index: 1;
+    }
+    .stepper-progress {
+      position: absolute;
+      top: 24px;
+      left: 40px;
+      height: 3px;
+      background: #10B981;
+      z-index: 2;
+      transition: width 0.3s ease;
+    }
+    .step-item {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 110px;
+    }
+    .step-node {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748B;
+      margin-bottom: 6px;
+      transition: all 0.2s;
+    }
+    .step-item.completed .step-node {
+      background: #10B981;
+      border-color: #059669;
+      color: #FFFFFF;
+    }
+    .step-item.active .step-node {
+      background: #3B82F6;
+      border-color: #1D4ED8;
+      color: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      line-height: 1.2;
+    }
+    .step-sublabel {
+      font-size: 10px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+    .remarks-timeline-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .remarks-timeline-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Shell Container -->
+  <div id="gov-app-header"></div>
+
+  <!-- Breadcrumbs Container -->
+  <div id="gov-breadcrumbs"></div>
+
+  <main id="main-content" class="gov-container" style="padding-top: 14px; padding-bottom: 40px;">
+    <!-- Page Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h1 style="font-size: 20px; font-weight: 800; color: #1E293B; margin: 0; display: flex; align-items: center; gap: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Technical Sanction Pipeline & Audit Reports
+        </h1>
+        <p style="font-size: 13px; color: #64748B; margin: 4px 0 0 0;">
+          Track technical files through 5-tier scrutiny hierarchy and download authoritative audit registers.
+        </p>
+      </div>
+      <div>
+        <button class="btn btn-secondary btn-sm" onclick="exportRegisterToExcel()" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export Register (Excel)
+        </button>
+      </div>
+    </div>
+
+    <!-- Interactive Pipeline Visualizer for Selected Estimate -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <h3 class="card-title" style="font-size: 14.5px; display: flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Technical Sanction Stage Visualizer
+        </h3>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 12px; font-weight: 600; color: #475569;">Select File:</label>
+          <select id="pipeline-estimate-select" class="form-control" style="width: 320px;" onchange="onSelectPipelineEstimate()">
+            <option value="">-- Choose Estimate to Track --</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="pipeline-display-area">
+          <div style="text-align: center; padding: 24px; color: #64748B;">
+            Select an estimate from the dropdown above to inspect its 5-tier scrutiny timeline and official remarks.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comprehensive Works Register Table -->
+    <div class="card">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <h3 class="card-title" style="font-size: 14.5px; display: flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Departmental Works Register
+        </h3>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="report-search" class="form-control" style="width: 220px;" placeholder="Search works..." oninput="filterRegister()">
+          <select id="report-status-filter" class="form-control" style="width: 180px;" onchange="filterRegister()">
+            <option value="">All Statuses</option>
+            <option value="DRAFT">Draft</option>
+            <option value="SUBMITTED_TO_DGM">Pending DGM</option>
+            <option value="SUBMITTED_TO_GM">Pending GM</option>
+            <option value="SUBMITTED_TO_CGM">Pending CGM</option>
+            <option value="SUBMITTED_TO_DOP">Pending DOP</option>
+            <option value="APPROVED">Technically Sanctioned</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body" style="padding: 0;">
+        <div class="table-responsive">
+          <table class="gov-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Work ID</th>
+                <th>Work Description</th>
+                <th style="width: 110px;">Division</th>
+                <th style="width: 110px;">Civil (₹)</th>
+                <th style="width: 110px;">GST 18% (₹)</th>
+                <th style="width: 130px;">Grand Total (₹)</th>
+                <th style="width: 160px;">Workflow Status</th>
+                <th style="width: 140px; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="register-tbody">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 24px; color: #64748B;">
+                  Loading departmental register...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Shell Container -->
+  <div id="gov-app-footer"></div>
+
+  <script>
+    var reportEstimates = [];
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      var user = HMWSSB.Auth.requireLogin();
+      if (!user) return;
+
+      HMWSSB.UI.renderHeader('home');
+      HMWSSB.UI.renderBreadcrumbs([
+        { label: 'HMWSSB Works Portal', url: 'home-v2.html' },
+        { label: 'My Reports & Tracking' }
+      ]);
+      HMWSSB.UI.renderFooter();
+
+      await loadRegisterData();
+
+      // Check if URL has ?id=
+      var urlParams = new URLSearchParams(window.location.search);
+      var estId = urlParams.get('id');
+      if (estId) {
+        var sel = document.getElementById('pipeline-estimate-select');
+        sel.value = estId;
+        onSelectPipelineEstimate();
+      }
+    });
+
+    async function loadRegisterData() {
+      try {
+        reportEstimates = await HMWSSB.API.getEstimates();
+
+        // Populate Select
+        var sel = document.getElementById('pipeline-estimate-select');
+        sel.innerHTML = '<option value="">-- Choose Estimate to Track --</option>';
+        reportEstimates.forEach(function (e) {
+          var opt = document.createElement('option');
+          var wName = e.nameOfWork || e.workName || 'Untitled';
+          opt.textContent = '#' + e.id + ' - ' + wName.substring(0, 45) + ' (' + (e.status || 'DRAFT') + ')';
+          sel.appendChild(opt);
+        });
+
+        if (reportEstimates.length > 0 && !sel.value) {
+          sel.value = reportEstimates[0].id;
+          onSelectPipelineEstimate();
+        }
+
+        renderRegister(reportEstimates);
+      } catch (err) {
+        document.getElementById('register-tbody').innerHTML =
+          '<tr><td colspan="8" style="text-align:center; padding:24px; color:#DC2626;">Error: ' + err.message + '</td></tr>';
+      }
+    }
+
+    async function onSelectPipelineEstimate() {
+      var id = document.getElementById('pipeline-estimate-select').value;
+      var area = document.getElementById('pipeline-display-area');
+      if (!id) {
+        area.innerHTML = '<div style="text-align:center; padding:24px; color:#64748B;">Select an estimate to track above.</div>';
+        return;
+      }
+
+      var est = reportEstimates.find(function (e) { return String(e.id) === String(id); });
+      if (!est) return;
+
+      var currentStatus = est.status || 'DRAFT';
+      var order = HMWSSB.Workflow.getStageOrder(currentStatus);
+      var isRet = HMWSSB.Workflow.isReturned(est);
+      var pct = Math.min(100, Math.round((order / 5) * 100));
+
+      var steps = [
+        { key: 'DRAFT', title: '1. Draft Prep', role: 'Manager' },
+        { key: 'SUBMITTED_TO_DGM', title: '2. Scrutiny', role: 'DGM' },
+        { key: 'SUBMITTED_TO_GM', title: '3. Scrutiny', role: 'GM' },
+        { key: 'SUBMITTED_TO_CGM', title: '4. Scrutiny', role: 'CGM' },
+        { key: 'SUBMITTED_TO_DOP', title: '5. Sanction', role: 'DOP' },
+        { key: 'APPROVED', title: '6. Sanctioned', role: 'Accorded' }
+      ];
+
+      var html = `
+        <div style="margin-bottom:16px; padding:12px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-weight:700; color:#1E293B; font-size:15px;">#${est.id}: ${est.nameOfWork || est.workName || 'Untitled'}</div>
+            <div style="font-size:11.5px; color:#64748B; margin-top:2px;">
+              File No: <b>${est.fileNumber || '—'}</b> • Amount: <b>${HMWSSB.Formatting.formatCurrency(est.grandTotal || 0)}</b> • Prepared by: <b>${est.createdByName || 'Officer'} (${est.createdByPhone || '—'})</b>
+            </div>
+          </div>
+          <div>
+            ${HMWSSB.Formatting.getStatusBadge(currentStatus, isRet)}
+          </div>
+        </div>
+
+        <div class="stepper-container">
+          <div class="stepper-line"></div>
+          <div class="stepper-progress" style="width: ${pct}%;"></div>
+      `;
+
+      steps.forEach(function (s, idx) {
+        var isCompleted = idx < order || (order === 5 && idx === 5);
+        var isActive = idx === order;
+        var cls = isCompleted ? 'completed' : (isActive ? 'active' : '');
+        var icon = isCompleted ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : (idx + 1);
+
+        html += `
+          <div class="step-item ${cls}">
+            <div class="step-node">${icon}</div>
+            <div class="step-label">${s.title}</div>
+            <div class="step-sublabel">${s.role}</div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+
+      // Load Remarks Trail
+      html += `
+        <div style="margin-top:20px; border-top:1px dashed #CBD5E1; padding-top:14px;">
+          <h4 style="font-size:13px; font-weight:700; color:#1E293B; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hmwssb-navy-900);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Official Scrutiny Remarks & Decision Log
+          </h4>
+          <div id="remarks-log-container" style="max-height:220px; overflow-y:auto;">
+            <div style="font-size:12px; color:#64748B;">Loading remarks...</div>
+          </div>
+        </div>
+      `;
+
+      area.innerHTML = html;
+
+      // Fetch remarks asynchronously
+      try {
+        var remarks = await HMWSSB.API.getRemarks(est.id);
+        var remContainer = document.getElementById('remarks-log-container');
+        if (!remarks || remarks.length === 0) {
+          remContainer.innerHTML = '<div style="font-size:12px; color:#94A3B8; font-style:italic;">No scrutiny remarks recorded yet.</div>';
+        } else {
+          var rHtml = '';
+          remarks.forEach(function (r) {
+            var rDate = HMWSSB.Formatting.formatDate(r.createdAt);
+            var isRetTag = (r.tags || '').indexOf('RETURN') !== -1;
+            var rIcon = isRetTag 
+              ? '<span style="color:#DC2626; display:inline-flex; align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>'
+              : '<span style="color:#0284C7; display:inline-flex; align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span>';
+            rHtml += `
+              <div class="remarks-timeline-item">
+                <div>${rIcon}</div>
+                <div style="flex:1;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:700; font-size:12px; color:#1E293B;">${r.officerName || 'Officer'} (${r.officerRole || 'OFFICER'})</span>
+                    <span style="font-size:11px; color:#94A3B8;">${rDate}</span>
+                  </div>
+                  <div style="font-size:12px; color:#334155; margin-top:2px;">${r.remarks || 'No message'}</div>
+                  ${r.tags ? `<span class="badge" style="font-size:10px; background:#F1F5F9; color:#475569; margin-top:3px;">${r.tags}</span>` : ''}
+                </div>
+              </div>
+            `;
+          });
+          remContainer.innerHTML = rHtml;
+        }
+      } catch (err) {
+        var remContainer = document.getElementById('remarks-log-container');
+        if (remContainer) remContainer.innerHTML = '<div style="font-size:12px; color:#DC2626;">Failed to load remarks: ' + err.message + '</div>';
+      }
+    }
+
+    function filterRegister() {
+      var search = (document.getElementById('report-search').value || '').toLowerCase().trim();
+      var status = document.getElementById('report-status-filter').value;
+
+      var filtered = reportEstimates.filter(function (e) {
+        if (status && e.status !== status) return false;
+        if (search) {
+          var matchId = String(e.id || '').toLowerCase().indexOf(search) !== -1;
+          var matchName = String(e.workName || '').toLowerCase().indexOf(search) !== -1;
+          var matchFile = String(e.fileNumber || '').toLowerCase().indexOf(search) !== -1;
+          if (!matchId && !matchName && !matchFile) return false;
+        }
+        return true;
+      });
+
+      renderRegister(filtered);
+    }
+
+    function renderRegister(list) {
+      var tbody = document.getElementById('register-tbody');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:24px; color:#64748B;">No estimates matching filter.</td></tr>';
+        return;
+      }
+
+      var rows = '';
+      list.forEach(function (e) {
+        var isRet = HMWSSB.Workflow.isReturned(e);
+        rows += `
+          <tr>
+            <td><b>#${e.id}</b></td>
+            <td>
+              <div style="font-weight:700; color:#1E293B;">${e.nameOfWork || e.workName || 'Untitled'}</div>
+              <div style="font-size:11px; color:#64748B;">File: ${e.fileNumber || '—'}</div>
+            </td>
+            <td>${e.division || 'Div-VI'}</td>
+            <td>${HMWSSB.Formatting.formatCurrency(e.civilTotal || 0)}</td>
+            <td>${HMWSSB.Formatting.formatCurrency(e.gstAmount || 0)}</td>
+            <td><b>${HMWSSB.Formatting.formatCurrency(e.grandTotal || 0)}</b></td>
+            <td>${HMWSSB.Formatting.getStatusBadge(e.status, isRet)}</td>
+            <td class="table-actions-cell">
+              <a href="abstract-v2.html?id=${e.id}" class="btn-table-action primary" style="margin-right:4px; display:inline-flex; align-items:center; gap:4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                Abstract
+              </a>
+              <button class="btn-table-action" onclick="trackEstimate(${e.id})" style="display:inline-flex; align-items:center; gap:4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Track
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = rows;
+    }
+
+    function trackEstimate(id) {
+      var sel = document.getElementById('pipeline-estimate-select');
+      sel.value = id;
+      onSelectPipelineEstimate();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function exportRegisterToExcel() {
+      if (typeof XLSX === 'undefined') {
+        HMWSSB.UI.showToast('Excel exporter library loading, please try again in a moment.', 'info');
+        return;
+      }
+
+      var rows = [
+        ['HYDERABAD METROPOLITAN WATER SUPPLY & SEWERAGE BOARD'],
+        ['WORKS ESTIMATION & TECHNICAL SANCTION REGISTER (FY 2024-2025)'],
+        ['Generated on: ' + new Date().toLocaleString('en-IN')],
+        [],
+        ['Work ID', 'File Number', 'Work Name', 'Division', 'Civil Total (Rs)', 'Material Total (Rs)', 'Subtotal (Rs)', 'GST 18% (Rs)', 'Unforeseen (Rs)', 'Grand Total (Rs)', 'Status', 'Prepared By', 'Created Date']
+      ];
+
+      reportEstimates.forEach(function (e) {
+        rows.push([
+          e.id,
+          e.fileNumber || '',
+          e.workName || '',
+          e.division || '',
+          e.civilTotal || 0,
+          e.materialTotal || 0,
+          e.subtotal || 0,
+          e.gstAmount || 0,
+          e.part3Amount || 0,
+          e.grandTotal || 0,
+          e.status || 'DRAFT',
+          e.createdByName || '',
+          e.createdAt || ''
+        ]);
+      });
+
+      var wb = XLSX.utils.book_new();
+      var ws = XLSX.utils.aoa_to_sheet(rows);
+      XLSX.utils.book_append_sheet(wb, ws, 'Sanction Register');
+      XLSX.writeFile(wb, 'HMWSSB_Works_Sanction_Register_FY24-25.xlsx');
+      HMWSSB.UI.showToast('Exported register to Excel successfully', 'success');
+    }
+  </script>
+</body>
+</html>
